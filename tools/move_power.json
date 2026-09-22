@@ -1,0 +1,2650 @@
+{
+"Absorb": {
+"power": 25,
+"status": false
+},
+"Accelerock": {
+"power": 40,
+"status": false
+},
+"Acid Armor": {
+"power": 0,
+"status": true
+},
+"Acid Spray": {
+"power": 40,
+"status": false
+},
+"Acrobatics": {
+"power": 55,
+"status": false
+},
+"Acupressure": {
+"power": 0,
+"status": true
+},
+"Aerial Ace": {
+"power": 60,
+"status": false
+},
+"Aeroblast": {
+"power": 100,
+"status": false
+},
+"Agility": {
+"power": 0,
+"status": true
+},
+"Air Cutter": {
+"power": 60,
+"status": false
+},
+"Air Slash": {
+"power": 75,
+"status": false
+},
+"Alluring Voice": {
+"power": 80,
+"status": false
+},
+"Ally Switch": {
+"power": 0,
+"status": true
+},
+"Amnesia": {
+"power": 0,
+"status": true
+},
+"Anchor Shot": {
+"power": 80,
+"status": false
+},
+"Ancient Power": {
+"power": 60,
+"status": false
+},
+"Apple Acid": {
+"power": 80,
+"status": false
+},
+"Aqua Cutter": {
+"power": 70,
+"status": false
+},
+"Aqua Jet": {
+"power": 40,
+"status": false
+},
+"Aqua Ring": {
+"power": 0,
+"status": true
+},
+"Aqua Step": {
+"power": 80,
+"status": false
+},
+"Aqua Tail": {
+"power": 90,
+"status": false
+},
+"Arm Thrust": {
+"power": 15,
+"status": false
+},
+"Armor Cannon": {
+"power": 120,
+"status": false
+},
+"Assist": {
+"power": 0,
+"status": true
+},
+"Astral Barrage": {
+"power": 120,
+"status": false
+},
+"Attack Order": {
+"power": 90,
+"status": false
+},
+"Attract": {
+"power": 0,
+"status": true
+},
+"Aura Sphere": {
+"power": 80,
+"status": false
+},
+"Aura Wheel": {
+"power": 110,
+"status": false
+},
+"Aurora Veil": {
+"power": 0,
+"status": true
+},
+"Autotomize": {
+"power": 0,
+"status": true
+},
+"Avalanche": {
+"power": 60,
+"status": false
+},
+"Axe Kick": {
+"power": 120,
+"status": false
+},
+"Baby-Doll Eyes": {
+"power": 0,
+"status": true
+},
+"Baddy Bad": {
+"power": 80,
+"status": false
+},
+"Barb Barrage": {
+"power": 60,
+"status": false
+},
+"Baton Pass": {
+"power": 0,
+"status": true
+},
+"Beak Blast": {
+"power": 100,
+"status": false
+},
+"Beat Up": {
+"power": 1,
+"status": false
+},
+"Behemoth Bash": {
+"power": 100,
+"status": false
+},
+"Behemoth Blade": {
+"power": 100,
+"status": false
+},
+"Belch": {
+"power": 120,
+"status": false
+},
+"Belly Drum": {
+"power": 0,
+"status": true
+},
+"Bitter Blade": {
+"power": 90,
+"status": false
+},
+"Bitter Malice": {
+"power": 60,
+"status": false
+},
+"Blast Burn": {
+"power": 150,
+"status": false
+},
+"Blaze Kick": {
+"power": 85,
+"status": false
+},
+"Blazing Torque": {
+"power": 80,
+"status": false
+},
+"Bleakwind Storm": {
+"power": 95,
+"status": false
+},
+"Blizzard": {
+"power": 110,
+"status": false
+},
+"Blood Moon": {
+"power": 140,
+"status": false
+},
+"Blue Flare": {
+"power": 130,
+"status": false
+},
+"Body Press": {
+"power": 80,
+"status": false
+},
+"Body Slam": {
+"power": 85,
+"status": false
+},
+"Bolt Beak": {
+"power": 85,
+"status": false
+},
+"Bolt Strike": {
+"power": 130,
+"status": false
+},
+"Bone Rush": {
+"power": 25,
+"status": false
+},
+"Bonemerang": {
+"power": 50,
+"status": false
+},
+"Boomburst": {
+"power": 140,
+"status": false
+},
+"Bounce": {
+"power": 85,
+"status": false
+},
+"Bouncy Bubble": {
+"power": 60,
+"status": false
+},
+"Brave Bird": {
+"power": 120,
+"status": false
+},
+"Breaking Swipe": {
+"power": 60,
+"status": false
+},
+"Brick Break": {
+"power": 75,
+"status": false
+},
+"Brine": {
+"power": 65,
+"status": false
+},
+"Brutal Swing": {
+"power": 60,
+"status": false
+},
+"Bubble Beam": {
+"power": 65,
+"status": false
+},
+"Bug Bite": {
+"power": 60,
+"status": false
+},
+"Bug Buzz": {
+"power": 90,
+"status": false
+},
+"Bulk Up": {
+"power": 0,
+"status": true
+},
+"Bulldoze": {
+"power": 60,
+"status": false
+},
+"Bullet Punch": {
+"power": 40,
+"status": false
+},
+"Bullet Seed": {
+"power": 25,
+"status": false
+},
+"Burn Up": {
+"power": 130,
+"status": false
+},
+"Burning Bulwark": {
+"power": 0,
+"status": true
+},
+"Burning Jealousy": {
+"power": 70,
+"status": false
+},
+"Calm Mind": {
+"power": 0,
+"status": true
+},
+"Camouflage": {
+"power": 0,
+"status": true
+},
+"Ceaseless Edge": {
+"power": 65,
+"status": false
+},
+"Celebrate": {
+"power": 0,
+"status": true
+},
+"Charge": {
+"power": 0,
+"status": true
+},
+"Charge Beam": {
+"power": 50,
+"status": false
+},
+"Chatter": {
+"power": 65,
+"status": false
+},
+"Chilling Water": {
+"power": 50,
+"status": false
+},
+"Chilly Reception": {
+"power": 0,
+"status": true
+},
+"Chloroblast": {
+"power": 120,
+"status": false
+},
+"Circle Throw": {
+"power": 60,
+"status": false
+},
+"Clanging Scales": {
+"power": 110,
+"status": false
+},
+"Clangorous Soul": {
+"power": 0,
+"status": true
+},
+"Close Combat": {
+"power": 120,
+"status": false
+},
+"Coaching": {
+"power": 0,
+"status": true
+},
+"Coil": {
+"power": 0,
+"status": true
+},
+"Collision Course": {
+"power": 100,
+"status": false
+},
+"Combat Torque": {
+"power": 100,
+"status": false
+},
+"Confuse Ray": {
+"power": 0,
+"status": true
+},
+"Conversion": {
+"power": 0,
+"status": true
+},
+"Conversion 2": {
+"power": 0,
+"status": true
+},
+"Copycat": {
+"power": 0,
+"status": true
+},
+"Core Enforcer": {
+"power": 100,
+"status": false
+},
+"Corrosive Gas": {
+"power": 0,
+"status": true
+},
+"Cosmic Power": {
+"power": 0,
+"status": true
+},
+"Cotton Guard": {
+"power": 0,
+"status": true
+},
+"Counter": {
+"power": 1,
+"status": false
+},
+"Crabhammer": {
+"power": 100,
+"status": false
+},
+"Cross Chop": {
+"power": 100,
+"status": false
+},
+"Cross Poison": {
+"power": 70,
+"status": false
+},
+"Crunch": {
+"power": 80,
+"status": false
+},
+"Crush Grip": {
+"power": 1,
+"status": false
+},
+"Curse": {
+"power": 0,
+"status": true
+},
+"Dark Pulse": {
+"power": 80,
+"status": false
+},
+"Dark Void": {
+"power": 0,
+"status": true
+},
+"Darkest Lariat": {
+"power": 85,
+"status": false
+},
+"Dazzling Gleam": {
+"power": 80,
+"status": false
+},
+"Defense Curl": {
+"power": 0,
+"status": true
+},
+"Destiny Bond": {
+"power": 0,
+"status": true
+},
+"Detect": {
+"power": 0,
+"status": true
+},
+"Diamond Storm": {
+"power": 100,
+"status": false
+},
+"Dig": {
+"power": 80,
+"status": false
+},
+"Dire Claw": {
+"power": 60,
+"status": false
+},
+"Disable": {
+"power": 0,
+"status": true
+},
+"Discharge": {
+"power": 80,
+"status": false
+},
+"Dive": {
+"power": 100,
+"status": false
+},
+"Dizzy Punch": {
+"power": 70,
+"status": false
+},
+"Doodle": {
+"power": 0,
+"status": true
+},
+"Doom Desire": {
+"power": 140,
+"status": false
+},
+"Double Hit": {
+"power": 35,
+"status": false
+},
+"Double Iron Bash": {
+"power": 60,
+"status": false
+},
+"Double Kick": {
+"power": 30,
+"status": false
+},
+"Double Shock": {
+"power": 120,
+"status": false
+},
+"Double Team": {
+"power": 0,
+"status": true
+},
+"Double-Edge": {
+"power": 120,
+"status": false
+},
+"Draco Meteor": {
+"power": 130,
+"status": false
+},
+"Dragon Ascent": {
+"power": 120,
+"status": false
+},
+"Dragon Breath": {
+"power": 60,
+"status": false
+},
+"Dragon Cheer": {
+"power": 0,
+"status": true
+},
+"Dragon Claw": {
+"power": 80,
+"status": false
+},
+"Dragon Dance": {
+"power": 0,
+"status": true
+},
+"Dragon Darts": {
+"power": 50,
+"status": false
+},
+"Dragon Energy": {
+"power": 150,
+"status": false
+},
+"Dragon Hammer": {
+"power": 90,
+"status": false
+},
+"Dragon Pulse": {
+"power": 85,
+"status": false
+},
+"Dragon Rage": {
+"power": 1,
+"status": false
+},
+"Dragon Rush": {
+"power": 100,
+"status": false
+},
+"Dragon Tail": {
+"power": 60,
+"status": false
+},
+"Drain Punch": {
+"power": 75,
+"status": false
+},
+"Draining Kiss": {
+"power": 50,
+"status": false
+},
+"Dream Eater": {
+"power": 100,
+"status": false
+},
+"Drill Peck": {
+"power": 80,
+"status": false
+},
+"Drill Run": {
+"power": 80,
+"status": false
+},
+"Dual Wingbeat": {
+"power": 40,
+"status": false
+},
+"Dynamax Cannon": {
+"power": 100,
+"status": false
+},
+"Dynamic Punch": {
+"power": 100,
+"status": false
+},
+"Earth Power": {
+"power": 90,
+"status": false
+},
+"Earthquake": {
+"power": 100,
+"status": false
+},
+"Echoed Voice": {
+"power": 40,
+"status": false
+},
+"Eerie Impulse": {
+"power": 0,
+"status": true
+},
+"Eerie Spell": {
+"power": 80,
+"status": false
+},
+"Egg Bomb": {
+"power": 100,
+"status": false
+},
+"Electric Terrain": {
+"power": 0,
+"status": true
+},
+"Electrify": {
+"power": 0,
+"status": true
+},
+"Electro Ball": {
+"power": 1,
+"status": false
+},
+"Electro Drift": {
+"power": 100,
+"status": false
+},
+"Electro Shot": {
+"power": 130,
+"status": false
+},
+"Electroweb": {
+"power": 55,
+"status": false
+},
+"Embargo": {
+"power": 0,
+"status": true
+},
+"Encore": {
+"power": 0,
+"status": true
+},
+"Endeavor": {
+"power": 1,
+"status": false
+},
+"Endure": {
+"power": 0,
+"status": true
+},
+"Energy Ball": {
+"power": 90,
+"status": false
+},
+"Entrainment": {
+"power": 0,
+"status": true
+},
+"Eruption": {
+"power": 150,
+"status": false
+},
+"Esper Wing": {
+"power": 75,
+"status": false
+},
+"Eternabeam": {
+"power": 160,
+"status": false
+},
+"Expanding Force": {
+"power": 80,
+"status": false
+},
+"Explosion": {
+"power": 250,
+"status": false
+},
+"Extrasensory": {
+"power": 80,
+"status": false
+},
+"Extreme Speed": {
+"power": 80,
+"status": false
+},
+"Facade": {
+"power": 70,
+"status": false
+},
+"Fake Out": {
+"power": 40,
+"status": false
+},
+"Fake Tears": {
+"power": 0,
+"status": true
+},
+"False Surrender": {
+"power": 80,
+"status": false
+},
+"Feather Dance": {
+"power": 0,
+"status": true
+},
+"Feint": {
+"power": 30,
+"status": false
+},
+"Fickle Beam": {
+"power": 80,
+"status": false
+},
+"Fiery Dance": {
+"power": 80,
+"status": false
+},
+"Fiery Wrath": {
+"power": 90,
+"status": false
+},
+"Fillet Away": {
+"power": 0,
+"status": true
+},
+"Final Gambit": {
+"power": 1,
+"status": false
+},
+"Fire Blast": {
+"power": 110,
+"status": false
+},
+"Fire Fang": {
+"power": 65,
+"status": false
+},
+"Fire Lash": {
+"power": 80,
+"status": false
+},
+"Fire Punch": {
+"power": 75,
+"status": false
+},
+"Fire Spin": {
+"power": 35,
+"status": false
+},
+"First Impression": {
+"power": 90,
+"status": false
+},
+"Fishious Rend": {
+"power": 85,
+"status": false
+},
+"Fissure": {
+"power": 1,
+"status": false
+},
+"Flail": {
+"power": 1,
+"status": false
+},
+"Flame Charge": {
+"power": 50,
+"status": false
+},
+"Flamethrower": {
+"power": 90,
+"status": false
+},
+"Flare Blitz": {
+"power": 120,
+"status": false
+},
+"Flash Cannon": {
+"power": 80,
+"status": false
+},
+"Fleur Cannon": {
+"power": 130,
+"status": false
+},
+"Fling": {
+"power": 1,
+"status": false
+},
+"Flip Turn": {
+"power": 60,
+"status": false
+},
+"Floaty Fall": {
+"power": 90,
+"status": false
+},
+"Floral Healing": {
+"power": 0,
+"status": true
+},
+"Flower Trick": {
+"power": 70,
+"status": false
+},
+"Fly": {
+"power": 100,
+"status": false
+},
+"Flying Press": {
+"power": 100,
+"status": false
+},
+"Focus Blast": {
+"power": 120,
+"status": false
+},
+"Focus Energy": {
+"power": 0,
+"status": true
+},
+"Focus Punch": {
+"power": 150,
+"status": false
+},
+"Follow Me": {
+"power": 0,
+"status": true
+},
+"Force Palm": {
+"power": 60,
+"status": false
+},
+"Foresight": {
+"power": 0,
+"status": true
+},
+"Forest's Curse": {
+"power": 0,
+"status": true
+},
+"Foul Play": {
+"power": 95,
+"status": false
+},
+"Freeze Shock": {
+"power": 140,
+"status": false
+},
+"Freeze-Dry": {
+"power": 70,
+"status": false
+},
+"Freezing Glare": {
+"power": 90,
+"status": false
+},
+"Freezy Frost": {
+"power": 100,
+"status": false
+},
+"Frustration": {
+"power": 1,
+"status": false
+},
+"Fury Attack": {
+"power": 15,
+"status": false
+},
+"Fury Cutter": {
+"power": 40,
+"status": false
+},
+"Fury Swipes": {
+"power": 18,
+"status": false
+},
+"Fusion Bolt": {
+"power": 100,
+"status": false
+},
+"Fusion Flare": {
+"power": 100,
+"status": false
+},
+"Future Sight": {
+"power": 120,
+"status": false
+},
+"Gear Grind": {
+"power": 50,
+"status": false
+},
+"Gear Up": {
+"power": 0,
+"status": true
+},
+"Geomancy": {
+"power": 0,
+"status": true
+},
+"Giga Drain": {
+"power": 75,
+"status": false
+},
+"Gigaton Hammer": {
+"power": 160,
+"status": false
+},
+"Glacial Lance": {
+"power": 130,
+"status": false
+},
+"Glaive Rush": {
+"power": 120,
+"status": false
+},
+"Glare": {
+"power": 0,
+"status": true
+},
+"Grass Knot": {
+"power": 1,
+"status": false
+},
+"Grass Pledge": {
+"power": 80,
+"status": false
+},
+"Grass Whistle": {
+"power": 0,
+"status": true
+},
+"Grassy Glide": {
+"power": 70,
+"status": false
+},
+"Grav Apple": {
+"power": 80,
+"status": false
+},
+"Gravity": {
+"power": 0,
+"status": true
+},
+"Growth": {
+"power": 0,
+"status": true
+},
+"Gunk Shot": {
+"power": 120,
+"status": false
+},
+"Gyro Ball": {
+"power": 1,
+"status": false
+},
+"Hammer Arm": {
+"power": 100,
+"status": false
+},
+"Hard Press": {
+"power": 100,
+"status": false
+},
+"Head Charge": {
+"power": 120,
+"status": false
+},
+"Head Smash": {
+"power": 150,
+"status": false
+},
+"Headbutt": {
+"power": 70,
+"status": false
+},
+"Headlong Rush": {
+"power": 100,
+"status": false
+},
+"Heal Order": {
+"power": 0,
+"status": true
+},
+"Heart Stamp": {
+"power": 60,
+"status": false
+},
+"Heat Crash": {
+"power": 1,
+"status": false
+},
+"Heat Wave": {
+"power": 95,
+"status": false
+},
+"Heavy Slam": {
+"power": 1,
+"status": false
+},
+"Helping Hand": {
+"power": 0,
+"status": true
+},
+"Hex": {
+"power": 65,
+"status": false
+},
+"Hidden Power Bug": {
+"power": 60,
+"status": false
+},
+"Hidden Power Fighting": {
+"power": 60,
+"status": false
+},
+"Hidden Power Fire": {
+"power": 60,
+"status": false
+},
+"Hidden Power Grass": {
+"power": 60,
+"status": false
+},
+"Hidden Power Ice": {
+"power": 60,
+"status": false
+},
+"Hidden Power Water": {
+"power": 60,
+"status": false
+},
+"High Horsepower": {
+"power": 95,
+"status": false
+},
+"High Jump Kick": {
+"power": 130,
+"status": false
+},
+"Hold Hands": {
+"power": 0,
+"status": true
+},
+"Hone Claws": {
+"power": 0,
+"status": true
+},
+"Horn Drill": {
+"power": 1,
+"status": false
+},
+"Horn Leech": {
+"power": 75,
+"status": false
+},
+"Howl": {
+"power": 0,
+"status": true
+},
+"Hurricane": {
+"power": 110,
+"status": false
+},
+"Hydro Cannon": {
+"power": 150,
+"status": false
+},
+"Hydro Pump": {
+"power": 110,
+"status": false
+},
+"Hydro Steam": {
+"power": 80,
+"status": false
+},
+"Hyper Beam": {
+"power": 150,
+"status": false
+},
+"Hyper Drill": {
+"power": 100,
+"status": false
+},
+"Hyper Fang": {
+"power": 80,
+"status": false
+},
+"Hyper Voice": {
+"power": 90,
+"status": false
+},
+"Hyperspace Fury": {
+"power": 100,
+"status": false
+},
+"Hyperspace Hole": {
+"power": 80,
+"status": false
+},
+"Hypnosis": {
+"power": 0,
+"status": true
+},
+"Ice Ball": {
+"power": 30,
+"status": false
+},
+"Ice Beam": {
+"power": 90,
+"status": false
+},
+"Ice Burn": {
+"power": 140,
+"status": false
+},
+"Ice Fang": {
+"power": 65,
+"status": false
+},
+"Ice Hammer": {
+"power": 100,
+"status": false
+},
+"Ice Punch": {
+"power": 75,
+"status": false
+},
+"Ice Shard": {
+"power": 40,
+"status": false
+},
+"Ice Spinner": {
+"power": 80,
+"status": false
+},
+"Icicle Crash": {
+"power": 85,
+"status": false
+},
+"Icicle Spear": {
+"power": 25,
+"status": false
+},
+"Icy Wind": {
+"power": 55,
+"status": false
+},
+"Imprison": {
+"power": 0,
+"status": true
+},
+"Infernal Parade": {
+"power": 60,
+"status": false
+},
+"Inferno": {
+"power": 100,
+"status": false
+},
+"Infestation": {
+"power": 20,
+"status": false
+},
+"Ingrain": {
+"power": 0,
+"status": true
+},
+"Instruct": {
+"power": 0,
+"status": true
+},
+"Iron Defense": {
+"power": 0,
+"status": true
+},
+"Iron Head": {
+"power": 80,
+"status": false
+},
+"Iron Tail": {
+"power": 100,
+"status": false
+},
+"Ivy Cudgel": {
+"power": 100,
+"status": false
+},
+"Jaw Lock": {
+"power": 80,
+"status": false
+},
+"Jet Punch": {
+"power": 60,
+"status": false
+},
+"Judgment": {
+"power": 100,
+"status": false
+},
+"Jump Kick": {
+"power": 100,
+"status": false
+},
+"King's Shield": {
+"power": 0,
+"status": true
+},
+"Knock Off": {
+"power": 65,
+"status": false
+},
+"Kowtow Cleave": {
+"power": 85,
+"status": false
+},
+"Land's Wrath": {
+"power": 90,
+"status": false
+},
+"Laser Focus": {
+"power": 0,
+"status": true
+},
+"Lash Out": {
+"power": 75,
+"status": false
+},
+"Last Resort": {
+"power": 140,
+"status": false
+},
+"Last Respects": {
+"power": 50,
+"status": false
+},
+"Lava Plume": {
+"power": 80,
+"status": false
+},
+"Leaf Blade": {
+"power": 90,
+"status": false
+},
+"Leaf Storm": {
+"power": 130,
+"status": false
+},
+"Leech Life": {
+"power": 80,
+"status": false
+},
+"Leech Seed": {
+"power": 0,
+"status": true
+},
+"Leer": {
+"power": 0,
+"status": true
+},
+"Life Dew": {
+"power": 0,
+"status": true
+},
+"Light Screen": {
+"power": 0,
+"status": true
+},
+"Light of Ruin": {
+"power": 140,
+"status": false
+},
+"Liquidation": {
+"power": 85,
+"status": false
+},
+"Lovely Kiss": {
+"power": 0,
+"status": true
+},
+"Low Kick": {
+"power": 1,
+"status": false
+},
+"Lumina Crash": {
+"power": 80,
+"status": false
+},
+"Lunge": {
+"power": 80,
+"status": false
+},
+"Luster Purge": {
+"power": 70,
+"status": false
+},
+"Mach Punch": {
+"power": 40,
+"status": false
+},
+"Magic Coat": {
+"power": 0,
+"status": true
+},
+"Magic Powder": {
+"power": 0,
+"status": true
+},
+"Magic Room": {
+"power": 0,
+"status": true
+},
+"Magma Storm": {
+"power": 100,
+"status": false
+},
+"Magnet Bomb": {
+"power": 60,
+"status": false
+},
+"Magnet Rise": {
+"power": 0,
+"status": true
+},
+"Magnetic Flux": {
+"power": 0,
+"status": true
+},
+"Magnitude": {
+"power": 1,
+"status": false
+},
+"Make It Rain": {
+"power": 120,
+"status": false
+},
+"Malignant Chain": {
+"power": 100,
+"status": false
+},
+"Matcha Gotcha": {
+"power": 80,
+"status": false
+},
+"Mean Look": {
+"power": 0,
+"status": true
+},
+"Mega Drain": {
+"power": 40,
+"status": false
+},
+"Megahorn": {
+"power": 120,
+"status": false
+},
+"Memento": {
+"power": 0,
+"status": true
+},
+"Metal Burst": {
+"power": 1,
+"status": false
+},
+"Metal Claw": {
+"power": 50,
+"status": false
+},
+"Metal Sound": {
+"power": 0,
+"status": true
+},
+"Meteor Assault": {
+"power": 150,
+"status": false
+},
+"Meteor Beam": {
+"power": 120,
+"status": false
+},
+"Meteor Mash": {
+"power": 90,
+"status": false
+},
+"Metronome": {
+"power": 0,
+"status": true
+},
+"Mighty Cleave": {
+"power": 95,
+"status": false
+},
+"Milk Drink": {
+"power": 0,
+"status": true
+},
+"Mimic": {
+"power": 0,
+"status": true
+},
+"Mind Blown": {
+"power": 150,
+"status": false
+},
+"Minimize": {
+"power": 0,
+"status": true
+},
+"Miracle Eye": {
+"power": 0,
+"status": true
+},
+"Mirror Coat": {
+"power": 1,
+"status": false
+},
+"Mirror Move": {
+"power": 0,
+"status": true
+},
+"Mirror Shot": {
+"power": 65,
+"status": false
+},
+"Mist Ball": {
+"power": 70,
+"status": false
+},
+"Misty Explosion": {
+"power": 100,
+"status": false
+},
+"Misty Terrain": {
+"power": 0,
+"status": true
+},
+"Moonblast": {
+"power": 95,
+"status": false
+},
+"Moongeist Beam": {
+"power": 100,
+"status": false
+},
+"Moonlight": {
+"power": 0,
+"status": true
+},
+"Morning Sun": {
+"power": 0,
+"status": true
+},
+"Mountain Gale": {
+"power": 100,
+"status": false
+},
+"Mud Shot": {
+"power": 55,
+"status": false
+},
+"Mud Sport": {
+"power": 0,
+"status": true
+},
+"Mud-Slap": {
+"power": 20,
+"status": false
+},
+"Muddy Water": {
+"power": 90,
+"status": false
+},
+"Multi-Attack": {
+"power": 120,
+"status": false
+},
+"Mystical Fire": {
+"power": 75,
+"status": false
+},
+"Mystical Power": {
+"power": 70,
+"status": false
+},
+"Nasty Plot": {
+"power": 0,
+"status": true
+},
+"Natural Gift": {
+"power": 1,
+"status": false
+},
+"Nature Power": {
+"power": 0,
+"status": true
+},
+"Nature's Madness": {
+"power": 1,
+"status": false
+},
+"Needle Arm": {
+"power": 60,
+"status": false
+},
+"Night Daze": {
+"power": 85,
+"status": false
+},
+"Night Shade": {
+"power": 1,
+"status": false
+},
+"Night Slash": {
+"power": 70,
+"status": false
+},
+"Nightmare": {
+"power": 0,
+"status": true
+},
+"No Retreat": {
+"power": 0,
+"status": true
+},
+"Noble Roar": {
+"power": 0,
+"status": true
+},
+"Noxious Torque": {
+"power": 100,
+"status": false
+},
+"Nuzzle": {
+"power": 20,
+"status": false
+},
+"Oblivion Wing": {
+"power": 80,
+"status": false
+},
+"Obstruct": {
+"power": 0,
+"status": true
+},
+"Octazooka": {
+"power": 65,
+"status": false
+},
+"Octolock": {
+"power": 0,
+"status": true
+},
+"Ominous Wind": {
+"power": 60,
+"status": false
+},
+"Order Up": {
+"power": 80,
+"status": false
+},
+"Origin Pulse": {
+"power": 110,
+"status": false
+},
+"Outrage": {
+"power": 120,
+"status": false
+},
+"Overdrive": {
+"power": 80,
+"status": false
+},
+"Overheat": {
+"power": 130,
+"status": false
+},
+"Pain Split": {
+"power": 0,
+"status": true
+},
+"Parabolic Charge": {
+"power": 65,
+"status": false
+},
+"Parting Shot": {
+"power": 0,
+"status": true
+},
+"Payback": {
+"power": 50,
+"status": false
+},
+"Perish Song": {
+"power": 0,
+"status": true
+},
+"Petal Blizzard": {
+"power": 90,
+"status": false
+},
+"Petal Dance": {
+"power": 120,
+"status": false
+},
+"Phantom Force": {
+"power": 90,
+"status": false
+},
+"Photon Geyser": {
+"power": 100,
+"status": false
+},
+"Pin Missile": {
+"power": 25,
+"status": false
+},
+"Plasma Fists": {
+"power": 100,
+"status": false
+},
+"Play Rough": {
+"power": 90,
+"status": false
+},
+"Poison Fang": {
+"power": 50,
+"status": false
+},
+"Poison Jab": {
+"power": 80,
+"status": false
+},
+"Poison Tail": {
+"power": 50,
+"status": false
+},
+"Pollen Puff": {
+"power": 90,
+"status": false
+},
+"Poltergeist": {
+"power": 110,
+"status": false
+},
+"Population Bomb": {
+"power": 20,
+"status": false
+},
+"Pounce": {
+"power": 50,
+"status": false
+},
+"Powder": {
+"power": 0,
+"status": true
+},
+"Power Gem": {
+"power": 80,
+"status": false
+},
+"Power Split": {
+"power": 0,
+"status": true
+},
+"Power Trick": {
+"power": 0,
+"status": true
+},
+"Power Trip": {
+"power": 20,
+"status": false
+},
+"Power Whip": {
+"power": 120,
+"status": false
+},
+"Power-Up Punch": {
+"power": 40,
+"status": false
+},
+"Precipice Blades": {
+"power": 120,
+"status": false
+},
+"Prismatic Laser": {
+"power": 160,
+"status": false
+},
+"Protect": {
+"power": 0,
+"status": true
+},
+"Psyblade": {
+"power": 80,
+"status": false
+},
+"Psych Up": {
+"power": 0,
+"status": true
+},
+"Psychic": {
+"power": 90,
+"status": false
+},
+"Psychic Fangs": {
+"power": 85,
+"status": false
+},
+"Psychic Noise": {
+"power": 75,
+"status": false
+},
+"Psychic Terrain": {
+"power": 0,
+"status": true
+},
+"Psycho Boost": {
+"power": 140,
+"status": false
+},
+"Psycho Cut": {
+"power": 70,
+"status": false
+},
+"Psycho Shift": {
+"power": 0,
+"status": true
+},
+"Psyshield Bash": {
+"power": 70,
+"status": false
+},
+"Psyshock": {
+"power": 80,
+"status": false
+},
+"Psystrike": {
+"power": 100,
+"status": false
+},
+"Punishment": {
+"power": 60,
+"status": false
+},
+"Pursuit": {
+"power": 40,
+"status": false
+},
+"Pyro Ball": {
+"power": 120,
+"status": false
+},
+"Quick Attack": {
+"power": 40,
+"status": false
+},
+"Quiver Dance": {
+"power": 0,
+"status": true
+},
+"Rage Fist": {
+"power": 50,
+"status": false
+},
+"Rage Powder": {
+"power": 0,
+"status": true
+},
+"Raging Bull": {
+"power": 90,
+"status": false
+},
+"Raging Fury": {
+"power": 90,
+"status": false
+},
+"Rain Dance": {
+"power": 0,
+"status": true
+},
+"Rapid Spin": {
+"power": 50,
+"status": false
+},
+"Razor Shell": {
+"power": 75,
+"status": false
+},
+"Recover": {
+"power": 0,
+"status": true
+},
+"Recycle": {
+"power": 0,
+"status": true
+},
+"Reflect": {
+"power": 0,
+"status": true
+},
+"Reflect Type": {
+"power": 0,
+"status": true
+},
+"Relic Song": {
+"power": 75,
+"status": false
+},
+"Rest": {
+"power": 0,
+"status": true
+},
+"Retaliate": {
+"power": 70,
+"status": false
+},
+"Return": {
+"power": 1,
+"status": false
+},
+"Revelation Dance": {
+"power": 90,
+"status": false
+},
+"Revenge": {
+"power": 60,
+"status": false
+},
+"Reversal": {
+"power": 1,
+"status": false
+},
+"Revival Blessing": {
+"power": 0,
+"status": true
+},
+"Rising Voltage": {
+"power": 70,
+"status": false
+},
+"Roar": {
+"power": 0,
+"status": true
+},
+"Roar Of Time": {
+"power": 150,
+"status": false
+},
+"Rock Blast": {
+"power": 25,
+"status": false
+},
+"Rock Climb": {
+"power": 90,
+"status": false
+},
+"Rock Polish": {
+"power": 0,
+"status": true
+},
+"Rock Slide": {
+"power": 75,
+"status": false
+},
+"Rock Smash": {
+"power": 40,
+"status": false
+},
+"Rock Tomb": {
+"power": 60,
+"status": false
+},
+"Role Play": {
+"power": 0,
+"status": true
+},
+"Rollout": {
+"power": 30,
+"status": false
+},
+"Roost": {
+"power": 0,
+"status": true
+},
+"Round": {
+"power": 60,
+"status": false
+},
+"Ruination": {
+"power": 1,
+"status": false
+},
+"Sacred Fire": {
+"power": 100,
+"status": false
+},
+"Sacred Sword": {
+"power": 90,
+"status": false
+},
+"Salt Cure": {
+"power": 40,
+"status": false
+},
+"Sand Tomb": {
+"power": 35,
+"status": false
+},
+"Sandsear Storm": {
+"power": 95,
+"status": false
+},
+"Sandstorm": {
+"power": 0,
+"status": true
+},
+"Sappy Seed": {
+"power": 100,
+"status": false
+},
+"Scald": {
+"power": 80,
+"status": false
+},
+"Scale Shot": {
+"power": 25,
+"status": false
+},
+"Scary Face": {
+"power": 0,
+"status": true
+},
+"Scorching Sands": {
+"power": 70,
+"status": false
+},
+"Screech": {
+"power": 0,
+"status": true
+},
+"Searing Shot": {
+"power": 100,
+"status": false
+},
+"Secret Power": {
+"power": 70,
+"status": false
+},
+"Secret Sword": {
+"power": 85,
+"status": false
+},
+"Seed Bomb": {
+"power": 80,
+"status": false
+},
+"Seed Flare": {
+"power": 120,
+"status": false
+},
+"Seismic Toss": {
+"power": 1,
+"status": false
+},
+"Self-Destruct": {
+"power": 200,
+"status": false
+},
+"Shadow Ball": {
+"power": 80,
+"status": false
+},
+"Shadow Bone": {
+"power": 85,
+"status": false
+},
+"Shadow Claw": {
+"power": 70,
+"status": false
+},
+"Shadow Force": {
+"power": 120,
+"status": false
+},
+"Shadow Punch": {
+"power": 60,
+"status": false
+},
+"Shadow Sneak": {
+"power": 40,
+"status": false
+},
+"Shed Tail": {
+"power": 0,
+"status": true
+},
+"Shell Side Arm": {
+"power": 90,
+"status": false
+},
+"Shell Smash": {
+"power": 0,
+"status": true
+},
+"Shelter": {
+"power": 0,
+"status": true
+},
+"Shift Gear": {
+"power": 0,
+"status": true
+},
+"Shore Up": {
+"power": 0,
+"status": true
+},
+"Signal Beam": {
+"power": 75,
+"status": false
+},
+"Silk Trap": {
+"power": 0,
+"status": true
+},
+"Silver Wind": {
+"power": 60,
+"status": false
+},
+"Sing": {
+"power": 0,
+"status": true
+},
+"Skitter Smack": {
+"power": 70,
+"status": false
+},
+"Skull Bash": {
+"power": 130,
+"status": false
+},
+"Sky Attack": {
+"power": 140,
+"status": false
+},
+"Sky Uppercut": {
+"power": 85,
+"status": false
+},
+"Slack Off": {
+"power": 0,
+"status": true
+},
+"Slash": {
+"power": 70,
+"status": false
+},
+"Sleep Powder": {
+"power": 0,
+"status": true
+},
+"Sleep Talk": {
+"power": 0,
+"status": true
+},
+"Sludge Bomb": {
+"power": 90,
+"status": false
+},
+"Sludge Wave": {
+"power": 95,
+"status": false
+},
+"Smart Strike": {
+"power": 70,
+"status": false
+},
+"Snap Trap": {
+"power": 35,
+"status": false
+},
+"Snarl": {
+"power": 55,
+"status": false
+},
+"Snipe Shot": {
+"power": 80,
+"status": false
+},
+"Snore": {
+"power": 80,
+"status": false
+},
+"Soak": {
+"power": 0,
+"status": true
+},
+"Soft-Boiled": {
+"power": 0,
+"status": true
+},
+"Solar Beam": {
+"power": 120,
+"status": false
+},
+"Solar Blade": {
+"power": 125,
+"status": false
+},
+"Spacial Rend": {
+"power": 100,
+"status": false
+},
+"Sparkling Aria": {
+"power": 90,
+"status": false
+},
+"Spectral Thief": {
+"power": 90,
+"status": false
+},
+"Speed Swap": {
+"power": 0,
+"status": true
+},
+"Spicy Extract": {
+"power": 0,
+"status": true
+},
+"Spider Web": {
+"power": 0,
+"status": true
+},
+"Spikes": {
+"power": 0,
+"status": true
+},
+"Spiky Shield": {
+"power": 0,
+"status": true
+},
+"Spin Out": {
+"power": 100,
+"status": false
+},
+"Spirit Break": {
+"power": 75,
+"status": false
+},
+"Spirit Shackle": {
+"power": 80,
+"status": false
+},
+"Spite": {
+"power": 0,
+"status": true
+},
+"Splash": {
+"power": 0,
+"status": true
+},
+"Spore": {
+"power": 0,
+"status": true
+},
+"Springtide Storm": {
+"power": 95,
+"status": false
+},
+"Stealth Rock": {
+"power": 0,
+"status": true
+},
+"Steam Eruption": {
+"power": 120,
+"status": false
+},
+"Steel Beam": {
+"power": 140,
+"status": false
+},
+"Steel Roller": {
+"power": 130,
+"status": false
+},
+"Steel Wing": {
+"power": 70,
+"status": false
+},
+"Sticky Web": {
+"power": 0,
+"status": true
+},
+"Stockpile": {
+"power": 0,
+"status": true
+},
+"Stomping Tantrum": {
+"power": 75,
+"status": false
+},
+"Stone Axe": {
+"power": 65,
+"status": false
+},
+"Stone Edge": {
+"power": 100,
+"status": false
+},
+"Stored Power": {
+"power": 20,
+"status": false
+},
+"Strength Sap": {
+"power": 0,
+"status": true
+},
+"Struggle Bug": {
+"power": 50,
+"status": false
+},
+"Stuff Cheeks": {
+"power": 0,
+"status": true
+},
+"Stun Spore": {
+"power": 0,
+"status": true
+},
+"Submission": {
+"power": 80,
+"status": false
+},
+"Substitute": {
+"power": 0,
+"status": true
+},
+"Sucker Punch": {
+"power": 70,
+"status": false
+},
+"Sunny Day": {
+"power": 0,
+"status": true
+},
+"Sunsteel Strike": {
+"power": 100,
+"status": false
+},
+"Super Fang": {
+"power": 1,
+"status": false
+},
+"Supercell Slam": {
+"power": 100,
+"status": false
+},
+"Superpower": {
+"power": 120,
+"status": false
+},
+"Supersonic": {
+"power": 0,
+"status": true
+},
+"Surf": {
+"power": 90,
+"status": false
+},
+"Surging Strikes": {
+"power": 25,
+"status": false
+},
+"Swagger": {
+"power": 0,
+"status": true
+},
+"Swallow": {
+"power": 0,
+"status": true
+},
+"Sweet Kiss": {
+"power": 0,
+"status": true
+},
+"Swift": {
+"power": 60,
+"status": false
+},
+"Swords Dance": {
+"power": 0,
+"status": true
+},
+"Synthesis": {
+"power": 0,
+"status": true
+},
+"Syrup Bomb": {
+"power": 60,
+"status": false
+},
+"Tachyon Cutter": {
+"power": 50,
+"status": false
+},
+"Tail Glow": {
+"power": 0,
+"status": true
+},
+"Tail Slap": {
+"power": 25,
+"status": false
+},
+"Tailwind": {
+"power": 0,
+"status": true
+},
+"Take Down": {
+"power": 90,
+"status": false
+},
+"Take Heart": {
+"power": 0,
+"status": true
+},
+"Taunt": {
+"power": 0,
+"status": true
+},
+"Teatime": {
+"power": 0,
+"status": true
+},
+"Techno Blast": {
+"power": 120,
+"status": false
+},
+"Teeter Dance": {
+"power": 0,
+"status": true
+},
+"Telekinesis": {
+"power": 0,
+"status": true
+},
+"Teleport": {
+"power": 0,
+"status": true
+},
+"Temper Flare": {
+"power": 75,
+"status": false
+},
+"Tera Starstorm": {
+"power": 120,
+"status": false
+},
+"Terrain Pulse": {
+"power": 50,
+"status": false
+},
+"Thousand Arrows": {
+"power": 90,
+"status": false
+},
+"Thousand Waves": {
+"power": 90,
+"status": false
+},
+"Thrash": {
+"power": 120,
+"status": false
+},
+"Throat Chop": {
+"power": 80,
+"status": false
+},
+"Thunder": {
+"power": 110,
+"status": false
+},
+"Thunder Cage": {
+"power": 80,
+"status": false
+},
+"Thunder Fang": {
+"power": 65,
+"status": false
+},
+"Thunder Punch": {
+"power": 75,
+"status": false
+},
+"Thunder Wave": {
+"power": 0,
+"status": true
+},
+"Thunderbolt": {
+"power": 90,
+"status": false
+},
+"Thunderclap": {
+"power": 70,
+"status": false
+},
+"Thunderous Kick": {
+"power": 90,
+"status": false
+},
+"Tickle": {
+"power": 0,
+"status": true
+},
+"Tidy Up": {
+"power": 0,
+"status": true
+},
+"Topsy-Turvy": {
+"power": 0,
+"status": true
+},
+"Torch Song": {
+"power": 80,
+"status": false
+},
+"Torment": {
+"power": 0,
+"status": true
+},
+"Toxic": {
+"power": 0,
+"status": true
+},
+"Toxic Spikes": {
+"power": 0,
+"status": true
+},
+"Toxic Thread": {
+"power": 0,
+"status": true
+},
+"Trailblaze": {
+"power": 50,
+"status": false
+},
+"Transform": {
+"power": 0,
+"status": true
+},
+"Tri Attack": {
+"power": 80,
+"status": false
+},
+"Trick Room": {
+"power": 0,
+"status": true
+},
+"Trick-or-Treat": {
+"power": 0,
+"status": true
+},
+"Triple Arrows": {
+"power": 50,
+"status": false
+},
+"Triple Axel": {
+"power": 20,
+"status": false
+},
+"Triple Dive": {
+"power": 30,
+"status": false
+},
+"Triple Kick": {
+"power": 10,
+"status": false
+},
+"Trop Kick": {
+"power": 70,
+"status": false
+},
+"Twin Beam": {
+"power": 40,
+"status": false
+},
+"U-Turn": {
+"power": 70,
+"status": false
+},
+"Upper Hand": {
+"power": 65,
+"status": false
+},
+"V-create": {
+"power": 180,
+"status": false
+},
+"Vacuum Wave": {
+"power": 40,
+"status": false
+},
+"Venoshock": {
+"power": 65,
+"status": false
+},
+"Victory Dance": {
+"power": 0,
+"status": true
+},
+"Volt Switch": {
+"power": 70,
+"status": false
+},
+"Volt Tackle": {
+"power": 120,
+"status": false
+},
+"Wake-Up Slap": {
+"power": 70,
+"status": false
+},
+"Water Pulse": {
+"power": 60,
+"status": false
+},
+"Water Shuriken": {
+"power": 15,
+"status": false
+},
+"Water Sport": {
+"power": 0,
+"status": true
+},
+"Water Spout": {
+"power": 150,
+"status": false
+},
+"Waterfall": {
+"power": 80,
+"status": false
+},
+"Wave Crash": {
+"power": 75,
+"status": false
+},
+"Weather Ball": {
+"power": 50,
+"status": false
+},
+"Whirlpool": {
+"power": 35,
+"status": false
+},
+"Whirlwind": {
+"power": 0,
+"status": true
+},
+"Wicked Blow": {
+"power": 80,
+"status": false
+},
+"Wide Guard": {
+"power": 0,
+"status": true
+},
+"Wild Charge": {
+"power": 90,
+"status": false
+},
+"Wildbolt Storm": {
+"power": 95,
+"status": false
+},
+"Will-O-Wisp": {
+"power": 0,
+"status": true
+},
+"Wing Attack": {
+"power": 60,
+"status": false
+},
+"Wish": {
+"power": 0,
+"status": true
+},
+"Wonder Room": {
+"power": 0,
+"status": true
+},
+"Wood Hammer": {
+"power": 120,
+"status": false
+},
+"Work Up": {
+"power": 0,
+"status": true
+},
+"Worry Seed": {
+"power": 0,
+"status": true
+},
+"X-Scissor": {
+"power": 80,
+"status": false
+},
+"Yawn": {
+"power": 0,
+"status": true
+},
+"Zap Cannon": {
+"power": 120,
+"status": false
+},
+"Zen Headbutt": {
+"power": 80,
+"status": false
+},
+"Zing Zap": {
+"power": 80,
+"status": false
+}
+}

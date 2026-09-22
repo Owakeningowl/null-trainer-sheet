@@ -9,11 +9,22 @@ Uses the Astral trainer sheet's layout, dark theme and held-item icons
 sprite. Every fight is laid out on the same six-column grid, so tables
 line up whether the trainer has one Pokémon or six.
 
-Pokémon the switch AI treats specially carry a chip under their name:
-**Support** (at most one damaging move, nothing over 75 BP — 20% to switch
-out), **Regen** (Regenerator — 40% to switch out and heal a third) and
-**Absorb** (an immunity ability — 75% once your move matches it). These come
-from the colour-coded copy of the spreadsheet in `tools/null_roles.xlsx`.
+Pokémon the switch AI treats specially carry a chip under their name. Null
+runs a separate mid-turn switch check for each class, so a chip means *this
+one leaves the field on you*, with the chance it does:
+
+| Chip | Class | Chance |
+|---|---|---|
+| **Support** | at most one damaging move, nothing over 75 BP, no Imposter | 20% |
+| **Regen** | Regenerator — heals a third on the way out | 40% |
+| **Absorb** | an immunity ability, once your move type feeds it | 75% |
+| **Weather** | its weather- or terrain-setting ability has expired | 20% |
+| **Hero** | Palafin, slower and about to be OHKO'd | always |
+
+All five are worked out from the sheet's own data — abilities, moves and
+base powers in `tools/move_power.json` — rather than marked by hand.
+`tools/null_roles.xlsx` is the hand-coloured copy they were cross-checked
+against; nothing reads it at build time.
 
 Fights that carry a note in the spreadsheet — permanent weather and
 terrain, gauntlet bounds, predamaged Pokémon, consecutive battles,

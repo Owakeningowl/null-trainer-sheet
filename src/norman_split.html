@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="https://play.pokemonshowdown.com/style/font-awesome.css" />
 <link rel="stylesheet" href="../theme/panels.css" />
 <link rel="stylesheet" href="../theme/main.css" />
-<link rel="stylesheet" href="../theme/trainer_sheet.css?v5" />
+<link rel="stylesheet" href="../theme/trainer_sheet.css?v6" />
 <link rel="stylesheet" href="https://play.pokemonshowdown.com/style/utilichart.css?b359" />
 <link rel="stylesheet" href="../theme/pokedex.css" />
 </head><body>
@@ -25,7 +25,8 @@
 </ul></div>
 <div class="pfx-panel">
 <h1>Norman Split</h1>
-<div class="role-key"><span><b class="rk-support">Support</b> &mdash; at most one damaging move: 20% to switch out</span><span><b class="rk-regen">Regen</b> &mdash; Regenerator: 40% to switch out and heal a third</span><span><b class="rk-absorb">Absorb</b> &mdash; immunity ability: 75% once your move matches it</span></div>
+<div class="role-key"><span><b class="rk-support">Support</b> &mdash; one damaging move at most: 20%</span><span><b class="rk-regen">Regen</b> &mdash; Regenerator, heals a third: 40%</span><span><b class="rk-absorb">Absorb</b> &mdash; immunity ability you just fed: 75%</span><span><b class="rk-weather">Weather</b> &mdash; its weather or terrain ran out: 20%</span><span><b class="rk-hero">Hero</b> &mdash; Palafin, slower and about to be OHKO&rsquo;d: always</span><span class="rk-note">chance the AI switches it out mid-turn</span></div>
+
 <div class="container">
 <h1 class="location">Land Cave</h1>
 <div class="line"></div>
@@ -50,7 +51,7 @@
 <caption class="caption-content">Team Magma Grunt Croven</caption>
 <tbody>
 <tr><td><img src="https://play.pokemonshowdown.com/sprites/gen5/torkoal.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/exeggutor.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/centiskorch.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/togekiss.png" alt=""></td><td></td><td></td></tr>
-<tr><th>Torkoal</th><th>Exeggutor</th><th class="role-absorb">Centiskorch<span class="role-chip">Absorb</span></th><th>Togekiss</th><th></th><th></th></tr>
+<tr><th class="role-weather">Torkoal<span class="role-chip role-chip-weather">Weather</span></th><th>Exeggutor</th><th class="role-absorb">Centiskorch<span class="role-chip role-chip-absorb">Absorb</span></th><th>Togekiss</th><th></th><th></th></tr>
 <tr><td>61</td><td>61</td><td>62</td><td>62</td><td></td><td></td></tr>
 <tr><td>Heat Rock</td><td>Focus Band</td><td>Leftovers</td><td>Scope Lens</td><td></td><td></td></tr>
 <tr><td>Drought</td><td>Chlorophyll</td><td>Flash Fire</td><td>Super Luck</td><td></td><td></td></tr>
@@ -166,7 +167,7 @@
 <caption class="caption-content">Triathlete Benjamin &amp; Triathlete Alyssa</caption>
 <tbody>
 <tr><td><img src="https://play.pokemonshowdown.com/sprites/gen5/eiscue.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/delibird.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/raichu.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/ninetales-alola.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/raichu.png" alt=""></td><td></td></tr>
-<tr><th>Eiscue</th><th class="role-support">Delibird<span class="role-chip">Support</span></th><th class="role-support">Raichu-Mega-X<span class="role-chip">Support</span></th><th>Ninetales-Alola</th><th class="role-absorb">Raichu-Mega-Y<span class="role-chip">Absorb</span></th><th></th></tr>
+<tr><th>Eiscue</th><th class="role-support">Delibird<span class="role-chip role-chip-support">Support</span></th><th class="role-support role-absorb">Raichu-Mega-X<span class="role-chip role-chip-support">Support</span><span class="role-chip role-chip-absorb">Absorb</span></th><th class="role-weather">Ninetales-Alola<span class="role-chip role-chip-weather">Weather</span></th><th class="role-absorb">Raichu-Mega-Y<span class="role-chip role-chip-absorb">Absorb</span></th><th></th></tr>
 <tr><td>63</td><td>63</td><td>64</td><td>63</td><td>64</td><td></td></tr>
 <tr><td>Occa Berry</td><td>Light Clay</td><td>Raichunite X</td><td>Icy Rock</td><td>Raichunite Y</td><td></td></tr>
 <tr><td>Ice Face</td><td>Hustle</td><td>Motor Drive</td><td>Snow Warning</td><td>Volt Absorb</td><td></td></tr>
@@ -198,7 +199,7 @@
 <caption class="caption-content">Cycling Road Rival Chespin</caption>
 <tbody>
 <tr><td><img src="https://play.pokemonshowdown.com/sprites/gen5/mew.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/lucario.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/cinderace.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/poliwrath.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/rotom-mow.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/typenull.png" alt=""></td></tr>
-<tr><th>Mew</th><th>Lucario</th><th>Cinderace</th><th class="role-absorb">Poliwrath<span class="role-chip">Absorb</span></th><th>Rotom-Mow</th><th>Type: Null</th></tr>
+<tr><th>Mew</th><th>Lucario</th><th>Cinderace</th><th class="role-absorb">Poliwrath<span class="role-chip role-chip-absorb">Absorb</span></th><th>Rotom-Mow</th><th>Type: Null</th></tr>
 <tr><td>65</td><td>64</td><td>64</td><td>63</td><td>63</td><td>65</td></tr>
 <tr><td>Rocky Helmet</td><td>Lum Berry</td><td>Expert Belt</td><td>Mystic Water</td><td>Sitrus Berry</td><td>Eviolite</td></tr>
 <tr><td>Synchronize</td><td>Steadfast</td><td>Protean</td><td>Water Absorb</td><td>Levitate</td><td>Battle Armor</td></tr>
@@ -282,7 +283,7 @@
 <caption class="caption-content">Blackbelt Rhett</caption>
 <tbody>
 <tr><td><img src="https://play.pokemonshowdown.com/sprites/gen5/ledian.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/chesnaught.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/duraludon.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/sirfetchd.png" alt=""></td><td></td><td></td></tr>
-<tr><th class="role-support">Ledian<span class="role-chip">Support</span></th><th>Chesnaught</th><th>Duraludon</th><th>Sirfetch’d</th><th></th><th></th></tr>
+<tr><th class="role-support">Ledian<span class="role-chip role-chip-support">Support</span></th><th>Chesnaught</th><th>Duraludon</th><th>Sirfetch’d</th><th></th><th></th></tr>
 <tr><td>64</td><td>63</td><td>63</td><td>64</td><td></td><td></td></tr>
 <tr><td>Focus Sash</td><td>Leftovers</td><td>Eviolite</td><td>Fighting Gem</td><td></td><td></td></tr>
 <tr><td>Swarm</td><td>Bulletproof</td><td>Light Metal</td><td>Scrappy</td><td></td><td></td></tr>
@@ -298,7 +299,7 @@
 <caption class="caption-content">Twins Amy&amp;Liv</caption>
 <tbody>
 <tr><td><img src="https://play.pokemonshowdown.com/sprites/gen5/regigigas.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/smeargle.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/ambipom.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/audino-mega.png" alt=""></td><td></td><td></td></tr>
-<tr><th>Regigigas</th><th class="role-support">Smeargle<span class="role-chip">Support</span></th><th>Ambipom</th><th>Audino-Mega</th><th></th><th></th></tr>
+<tr><th>Regigigas</th><th class="role-support">Smeargle<span class="role-chip role-chip-support">Support</span></th><th>Ambipom</th><th>Audino-Mega</th><th></th><th></th></tr>
 <tr><td>65</td><td>63</td><td>64</td><td>63</td><td></td><td></td></tr>
 <tr><td>Leftovers</td><td>Focus Sash</td><td>King&#x27;s Rock</td><td>Audinite</td><td></td><td></td></tr>
 <tr><td>Slow Start</td><td>Moody</td><td>Skill Link</td><td>Friend Guard</td><td></td><td></td></tr>
@@ -354,7 +355,7 @@
 <caption class="caption-content">Lass Janice</caption>
 <tbody>
 <tr><td><img src="https://play.pokemonshowdown.com/sprites/gen5/pachirisu.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/shaymin.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/tatsugiri.png" alt=""></td><td></td><td></td><td></td></tr>
-<tr><th class="role-absorb">Pachirisu<span class="role-chip">Absorb</span></th><th>Shaymin</th><th>Tatsugiri</th><th></th><th></th><th></th></tr>
+<tr><th class="role-absorb">Pachirisu<span class="role-chip role-chip-absorb">Absorb</span></th><th>Shaymin</th><th>Tatsugiri</th><th></th><th></th><th></th></tr>
 <tr><td>63</td><td>63</td><td>64</td><td></td><td></td><td></td></tr>
 <tr><td>Light Clay</td><td>Leftovers</td><td>Salac Berry</td><td></td><td></td><td></td></tr>
 <tr><td>Volt Absorb</td><td>Natural Cure</td><td>Swift Swim</td><td></td><td></td><td></td></tr>
@@ -386,7 +387,7 @@
 <caption class="caption-content">Rich Boy Dawson</caption>
 <tbody>
 <tr><td><img src="https://play.pokemonshowdown.com/sprites/gen5/ninetales.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/gogoat.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/gumshoos.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/umbreon.png" alt=""></td><td></td><td></td></tr>
-<tr><th>Ninetales</th><th class="role-absorb">Gogoat<span class="role-chip">Absorb</span></th><th>Gumshoos</th><th>Umbreon</th><th></th><th></th></tr>
+<tr><th>Ninetales</th><th class="role-absorb">Gogoat<span class="role-chip role-chip-absorb">Absorb</span></th><th>Gumshoos</th><th>Umbreon</th><th></th><th></th></tr>
 <tr><td>63</td><td>64</td><td>64</td><td>64</td><td></td><td></td></tr>
 <tr><td>Sitrus Berry</td><td>Leftovers</td><td>Silk Scarf</td><td>Leftovers</td><td></td><td></td></tr>
 <tr><td>Illuminate</td><td>Sap Sipper</td><td>Adaptability</td><td>Inner Focus</td><td></td><td></td></tr>
@@ -418,7 +419,7 @@
 <caption class="caption-content">Youngster Timmy</caption>
 <tbody>
 <tr><td><img src="https://play.pokemonshowdown.com/sprites/gen5/orthworm.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/barbaracle.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/aerodactyl.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/garganacl.png" alt=""></td><td></td><td></td></tr>
-<tr><th class="role-absorb">Orthworm<span class="role-chip">Absorb</span></th><th>Barbaracle</th><th>Aerodactyl</th><th>Garganacl</th><th></th><th></th></tr>
+<tr><th class="role-absorb">Orthworm<span class="role-chip role-chip-absorb">Absorb</span></th><th>Barbaracle</th><th>Aerodactyl</th><th>Garganacl</th><th></th><th></th></tr>
 <tr><td>63</td><td>64</td><td>64</td><td>64</td><td></td><td></td></tr>
 <tr><td>Sitrus Berry</td><td>White Herb</td><td>Power Herb</td><td>Leftovers</td><td></td><td></td></tr>
 <tr><td>Earth Eater</td><td>Sniper</td><td>Unnerve</td><td>Purifying Salt</td><td></td><td></td></tr>
@@ -450,7 +451,7 @@
 <caption class="caption-content">Psychic Edward &amp; Fisherman Dale</caption>
 <tbody>
 <tr><td><img src="https://play.pokemonshowdown.com/sprites/gen5/xatu.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/slowking-galar.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/palafin.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/whiscash.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/slowbro.png" alt=""></td><td></td></tr>
-<tr><th>Xatu</th><th>Slowking-Galar</th><th>Palafin</th><th>Whiscash</th><th>Slowbro</th><th></th></tr>
+<tr><th>Xatu</th><th>Slowking-Galar</th><th class="role-hero">Palafin<span class="role-chip role-chip-hero">Hero</span></th><th>Whiscash</th><th>Slowbro</th><th></th></tr>
 <tr><td>64</td><td>64</td><td>65</td><td>64</td><td>64</td><td></td></tr>
 <tr><td>Covert Cloak</td><td>Twisted Spoon</td><td>Assault Vest</td><td>Ground Gem</td><td>Wacan Berry</td><td></td></tr>
 <tr><td>Synchronize</td><td>Curious Medicine</td><td>Zero To Hero</td><td>Oblivious</td><td>Oblivious</td><td></td></tr>
@@ -506,7 +507,7 @@
 <caption class="caption-content">Parasol Lady Madeline &amp; Youngster Jaylen</caption>
 <tbody>
 <tr><td><img src="https://play.pokemonshowdown.com/sprites/gen5/weezing.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/runerigus.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/grafaiai.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/golisopod.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/archeops.png" alt=""></td><td></td></tr>
-<tr><th>Weezing</th><th>Runerigus</th><th class="role-support">Grafaiai<span class="role-chip">Support</span></th><th>Golisopod</th><th>Archeops</th><th></th></tr>
+<tr><th>Weezing</th><th>Runerigus</th><th class="role-support">Grafaiai<span class="role-chip role-chip-support">Support</span></th><th>Golisopod</th><th>Archeops</th><th></th></tr>
 <tr><td>64</td><td>66</td><td>64</td><td>65</td><td>64</td><td></td></tr>
 <tr><td>Black Sludge</td><td>Colbur Berry</td><td>Mental Herb</td><td>Red Card</td><td>Muscle Band</td><td></td></tr>
 <tr><td>Neutralizing Gas</td><td>Wandering Spirit</td><td>Prankster</td><td>Emergency Exit</td><td>Defeatist</td><td></td></tr>
@@ -558,7 +559,7 @@
 <caption class="caption-content">Cooltrainer Emmie</caption>
 <tbody>
 <tr><td><img src="https://play.pokemonshowdown.com/sprites/gen5/cyclizar.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/heracross.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/bewear.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/staraptor.png" alt=""></td><td></td><td></td></tr>
-<tr><th class="role-regen">Cyclizar<span class="role-chip">Regen</span></th><th>Heracross</th><th>Bewear</th><th>Staraptor</th><th></th><th></th></tr>
+<tr><th class="role-regen">Cyclizar<span class="role-chip role-chip-regen">Regen</span></th><th>Heracross</th><th>Bewear</th><th>Staraptor</th><th></th><th></th></tr>
 <tr><td>64</td><td>64</td><td>64</td><td>65</td><td></td><td></td></tr>
 <tr><td>Dragon Gem</td><td>Liechi Berry</td><td>Expert Belt</td><td>Life Orb</td><td></td><td></td></tr>
 <tr><td>Regenerator</td><td>Moxie</td><td>Unnerve</td><td>Reckless</td><td></td><td></td></tr>
@@ -622,7 +623,7 @@
 <caption class="caption-content">Cooltrainer George</caption>
 <tbody>
 <tr><td><img src="https://play.pokemonshowdown.com/sprites/gen5/ninjask.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/exploud.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/bouffalant.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/espathra.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/drampa.png" alt=""></td><td></td></tr>
-<tr><th class="role-support">Ninjask<span class="role-chip">Support</span></th><th>Exploud</th><th>Bouffalant</th><th>Espathra</th><th>Drampa</th><th></th></tr>
+<tr><th class="role-support">Ninjask<span class="role-chip role-chip-support">Support</span></th><th>Exploud</th><th>Bouffalant</th><th>Espathra</th><th>Drampa</th><th></th></tr>
 <tr><td>64</td><td>64</td><td>64</td><td>65</td><td>64</td><td></td></tr>
 <tr><td>Focus Sash</td><td>Normal Gem</td><td>Sitrus Berry</td><td>Petaya Berry</td><td>Yache Berry</td><td></td></tr>
 <tr><td>Speed Boost</td><td>Soundproof</td><td>Reckless</td><td>Speed Boost</td><td>Berserk</td><td></td></tr>
@@ -638,7 +639,7 @@
 <caption class="caption-content">Cooltrainer Dan</caption>
 <tbody>
 <tr><td><img src="https://play.pokemonshowdown.com/sprites/gen5/rillaboom.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/miltank.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/meloetta.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/arboliva.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/toucannon.png" alt=""></td><td></td></tr>
-<tr><th>Rillaboom</th><th class="role-absorb">Miltank<span class="role-chip">Absorb</span></th><th>Meloetta</th><th>Arboliva</th><th>Toucannon</th><th></th></tr>
+<tr><th class="role-weather">Rillaboom<span class="role-chip role-chip-weather">Weather</span></th><th class="role-absorb">Miltank<span class="role-chip role-chip-absorb">Absorb</span></th><th>Meloetta</th><th>Arboliva</th><th>Toucannon</th><th></th></tr>
 <tr><td>65</td><td>64</td><td>65</td><td>64</td><td>66</td><td></td></tr>
 <tr><td>Terrain Extender</td><td>Chople Berry</td><td>Clear Amulet</td><td>Big Root</td><td>Grass Gem</td><td></td></tr>
 <tr><td>Grassy Surge</td><td>Sap Sipper</td><td>Serene Grace</td><td>Triage</td><td>Skill Link</td><td></td></tr>
@@ -654,7 +655,7 @@
 <caption class="caption-content">Cooltrainer Kya</caption>
 <tbody>
 <tr><td><img src="https://play.pokemonshowdown.com/sprites/gen5/indeedee.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/bisharp.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/meloetta.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/delphox.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/heliolisk.png" alt=""></td><td></td></tr>
-<tr><th>Indeedee</th><th>Bisharp</th><th>Meloetta</th><th>Delphox</th><th class="role-absorb">Heliolisk<span class="role-chip">Absorb</span></th><th></th></tr>
+<tr><th class="role-weather">Indeedee<span class="role-chip role-chip-weather">Weather</span></th><th>Bisharp</th><th>Meloetta</th><th>Delphox</th><th class="role-absorb">Heliolisk<span class="role-chip role-chip-absorb">Absorb</span></th><th></th></tr>
 <tr><td>65</td><td>65</td><td>64</td><td>64</td><td>66</td><td></td></tr>
 <tr><td>Terrain Extender</td><td>Eviolite</td><td>Metronome</td><td>Colbur Berry</td><td>Psychic Gem</td><td></td></tr>
 <tr><td>Psychic Surge</td><td>Defiant</td><td>Serene Grace</td><td>Blaze</td><td>Dry Skin</td><td></td></tr>

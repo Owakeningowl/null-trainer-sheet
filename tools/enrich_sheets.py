@@ -15,6 +15,7 @@ Three passes, all idempotent:
 Inputs are the xlsx export of the Null trainer spreadsheet; the grid and
 note dumps are derived from it.
 """
+import collections
 import difflib
 import html
 import json
@@ -32,17 +33,53 @@ ROW_LABELS = {'Name', 'Pokémon', 'Level', 'Held Item', 'Ability', 'Nature', 'Mo
 HERE = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(os.path.dirname(HERE), 'src')
 OVERRIDES = os.path.join(HERE, 'sprite_slug_overrides.json')
-ROLES_BOOK = os.path.join(HERE, 'null_roles.xlsx')
+MOVE_POWER = os.path.join(HERE, 'move_power.json')
 
-# Cell fills in the colour-coded copy of the sheet, and what each one means
-# in Null's switch AI. Support/Regen/Absorb each give the AI its own reason
-# to pivot that Pokemon out mid-turn.
-ROLE_FILLS = {
-    'FFD5A6BD': ('support', 'Support'),   # <=1 damaging move, nothing over 75 BP
-    'FFEA9999': ('regen', 'Regen'),       # Regenerator: 40% chance to switch out
-    'FFA4C2F4': ('absorb', 'Absorb'),     # immunity ability: 75% on a matching move
-    'FF9FC5E8': ('absorb', 'Absorb'),
+# Null's switch AI runs a separate mid-turn check per class. Four of them are
+# static properties of the Pokemon, so they are worked out from the sheet
+# itself rather than trusted to a hand-coloured copy. Order here is the order
+# the chips appear.
+ROLE_LABELS = [
+    ('support', 'Support'),
+    ('regen', 'Regen'),
+    ('absorb', 'Absorb'),
+    ('weather', 'Weather'),
+    ('hero', 'Hero'),
+]
+
+# "an immunity ability that grants an advantage" -- the ones that heal or
+# boost on the immunity, not the ones that merely nullify (Levitate,
+# Bulletproof, Overcoat, Soundproof, Damp).
+ABSORB_ABILITIES = {
+    'Volt Absorb', 'Water Absorb', 'Dry Skin', 'Flash Fire', 'Motor Drive',
+    'Lightning Rod', 'Storm Drain', 'Sap Sipper', 'Earth Eater',
+    'Well-Baked Body', 'Wind Rider',
 }
+
+WEATHER_ABILITIES = {
+    'Drought', 'Drizzle', 'Sand Stream', 'Snow Warning', 'Electric Surge',
+    'Grassy Surge', 'Misty Surge', 'Psychic Surge', 'Desolate Land',
+    'Primordial Sea', 'Delta Stream', 'Orichalcum Pulse', 'Hadron Engine',
+}
+
+# Moves the doc lists as utility: they do not count toward the damaging-move
+# total, and the 75 BP ceiling is not applied to them either -- which is what
+# lets a Foul Play or Future Sight user still be Support.
+UTILITY_MOVES = {
+    'Fake Out', 'Feint', 'Upper Hand', 'Endeavor', 'Super Fang', 'Dragon Tail',
+    'Circle Throw', 'Knock Off', 'Foul Play', 'Future Sight', 'Bug Bite',
+    'Pollen Puff',
+}
+
+# The doc's "speed control (e.g. Rock Tomb, Glaciate)": damaging moves that
+# drop the target's Speed.
+SPEED_CONTROL_MOVES = {
+    'Icy Wind', 'Rock Tomb', 'Mud Shot', 'Bulldoze', 'Low Sweep', 'Electroweb',
+    'Glaciate', 'Bubble Beam', 'Bubble', 'Constrict', 'Drum Beating', 'Pounce',
+    'Syrup Bomb', 'Bleakwind Storm',
+}
+
+SUPPORT_POWER_CEILING = 75
 
 PAGES = {
     'Roxanne Split': 'roxanne_split.html',
@@ -56,6 +93,7 @@ PAGES = {
     'Victory Road Split': 'victory_road_split.html',
     'Pokémon League': 'pok_mon_league.html',
 }
+
 
 
 # ---------------------------------------------------------------- xlsx input
@@ -213,153 +251,134 @@ def fix_sprite_slugs(page):
 
 # --------------------------------------------------------------- role tags
 
-def read_roles(path):
-    """Read the colour-coded workbook and return
-    {sheet: [(trainer, species, role_key, chip_label), ...]}.
+_MOVE_POWER = None
 
-    The fill sits on the "Pokemon" label row, behind the sprite, so the
-    species name is one row below it and the trainer name one row above.
-    """
-    if not os.path.exists(path):
-        return {}
-    z = zipfile.ZipFile(path)
-    shared = [
-        ''.join(t.text or '' for t in si.iter(f'{{{M}}}t'))
-        for si in ET.fromstring(z.read('xl/sharedStrings.xml'))
-    ]
-    styles = ET.fromstring(z.read('xl/styles.xml'))
-    fills = []
-    for fill in styles.find(f'{{{M}}}fills'):
-        pattern = fill.find(f'{{{M}}}patternFill')
-        rgb = None
-        if pattern is not None:
-            fg = pattern.find(f'{{{M}}}fgColor')
-            if fg is not None:
-                rgb = fg.get('rgb')
-        fills.append(rgb)
-    cell_fill = [int(xf.get('fillId') or 0) for xf in styles.find(f'{{{M}}}cellXfs')]
 
-    wb = ET.fromstring(z.read('xl/workbook.xml'))
-    rels = {r.get('Id'): r.get('Target')
-            for r in ET.fromstring(z.read('xl/_rels/workbook.xml.rels'))}
+def move_power():
+    global _MOVE_POWER
+    if _MOVE_POWER is None:
+        with open(MOVE_POWER, encoding='utf-8') as fh:
+            _MOVE_POWER = json.load(fh)
+    return _MOVE_POWER
 
-    out = {}
-    for sh in wb.find(f'{{{M}}}sheets'):
-        if sh.get('state') in ('hidden', 'veryHidden'):
+
+def is_support(species, ability, moves):
+    """Null's Support class: at most one damaging move, nothing over 75 base
+    power, no Imposter. Utility moves are skipped entirely."""
+    if ability == 'Imposter':
+        return False
+    table = move_power()
+    damaging = 0
+    for name in moves:
+        info = table.get(name)
+        if info is None:
+            raise KeyError(f'no base power recorded for {name!r}')
+        if name in UTILITY_MOVES or name in SPEED_CONTROL_MOVES:
             continue
-        target = rels[sh.get(R)].lstrip('/')
-        if not target.startswith('xl/'):
-            target = 'xl/' + target
-        ws = ET.fromstring(z.read(target))
-
-        grid = {}
-        for row in ws.iter(f'{{{M}}}row'):
-            cells = {}
-            for c in row.iter(f'{{{M}}}c'):
-                v = c.find(f'{{{M}}}v')
-                if c.get('t') == 's' and v is not None:
-                    text = shared[int(v.text)]
-                else:
-                    text = (v.text or '') if v is not None else ''
-                style = int(c.get('s') or 0)
-                rgb = fills[cell_fill[style]] if style < len(cell_fill) else None
-                cells[col_index(c.get('r'))] = (text.strip(), rgb)
-            grid[int(row.get('r'))] = cells
-
-        found = []
-        for rn, cells in grid.items():
-            if cells.get(0, ('', None))[0] != 'Pokémon':
-                continue
-            species_row = grid.get(rn + 1, {})
-            trainer = grid.get(rn - 1, {}).get(1, ('', None))[0]
-            for col, (_, rgb) in cells.items():
-                if col == 0 or rgb not in ROLE_FILLS:
-                    continue
-                species = species_row.get(col, ('', None))[0]
-                if trainer and species:
-                    key, label = ROLE_FILLS[rgb]
-                    found.append((strip_tag(trainer), species, key, label))
-        out[sh.get('name')] = found
-    return out
+        if name in ('Surf', 'Dive') and species.startswith('Cramorant'):
+            continue
+        if info['status']:
+            continue
+        if info['power'] > SUPPORT_POWER_CEILING:
+            return False
+        damaging += 1
+    return damaging <= 1
 
 
-def apply_roles(page, entries):
-    """Put a role chip under the species name.
+def classify(species, ability, moves):
+    """Every switch-AI class this Pokemon belongs to."""
+    found = []
+    if is_support(species, ability, moves):
+        found.append('support')
+    if ability == 'Regenerator':
+        found.append('regen')
+    if ability in ABSORB_ABILITIES:
+        found.append('absorb')
+    if ability in WEATHER_ABILITIES:
+        found.append('weather')
+    if species.split('-')[0] == 'Palafin':
+        found.append('hero')
+    return found
 
-    Matched on the species name rather than the column, because the
-    colour-coded copy is a different revision of the sheet and some
-    fights have since gained or lost a slot.
-    """
-    if not entries:
-        return page, 0, []
 
-    # The colour-coded copy labels Norman's gym trainers with their room,
-    # e.g. "Cooltrainer Dan (Grassy Room)"; this sheet keeps the room in the
-    # trainer's note instead, so compare without the trailing parenthetical.
-    def key_for(name):
-        return re.sub(r'\s*\([^)]*\)\s*$', '', name).strip()
+CHIP_RE = re.compile(r'<span class="role-chip[^"]*">.*?</span>', re.S)
 
-    wanted = {}
-    for trainer, species, key, label in entries:
-        wanted.setdefault(key_for(trainer), []).append((species, key, label))
 
-    applied = [0]
-    seen = set()
+def read_team(table):
+    """Pull (species, level, item, ability, nature, moves) out of one table."""
+    rows = re.findall(r'<tr>.*?</tr>', table, re.S)
+    if len(rows) < 6:
+        return [], rows
+
+    def texts(row, tag):
+        return [html.unescape(re.sub(r'<[^>]+>', '', c)).strip()
+                for c in re.findall(rf'<{tag}[^>]*>(.*?)</{tag}>',
+                                    CHIP_RE.sub('', row), re.S)]
+
+    species = texts(rows[1], 'th')
+    ability = texts(rows[4], 'td')
+    moves = [texts(r, 'td') for r in rows[6:10]]
+
+    team = []
+    for i, name in enumerate(species):
+        if not name or name == '???':
+            team.append(None)
+            continue
+        team.append((
+            name,
+            ability[i] if i < len(ability) else '',
+            [m[i] for m in moves if i < len(m) and m[i]],
+        ))
+    return team, rows
+
+
+def apply_roles(page):
+    """Recompute every chip from the page's own data. Idempotent: existing
+    chips are stripped first, so a rerun can add, move or remove them."""
+    labels = dict(ROLE_LABELS)
+    order = [k for k, _ in ROLE_LABELS]
+    counts = collections.Counter()
 
     def do_table(m):
         table = m.group(0)
-        caption = CAPTION_RE.search(table)
-        if not caption:
-            return table
-        name = key_for(html.unescape(caption.group(1)).strip())
-        if name not in wanted:
-            return table
-        seen.add(name)
+        team, rows = read_team(table)
+        if not team:
+            return CHIP_RE.sub('', table)
 
-        rows = re.findall(r'<tr>.*?</tr>', table, re.S)
-        if len(rows) < 2:
-            return table
         species_row = rows[1]
         cells = re.findall(r'<th([^>]*)>(.*?)</th>', species_row, re.S)
-        if not cells:
-            return table
+        rebuilt = []
+        for i, (attrs, inner) in enumerate(cells):
+            attrs = re.sub(r'\s*class="role-[^"]*"', '', attrs)
+            inner = CHIP_RE.sub('', inner)
+            entry = team[i] if i < len(team) else None
+            if entry:
+                roles = [r for r in order if r in classify(*entry)]
+                if roles:
+                    attrs += ' class="' + ' '.join(f'role-{r}' for r in roles) + '"'
+                    for r in roles:
+                        inner += (f'<span class="role-chip role-chip-{r}">'
+                                  f'{labels[r]}</span>')
+                        counts[r] += 1
+            rebuilt.append(f'<th{attrs}>{inner}</th>')
 
-        names = [html.unescape(re.sub(r'<[^>]+>', '', text)).strip()
-                 for _, text in cells]
-        taken = set()
-        new_cells = list(cells)
-        for species, key, label in wanted[name]:
-            for i, got in enumerate(names):
-                if got == species and i not in taken:
-                    attrs, inner = new_cells[i]
-                    if 'role-' in attrs:
-                        break
-                    chip = f'<span class="role-chip">{html.escape(label)}</span>'
-                    new_cells[i] = (f'{attrs} class="role-{key}"', inner + chip)
-                    taken.add(i)
-                    applied[0] += 1
-                    break
+        new_row = '<tr>' + ''.join(rebuilt) + '</tr>'
+        return table.replace(species_row, new_row, 1)
 
-        rebuilt = '<tr>' + ''.join(
-            f'<th{attrs}>{inner}</th>' for attrs, inner in new_cells) + '</tr>'
-        return table.replace(species_row, rebuilt, 1)
+    return TABLE_RE.sub(do_table, page), counts
 
-    page = TABLE_RE.sub(do_table, page)
-    unmatched = sorted(set(wanted) - seen)
-    return page, applied[0], unmatched
 
 
 ROLE_KEY = (
     '<div class="role-key">'
-    '<span><b class="rk-support">Support</b> &mdash; at most one damaging move: '
-    '20% to switch out</span>'
-    '<span><b class="rk-regen">Regen</b> &mdash; Regenerator: '
-    '40% to switch out and heal a third</span>'
-    '<span><b class="rk-absorb">Absorb</b> &mdash; immunity ability: '
-    '75% once your move matches it</span>'
+    '<span><b class="rk-support">Support</b> &mdash; one damaging move at most: 20%</span>'
+    '<span><b class="rk-regen">Regen</b> &mdash; Regenerator, heals a third: 40%</span>'
+    '<span><b class="rk-absorb">Absorb</b> &mdash; immunity ability you just fed: 75%</span>'
+    '<span><b class="rk-weather">Weather</b> &mdash; its weather or terrain ran out: 20%</span>'
+    '<span><b class="rk-hero">Hero</b> &mdash; Palafin, slower and about to be OHKO&rsquo;d: always</span>'
+    '<span class="rk-note">chance the AI switches it out mid-turn</span>'
     '</div>'
 )
-
 
 def add_role_key(page):
     """Put the key under the page title. Idempotent."""
@@ -444,14 +463,15 @@ def process(sheet, data, roles=None, verbose=True):
         added += 1
 
     page, slug_fixes = fix_sprite_slugs(page)
-    page, tagged, unmatched = apply_roles(page, (roles or {}).get(sheet, []))
+    page, tagged = apply_roles(page)
     page = add_role_key(page)
 
     open(path, 'w', encoding='utf-8').write(page)
     if verbose:
+        chips = ' '.join(f'{k}:{v}' for k, v in tagged.items()) or 'none'
         print(f'{sheet:22s} tables={len(new_tables):4d} notes+{noted:3d} '
-              f'restored+{added} sprites~{slug_fixes} roles+{tagged}')
-    return noted, added, tagged, unmatched
+              f'restored+{added} sprites~{slug_fixes}  {chips}')
+    return noted, added, tagged
 
 
 def strip_note_tag(existing, cell_note):
@@ -485,24 +505,19 @@ def _after_table(page, caption):
 def main():
     xlsx = sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, 'null_sheet.xlsx')
     book = read_workbook(xlsx)
-    roles = read_roles(ROLES_BOOK)
-    tn = ta = tr = 0
-    missing = []
+    tn = ta = 0
+    chips = collections.Counter()
     for sheet in PAGES:
         if sheet not in book:
             print(f'!! sheet missing from workbook: {sheet}')
             continue
-        n, a, r, un = process(sheet, book[sheet], roles)
+        n, a, c = process(sheet, book[sheet])
         tn += n
         ta += a
-        tr += r
-        missing.extend(f'{sheet}: {u}' for u in un)
-    print(f'\ntotal: {tn} cell notes attached, {ta} trainers restored, '
-          f'{tr} role chips')
-    if missing:
-        print('\ntrainers in the colour-coded copy with no table here:')
-        for m in missing:
-            print('  ' + m)
+        chips.update(c)
+    print(f'\ntotal: {tn} cell notes attached, {ta} trainers restored')
+    print('role chips: ' + ', '.join(
+        f'{dict(ROLE_LABELS)[k]} {chips[k]}' for k, _ in ROLE_LABELS))
 
 
 if __name__ == '__main__':

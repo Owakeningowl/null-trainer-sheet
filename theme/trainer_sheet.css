@@ -684,21 +684,29 @@ td {
 }
 
 /* ------------------------------------------------------------------
-   Switch-AI roles. Null's AI has a separate mid-turn switch check for
-   each of these, so they mark the Pokemon that will pivot out on you:
-     Support  <=1 damaging move, nothing over 75 BP  -> 20%
-     Regen    Regenerator                            -> 40%
-     Absorb   immunity ability, your move matched it -> 75%
+   Switch-AI roles. Null runs a separate mid-turn switch check for each
+   of these, so a chip means "this one leaves the field on you":
+     Support  <=1 damaging move, nothing over 75 BP   -> 20%
+     Regen    Regenerator, heals a third on the way   -> 40%
+     Absorb   immunity ability, your move type matched -> 75%
+     Weather  its weather/terrain ability has expired -> 20%
+     Hero     Palafin, slower and about to be OHKO'd  -> always
+   Rules run least-important first: a Pokemon in two classes takes its
+   name colour from the first chip.
    ------------------------------------------------------------------ */
 :root {
   --role-support: #89cff0;
   --role-regen: #c9a7f0;
   --role-absorb: #7fd8b8;
+  --role-weather: #e8c07a;
+  --role-hero: #f09a9a;
 }
 
-.content-table th.role-support { color: var(--role-support); }
-.content-table th.role-regen { color: var(--role-regen); }
+.content-table th.role-hero { color: var(--role-hero); }
+.content-table th.role-weather { color: var(--role-weather); }
 .content-table th.role-absorb { color: var(--role-absorb); }
+.content-table th.role-regen { color: var(--role-regen); }
+.content-table th.role-support { color: var(--role-support); }
 
 .role-chip {
   display: block;
@@ -712,33 +720,45 @@ td {
   text-transform: uppercase;
 }
 
-th.role-support .role-chip {
+.role-chip-support {
   border: 1px solid rgba(137, 207, 240, 0.45);
   background: rgba(137, 207, 240, 0.12);
   color: var(--role-support);
 }
 
-th.role-regen .role-chip {
+.role-chip-regen {
   border: 1px solid rgba(201, 167, 240, 0.45);
   background: rgba(201, 167, 240, 0.12);
   color: var(--role-regen);
 }
 
-th.role-absorb .role-chip {
+.role-chip-absorb {
   border: 1px solid rgba(127, 216, 184, 0.45);
   background: rgba(127, 216, 184, 0.12);
   color: var(--role-absorb);
 }
 
+.role-chip-weather {
+  border: 1px solid rgba(232, 192, 122, 0.45);
+  background: rgba(232, 192, 122, 0.12);
+  color: var(--role-weather);
+}
+
+.role-chip-hero {
+  border: 1px solid rgba(240, 154, 154, 0.45);
+  background: rgba(240, 154, 154, 0.12);
+  color: var(--role-hero);
+}
+
 /* the key that sits under each page title */
 .role-key {
-  max-width: 880px;
+  max-width: 1000px;
   margin: 0 auto 6px;
   padding: 0 16px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 6px 20px;
+  gap: 4px 18px;
   font-size: 12.5px;
   line-height: 1.5;
   color: #9aa6bd;
@@ -755,3 +775,10 @@ th.role-absorb .role-chip {
 .role-key .rk-support { color: var(--role-support); }
 .role-key .rk-regen { color: var(--role-regen); }
 .role-key .rk-absorb { color: var(--role-absorb); }
+.role-key .rk-weather { color: var(--role-weather); }
+.role-key .rk-hero { color: var(--role-hero); }
+
+.role-key .rk-note {
+  color: #6f7b92;
+  font-style: italic;
+}
