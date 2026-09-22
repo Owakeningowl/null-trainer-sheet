@@ -632,3 +632,33 @@ td {
   image-rendering: pixelated;
   flex: none;
 }
+
+/* ------------------------------------------------------------------
+   Null sheet: lock every fight to the same six-column grid so tables
+   line up regardless of team size or how long a move/item name is.
+   ------------------------------------------------------------------ */
+.content-table {
+  width: 972px;
+  max-width: 100%;
+  table-layout: fixed;
+}
+
+.content-table th,
+.content-table td {
+  box-sizing: border-box;
+  width: 162px;
+  min-width: 0;
+  padding-left: 6px;
+  padding-right: 6px;
+  overflow-wrap: break-word;
+  word-break: normal;
+  hyphens: auto;
+}
+
+@media (max-width: 1000px) {
+  .content-table th,
+  .content-table td {
+    min-width: 0;
+    font-size: 0.85em;
+  }
+}
