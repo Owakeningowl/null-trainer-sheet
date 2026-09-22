@@ -368,9 +368,52 @@ function decorateTrainerNotes() {
   });
 }
 
+/* ------------------------------------------------------------------
+   Showdown's sprite ids are not simply "lowercase with hyphens":
+   "Iron Hands" is ironhands, "Wo-Chien" is wochien, "Tauros-Paldea-Aqua"
+   is tauros-paldeaaqua. Walk a few candidate spellings on error, and
+   fall back to the base species for formes Showdown has no art for
+   (custom Megas), rather than leaving a broken image.
+   ------------------------------------------------------------------ */
+const SPLIT_MON_SPRITE_BASE = 'https://play.pokemonshowdown.com/sprites/gen5/';
+
+function splitMonSlugCandidates(slug) {
+  const parts = slug.split('-').filter(Boolean);
+  const candidates = [slug, parts.join('')];
+  if (parts.length > 1) {
+    candidates.push(parts[0] + '-' + parts.slice(1).join(''));
+    candidates.push(parts[0]);
+  }
+  return [...new Set(candidates)];
+}
+
+function decorateSplitMonSprites() {
+  document.querySelectorAll('.content-table img').forEach((img) => {
+    if (img.dataset.splitSpriteChain) return;
+    const match = /\/sprites\/gen5\/([^/?#]+)\.png$/.exec(img.getAttribute('src') || '');
+    if (!match) return;
+
+    img.dataset.splitSpriteChain = '1';
+    const queue = splitMonSlugCandidates(match[1]).slice(1);
+
+    const advance = () => {
+      const next = queue.shift();
+      if (next === undefined) {
+        img.style.visibility = 'hidden';
+        return;
+      }
+      img.src = SPLIT_MON_SPRITE_BASE + next + '.png';
+    };
+
+    img.addEventListener('error', advance);
+    if (img.complete && img.naturalWidth === 0) advance();
+  });
+}
+
 function decorateSplitTables() {
   decorateSplitItemSprites();
   decorateTrainerNotes();
+  decorateSplitMonSprites();
 }
 
 if (document.readyState === 'loading') {

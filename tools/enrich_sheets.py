@@ -7,6 +7,8 @@ Three passes, all idempotent:
   2. attach the spreadsheet's cell notes as Astral `data-note` markers
   3. pad every .content-table out to 6 columns so all fights render the
      same width, exactly like Astral's sheet
+  4. correct Showdown sprite slugs (ironhands, not iron-hands) from a
+     verified override table
 
 Inputs are the xlsx export of the Null trainer spreadsheet; the grid and
 note dumps are derived from it.
@@ -27,6 +29,7 @@ ROW_LABELS = {'Name', 'Pokémon', 'Level', 'Held Item', 'Ability', 'Nature', 'Mo
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(os.path.dirname(HERE), 'src')
+OVERRIDES = os.path.join(HERE, 'sprite_slug_overrides.json')
 
 PAGES = {
     'Roxanne Split': 'roxanne_split.html',
@@ -179,6 +182,22 @@ def placeholder_table(name, note):
             '<tbody>\n' + '\n'.join(rows) + '\n</tbody>\n</table>')
 
 
+def fix_sprite_slugs(page):
+    """Showdown ids are not \"lowercase with hyphens\": Iron Hands is
+    ironhands, Mr. Mime-Galar is mrmime-galar, and custom Megas fall back
+    to the base species. Each mapping was checked against the live sprite."""
+    if not os.path.exists(OVERRIDES):
+        return page, 0
+    with open(OVERRIDES, encoding='utf-8') as fh:
+        overrides = json.load(fh)
+    hits = 0
+    for old, new in overrides.items():
+        needle = f'/sprites/gen5/{old}.png'
+        hits += page.count(needle)
+        page = page.replace(needle, f'/sprites/gen5/{new}.png')
+    return page, hits
+
+
 def process(sheet, data, verbose=True):
     path = os.path.join(SRC, PAGES[sheet])
     page = open(path, encoding='utf-8').read()
@@ -251,9 +270,12 @@ def process(sheet, data, verbose=True):
             page = page[:pos] + '\n' + head + block + page[pos:]
         added += 1
 
+    page, slug_fixes = fix_sprite_slugs(page)
+
     open(path, 'w', encoding='utf-8').write(page)
     if verbose:
-        print(f'{sheet:22s} tables={len(new_tables):4d} notes+{noted:3d} restored+{added}')
+        print(f'{sheet:22s} tables={len(new_tables):4d} notes+{noted:3d} '
+              f'restored+{added} sprites~{slug_fixes}')
     return noted, added
 
 
