@@ -9,6 +9,8 @@ Three passes, all idempotent:
      same width, exactly like Astral's sheet
   4. correct Showdown sprite slugs (ironhands, not iron-hands) from a
      verified override table
+  5. tag the Pokemon the switch AI treats specially -- Support, Regen
+     and Absorb -- from the colour-coded copy of the spreadsheet
 
 Inputs are the xlsx export of the Null trainer spreadsheet; the grid and
 note dumps are derived from it.
@@ -30,6 +32,17 @@ ROW_LABELS = {'Name', 'Pokémon', 'Level', 'Held Item', 'Ability', 'Nature', 'Mo
 HERE = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(os.path.dirname(HERE), 'src')
 OVERRIDES = os.path.join(HERE, 'sprite_slug_overrides.json')
+ROLES_BOOK = os.path.join(HERE, 'null_roles.xlsx')
+
+# Cell fills in the colour-coded copy of the sheet, and what each one means
+# in Null's switch AI. Support/Regen/Absorb each give the AI its own reason
+# to pivot that Pokemon out mid-turn.
+ROLE_FILLS = {
+    'FFD5A6BD': ('support', 'Support'),   # <=1 damaging move, nothing over 75 BP
+    'FFEA9999': ('regen', 'Regen'),       # Regenerator: 40% chance to switch out
+    'FFA4C2F4': ('absorb', 'Absorb'),     # immunity ability: 75% on a matching move
+    'FF9FC5E8': ('absorb', 'Absorb'),
+}
 
 PAGES = {
     'Roxanne Split': 'roxanne_split.html',
@@ -198,7 +211,167 @@ def fix_sprite_slugs(page):
     return page, hits
 
 
-def process(sheet, data, verbose=True):
+# --------------------------------------------------------------- role tags
+
+def read_roles(path):
+    """Read the colour-coded workbook and return
+    {sheet: [(trainer, species, role_key, chip_label), ...]}.
+
+    The fill sits on the "Pokemon" label row, behind the sprite, so the
+    species name is one row below it and the trainer name one row above.
+    """
+    if not os.path.exists(path):
+        return {}
+    z = zipfile.ZipFile(path)
+    shared = [
+        ''.join(t.text or '' for t in si.iter(f'{{{M}}}t'))
+        for si in ET.fromstring(z.read('xl/sharedStrings.xml'))
+    ]
+    styles = ET.fromstring(z.read('xl/styles.xml'))
+    fills = []
+    for fill in styles.find(f'{{{M}}}fills'):
+        pattern = fill.find(f'{{{M}}}patternFill')
+        rgb = None
+        if pattern is not None:
+            fg = pattern.find(f'{{{M}}}fgColor')
+            if fg is not None:
+                rgb = fg.get('rgb')
+        fills.append(rgb)
+    cell_fill = [int(xf.get('fillId') or 0) for xf in styles.find(f'{{{M}}}cellXfs')]
+
+    wb = ET.fromstring(z.read('xl/workbook.xml'))
+    rels = {r.get('Id'): r.get('Target')
+            for r in ET.fromstring(z.read('xl/_rels/workbook.xml.rels'))}
+
+    out = {}
+    for sh in wb.find(f'{{{M}}}sheets'):
+        if sh.get('state') in ('hidden', 'veryHidden'):
+            continue
+        target = rels[sh.get(R)].lstrip('/')
+        if not target.startswith('xl/'):
+            target = 'xl/' + target
+        ws = ET.fromstring(z.read(target))
+
+        grid = {}
+        for row in ws.iter(f'{{{M}}}row'):
+            cells = {}
+            for c in row.iter(f'{{{M}}}c'):
+                v = c.find(f'{{{M}}}v')
+                if c.get('t') == 's' and v is not None:
+                    text = shared[int(v.text)]
+                else:
+                    text = (v.text or '') if v is not None else ''
+                style = int(c.get('s') or 0)
+                rgb = fills[cell_fill[style]] if style < len(cell_fill) else None
+                cells[col_index(c.get('r'))] = (text.strip(), rgb)
+            grid[int(row.get('r'))] = cells
+
+        found = []
+        for rn, cells in grid.items():
+            if cells.get(0, ('', None))[0] != 'Pokémon':
+                continue
+            species_row = grid.get(rn + 1, {})
+            trainer = grid.get(rn - 1, {}).get(1, ('', None))[0]
+            for col, (_, rgb) in cells.items():
+                if col == 0 or rgb not in ROLE_FILLS:
+                    continue
+                species = species_row.get(col, ('', None))[0]
+                if trainer and species:
+                    key, label = ROLE_FILLS[rgb]
+                    found.append((strip_tag(trainer), species, key, label))
+        out[sh.get('name')] = found
+    return out
+
+
+def apply_roles(page, entries):
+    """Put a role chip under the species name.
+
+    Matched on the species name rather than the column, because the
+    colour-coded copy is a different revision of the sheet and some
+    fights have since gained or lost a slot.
+    """
+    if not entries:
+        return page, 0, []
+
+    # The colour-coded copy labels Norman's gym trainers with their room,
+    # e.g. "Cooltrainer Dan (Grassy Room)"; this sheet keeps the room in the
+    # trainer's note instead, so compare without the trailing parenthetical.
+    def key_for(name):
+        return re.sub(r'\s*\([^)]*\)\s*$', '', name).strip()
+
+    wanted = {}
+    for trainer, species, key, label in entries:
+        wanted.setdefault(key_for(trainer), []).append((species, key, label))
+
+    applied = [0]
+    seen = set()
+
+    def do_table(m):
+        table = m.group(0)
+        caption = CAPTION_RE.search(table)
+        if not caption:
+            return table
+        name = key_for(html.unescape(caption.group(1)).strip())
+        if name not in wanted:
+            return table
+        seen.add(name)
+
+        rows = re.findall(r'<tr>.*?</tr>', table, re.S)
+        if len(rows) < 2:
+            return table
+        species_row = rows[1]
+        cells = re.findall(r'<th([^>]*)>(.*?)</th>', species_row, re.S)
+        if not cells:
+            return table
+
+        names = [html.unescape(re.sub(r'<[^>]+>', '', text)).strip()
+                 for _, text in cells]
+        taken = set()
+        new_cells = list(cells)
+        for species, key, label in wanted[name]:
+            for i, got in enumerate(names):
+                if got == species and i not in taken:
+                    attrs, inner = new_cells[i]
+                    if 'role-' in attrs:
+                        break
+                    chip = f'<span class="role-chip">{html.escape(label)}</span>'
+                    new_cells[i] = (f'{attrs} class="role-{key}"', inner + chip)
+                    taken.add(i)
+                    applied[0] += 1
+                    break
+
+        rebuilt = '<tr>' + ''.join(
+            f'<th{attrs}>{inner}</th>' for attrs, inner in new_cells) + '</tr>'
+        return table.replace(species_row, rebuilt, 1)
+
+    page = TABLE_RE.sub(do_table, page)
+    unmatched = sorted(set(wanted) - seen)
+    return page, applied[0], unmatched
+
+
+ROLE_KEY = (
+    '<div class="role-key">'
+    '<span><b class="rk-support">Support</b> &mdash; at most one damaging move: '
+    '20% to switch out</span>'
+    '<span><b class="rk-regen">Regen</b> &mdash; Regenerator: '
+    '40% to switch out and heal a third</span>'
+    '<span><b class="rk-absorb">Absorb</b> &mdash; immunity ability: '
+    '75% once your move matches it</span>'
+    '</div>'
+)
+
+
+def add_role_key(page):
+    """Put the key under the page title. Idempotent."""
+    if 'class="role-key"' in page:
+        return page
+    m = re.search(r'</h1>', page)
+    if not m:
+        return page
+    return page[:m.end()] + '\n' + ROLE_KEY + page[m.end():]
+
+
+def process(sheet, data, roles=None, verbose=True):
     path = os.path.join(SRC, PAGES[sheet])
     page = open(path, encoding='utf-8').read()
 
@@ -271,12 +444,14 @@ def process(sheet, data, verbose=True):
         added += 1
 
     page, slug_fixes = fix_sprite_slugs(page)
+    page, tagged, unmatched = apply_roles(page, (roles or {}).get(sheet, []))
+    page = add_role_key(page)
 
     open(path, 'w', encoding='utf-8').write(page)
     if verbose:
         print(f'{sheet:22s} tables={len(new_tables):4d} notes+{noted:3d} '
-              f'restored+{added} sprites~{slug_fixes}')
-    return noted, added
+              f'restored+{added} sprites~{slug_fixes} roles+{tagged}')
+    return noted, added, tagged, unmatched
 
 
 def strip_note_tag(existing, cell_note):
@@ -310,15 +485,24 @@ def _after_table(page, caption):
 def main():
     xlsx = sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, 'null_sheet.xlsx')
     book = read_workbook(xlsx)
-    tn = ta = 0
+    roles = read_roles(ROLES_BOOK)
+    tn = ta = tr = 0
+    missing = []
     for sheet in PAGES:
         if sheet not in book:
             print(f'!! sheet missing from workbook: {sheet}')
             continue
-        n, a = process(sheet, book[sheet])
+        n, a, r, un = process(sheet, book[sheet], roles)
         tn += n
         ta += a
-    print(f'\ntotal: {tn} cell notes attached, {ta} trainers restored')
+        tr += r
+        missing.extend(f'{sheet}: {u}' for u in un)
+    print(f'\ntotal: {tn} cell notes attached, {ta} trainers restored, '
+          f'{tr} role chips')
+    if missing:
+        print('\ntrainers in the colour-coded copy with no table here:')
+        for m in missing:
+            print('  ' + m)
 
 
 if __name__ == '__main__':
