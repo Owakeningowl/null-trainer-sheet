@@ -1,0 +1,634 @@
+* {
+  /* Change your font family */
+  font-family: sans-serif;
+}
+
+body {
+  /* background-color: #1e1e2e; */
+  /* background-color: #1e1e2e; */
+  /* background-color: #14191f; */
+  /* background-color: #313131; */
+  background-color: #fff;
+}
+
+.navbar {
+  position: sticky;
+  top: 0;
+  overflow: visible;
+  z-index: 100;
+  background-color: #14191f;
+  --split-cap-menu-bg: #14191f;
+  --split-cap-menu-border: rgba(255, 203, 90, 0.35);
+  --split-cap-menu-text: #ffcb5a;
+  --split-cap-menu-muted: #c8c8d8;
+}
+
+/* Kill list bullets in navbar */
+.navbar ul,
+.navbar li {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+
+.navbar ul {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1px;
+}
+
+.navbar a {
+  float: left;
+  display: block;
+  color: #ffcb5a;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.navbar a:hover {
+  color: #ddd;
+}
+
+.navbar li {
+  position: relative;
+}
+
+.navbar .split-cap-dropdown {
+  position: absolute;
+  top: calc(100% - 2px);
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  min-width: 260px;
+  padding: 8px 0;
+  border: 1px solid var(--split-cap-menu-border);
+  border-radius: 8px;
+  background: var(--split-cap-menu-bg);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.24);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s ease;
+  z-index: 150;
+}
+
+.navbar .split-cap-dropdown span {
+  display: block;
+  padding: 6px 14px;
+  color: var(--split-cap-menu-text);
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.navbar li:hover > .split-cap-dropdown,
+.navbar li:focus-within > .split-cap-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.navbar .split-cap-dropdown.is-placeholder span {
+  color: var(--split-cap-menu-muted);
+  font-style: italic;
+}
+
+/* .navbar a.active {
+    color: black;
+} */
+
+.container {
+  /* padding-top: 20px; */
+  padding-left: 40px;
+}
+
+.location {
+  text-align: center;
+  font-size: 17px;
+  color: black;
+}
+
+.line {
+  /* background-color: #14191f;
+    color: #c5c5c5;
+    font-size: 16px;
+    overflow: hidden;
+    max-width: 950px; */
+  margin-left: auto;
+  margin-right: auto;
+  height: 2px;
+  border: 0;
+  background: black;
+  max-width: 600px;
+}
+
+.content-table {
+  border-collapse: collapse;
+  margin: 20px 0;
+  /* margin-left: 40px; */
+  font-size: 1em;
+  overflow: hidden;
+  margin-left: auto;
+  margin-right: auto;
+  /* min-width: 400px; */
+  /* border-radius: 5px 5px 0 0;
+    border-radius: 15px; */
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.2);
+  /* margin-left: auto;
+    margin-right: auto; */
+}
+
+.content-table thead tr {
+  background-color: #434343;
+  color: #dddddd;
+  text-align: center;
+  font-weight: bold;
+}
+
+.caption-content {
+  background-color: #0f1419;
+  padding: 5px 15px;
+  color: #ffcb5a;
+  text-align: center;
+  font-weight: bold;
+  position: relative;
+}
+
+/* A red marker is added to trainer tables that have a data-note attribute. */
+.content-table[data-note] {
+  overflow: visible;
+}
+
+.trainer-note {
+  position: absolute;
+  top: 50%;
+  right: 1px;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+.trainer-note-marker {
+  display: grid;
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  place-items: center;
+  border: 1px solid #ff9b9b;
+  border-radius: 50%;
+  background: #cf4a4a;
+  color: transparent;
+  cursor: help;
+  font-size: 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+.trainer-note-marker:hover,
+.trainer-note-marker:focus-visible {
+  background: #e85a5a;
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.trainer-note-panel {
+  display: none;
+  position: absolute;
+  top: calc(100% + 10px);
+  right: -6px;
+  width: min(260px, 75vw);
+  padding: 10px 12px;
+  border: 1px solid #b7b7b7;
+  border-radius: 4px;
+  background: #f8f8f8;
+  color: #333333;
+  text-align: left;
+  font-size: 0.9rem;
+  font-weight: normal;
+  line-height: 1.3;
+  white-space: pre-line;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
+}
+
+.trainer-note-panel::before {
+  content: '';
+  position: absolute;
+  top: -7px;
+  right: 11px;
+  width: 12px;
+  height: 12px;
+  border-top: 1px solid #b7b7b7;
+  border-left: 1px solid #b7b7b7;
+  background: #f8f8f8;
+  transform: rotate(45deg);
+}
+
+.trainer-note:hover .trainer-note-panel,
+.trainer-note:focus-within .trainer-note-panel {
+  display: block;
+}
+
+.content-table th,
+.content-table td {
+  border: 1px solid #000;
+  min-width: 130px;
+  padding: 3px 15px;
+  text-align: center;
+}
+
+.content-table tbody tr {
+  border-bottom: 1px solid #000;
+}
+
+.content-table tbody tr:nth-of-type(even) {
+  background-color: #dddddd;
+}
+
+.content-table tbody tr:last-of-type {
+  border-bottom: 3px solid #03396c;
+}
+
+.resources {
+  background-color: #14191f;
+  color: #c8c8d8;
+  max-width: 1000px;
+  margin: auto;
+  margin-top: 10px;
+  border-top: 10px #14191f solid;
+  border-bottom: 20px #14191f solid;
+  border-left: 40px #14191f solid;
+  border-right: 40px #14191f solid;
+  border-radius: 10px;
+}
+
+.resources h1 {
+  color: #ffcb5a;
+  text-align: left;
+}
+
+.resources p {
+  margin: 3px;
+  margin-left: 30px;
+}
+
+.resources .encounter-table-wrap {
+  margin: 12px 0 0 30px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.encounter-table {
+  margin: 0;
+  min-width: 680px;
+  width: 100%;
+}
+
+.encounter-table th,
+.encounter-table td {
+  min-width: 0;
+  padding: 8px 12px;
+  white-space: nowrap;
+}
+
+.encounter-col-slot {
+  width: 56px;
+}
+
+.encounter-col-species {
+  min-width: 220px;
+  text-align: left;
+}
+
+.encounter-col-level,
+.encounter-col-rate {
+  min-width: 84px;
+}
+
+.encounter-col-chance {
+  min-width: 116px;
+}
+
+.encounter-species {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.encounter-sprite {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  flex: none;
+}
+
+/* === Trainer sheets: Dark mode === */
+.dark-mode body {
+  background: #121212;
+  color: #e6ecf8;
+}
+
+.dark-mode .location {
+  color: #e6ecf8;
+}
+
+.dark-mode .line {
+  background: #444;
+}
+
+.dark-mode .content-table {
+  box-shadow: none;
+}
+
+.dark-mode .content-table thead tr {
+  background: #2a2a2a;
+  color: #ffffff;
+}
+
+.dark-mode .content-table tbody tr:nth-of-type(even) {
+  background: #1f1f1f;
+}
+
+.dark-mode .content-table tbody tr {
+  background: #181818;
+  color: #e6ecf8;
+}
+
+/* === Night (Blue) === */
+.theme-azure body {
+  background: #0b1220;
+}
+
+.theme-azure .content-table thead tr {
+  background: #0f172a;
+}
+
+.theme-azure .content-table tbody tr {
+  background: #0f1a33;
+}
+
+.theme-azure .content-table tbody tr:nth-of-type(even) {
+  background: #132247;
+}
+
+.navbar {
+  background-color: #14191f;
+}
+
+.navbar a {
+  color: #ffcb5a;
+}
+
+/* ===============================
+   Trainer navbar – Dark mode
+   =============================== */
+.dark-mode:not(.theme-azure) .navbar {
+  background: #1e1e1e;
+  --split-cap-menu-bg: #1e1e1e;
+  --split-cap-menu-border: rgba(230, 236, 248, 0.22);
+  --split-cap-menu-text: #e6ecf8;
+  --split-cap-menu-muted: #b7c0cf;
+}
+
+.dark-mode:not(.theme-azure) .navbar a {
+  color: #e6ecf8;
+}
+
+.dark-mode:not(.theme-azure) .navbar a:hover {
+  color: #ffffff;
+}
+
+/* ===============================
+   Trainer navbar – Night (Blue)
+   =============================== */
+.theme-azure .navbar {
+  background: #0b1226;
+  --split-cap-menu-bg: #0b1226;
+  --split-cap-menu-border: rgba(158, 203, 255, 0.28);
+  --split-cap-menu-text: #9ecbff;
+  --split-cap-menu-muted: #d2e5ff;
+}
+
+.theme-azure .navbar a {
+  color: #9ecbff;
+}
+
+.theme-azure .navbar a:hover {
+  color: #ffffff;
+}
+
+/* ===============================
+   Trainer sheets - Dex
+   =============================== */
+.theme-dex body {
+  background: #0b1320;
+  color: #d7e0ec;
+}
+
+.theme-dex .location {
+  color: #d7e0ec;
+}
+
+.theme-dex .line {
+  background: #445b79;
+}
+
+.theme-dex .content-table {
+  box-shadow: none;
+}
+
+.theme-dex .caption-content {
+  background: #121b2d;
+  color: #d7e0ec;
+}
+
+.theme-dex .content-table th,
+.theme-dex .content-table td {
+  border-color: #445b79;
+}
+
+.theme-dex .content-table thead tr {
+  background: #121b2d;
+  color: #d7e0ec;
+}
+
+.theme-dex .content-table tbody tr {
+  background: #0f172a;
+  color: #d7e0ec;
+  border-bottom-color: #445b79;
+}
+
+.theme-dex .content-table tbody tr:nth-of-type(even) {
+  background: #111c2f;
+}
+
+.theme-dex .content-table tbody tr:last-of-type {
+  border-bottom-color: #6b86ae;
+}
+
+.theme-dex .resources {
+  background-color: #0f172a;
+  color: #d7e0ec;
+  border-top-color: #0f172a;
+  border-bottom-color: #0f172a;
+  border-left-color: #0f172a;
+  border-right-color: #0f172a;
+}
+
+.theme-dex .resources h1 {
+  color: #d7e0ec;
+}
+
+.theme-dex .navbar {
+  background: #121b2d;
+  --split-cap-menu-bg: #121b2d;
+  --split-cap-menu-border: rgba(154, 192, 255, 0.28);
+  --split-cap-menu-text: #9ac0ff;
+  --split-cap-menu-muted: #d7e0ec;
+}
+
+.theme-dex .navbar a {
+  color: #9ac0ff;
+}
+
+.theme-dex .navbar a:hover {
+  color: #c6dbff;
+}
+
+.dynamic-tooltip {
+  position: fixed !important; /* Ensure it's fixed to viewport */
+  background: #2c3e50;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  max-width: 200px;
+  white-space: normal;
+  word-wrap: break-word;
+  z-index: 9999 !important; /* Ensure highest z-index */
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  animation: tooltipFadeIn 0.2s ease-out;
+  text-align: center;
+  /* Reset any inherited positioning */
+  top: auto;
+  bottom: auto;
+  left: auto;
+  right: auto;
+}
+
+/* Ensure table cells allow positioning */
+td {
+  position: static !important; /* Remove any relative positioning */
+}
+
+.dynamic-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: #2c3e50 transparent transparent transparent;
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-90%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-100%);
+  }
+}
+
+/* Add hover effect to items with tooltips */
+[data-item] {
+  cursor: help;
+  border-bottom: 1px dotted #666;
+  position: relative;
+}
+
+/* Different colors for different item types */
+[data-item="ability"] {
+  color: #e74c3c; /* Red for abilities */
+}
+
+[data-item="move"] {
+  color: #3498db; /* Blue for moves */
+}
+
+[data-item="item"] {
+  color: #2ecc71; /* Green for items */
+}
+
+.ts-inline-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ts-resource-line {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  column-gap: 12px;
+  align-items: start;
+}
+
+.ts-resource-label {
+  flex: none;
+}
+
+.ts-resource-line--pokemon .ts-resource-label {
+  line-height: 65px;
+}
+
+.ts-resource-line--item .ts-resource-label {
+  line-height: 22px;
+}
+
+.ts-resource-entries {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: center;
+  min-width: 0;
+}
+
+.ts-resource-entry {
+  white-space: nowrap;
+}
+
+@media (max-width: 700px) {
+  .ts-resource-line {
+    grid-template-columns: 1fr;
+    row-gap: 4px;
+  }
+
+  .resources .encounter-table-wrap {
+    margin-left: 0;
+  }
+
+  .ts-resource-line--pokemon .ts-resource-label,
+  .ts-resource-line--item .ts-resource-label {
+    line-height: normal;
+  }
+}
+
+.ts-inline-poke-sprite {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  flex: none;
+}
+
+.ts-inline-item-sprite {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  flex: none;
+}
