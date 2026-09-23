@@ -1,0 +1,150 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <base href="https://nulldex.pokemon0null.workers.dev/" />
+
+    <title>Pok&eacute;dex - Pok&eacute;mon Showdown</title>
+
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=IE8" />
+	<script>
+		(function () {
+			var theme = 'dark';
+			try {
+				if (localStorage.getItem('nulldex-theme') === null) {
+					localStorage.setItem('nulldex-theme', 'dark');
+				}
+				var savedTheme = localStorage.getItem('nulldex-theme');
+				if (savedTheme === 'dark' || savedTheme === 'light') theme = savedTheme;
+			} catch (e) {}
+			document.documentElement.setAttribute('data-theme', theme);
+		})();
+	</script>
+    <link
+      rel="stylesheet"
+      href="https://play.pokemonshowdown.com/style/font-awesome.css"
+    />
+    <link rel="stylesheet" href="theme/panels.css?b2" />
+    <link rel="stylesheet" href="theme/main.css?b1" />
+    <link rel="stylesheet" href="theme/theme-toggle.css?b4" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://play.pokemonshowdown.com/style/utilichart.css?b359"
+    />
+    <link rel="stylesheet" href="theme/pokedex.css?b359" />
+
+    <!-- Workarounds for IE bugs to display trees correctly. -->
+    <!--[if lte IE 6
+      ]><style>
+        li.tree {
+          height: 1px;
+        }
+      </style><!
+    [endif]-->
+    <!--[if IE 7
+      ]><style>
+        li.tree {
+          zoom: 1;
+        }
+      </style><!
+    [endif]-->
+
+    <style>
+      /* Embedded in the trainer sheet, so the dex's own nav is redundant --
+         but keep its theme control reachable. */
+      body > .pfx-topbar .nav:not(.nav-theme) { display: none; }
+      body > .pfx-topbar { min-height: 0; height: auto; padding: 4px 0; }
+      body > .pfx-topbar .header { min-height: 0; justify-content: flex-end; }
+    </style>
+  </head>
+  <body>
+    <div class="pfx-topbar">
+      <div class="header">
+        <ul class="nav">
+          <li>
+            <a
+              class="button nav-first"
+              href="https://docs.google.com/spreadsheets/d/1mwHPt0AMzOJ_hfmDrVZpKP-Hf4eTT0ROhY8Wa7bY7r8/edit?gid=1449301522#gid=1449301522"
+              ><img
+                src="images/pokemonshowdownbeta.png"
+                alt="Pok&eacute;mon Showdown! (beta)"
+              />Trainer Sheet</a
+            >
+          </li>
+          <li><a class="button" href="/">Pok&eacute;dex</a></li>
+          <li>
+            <a
+              class="button"
+              href="https://nullcalc.pokemon0null.workers.dev/"
+              target="_blank"
+              >Calculator</a
+            >
+          </li>
+          <li>
+            <a
+              class="button"
+              href="https://pokemonnull.com/patch-applier.html"
+              target="_blank"
+              >Download</a
+            >
+          </li>
+        </ul>
+        <div style="clear: both"></div>
+        <ul class="nav nav-theme">
+          <li>
+            <label class="theme-label" for="theme-select">Theme</label>
+            <select id="theme-select" class="textbox theme-select" aria-label="Theme">
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+            </select>
+          </li>
+        </ul>
+        <div style="clear: both"></div>
+      </div>
+    </div>
+    <div class="pfx-panel">
+      <div class="pfx-body">
+        <noscript
+          ><p>
+            <strong>Requires JavaScript!</strong>
+          </p></noscript
+        >
+        <p>Loading...</p>
+      </div>
+    </div>
+    <script src="js/lib/jquery-1.12.4.min.js"></script>
+    <script src="js/lib/lodash.min.js"></script>
+    <script src="js/lib/backbone-min.js"></script>
+    <script src="js/panels.js"></script>
+
+    <!-- Dependencies from the original Showdown dex; these are very explicitly unmodified for compatibility -->
+    <script src="config/config.js?v0.9xy31"></script>
+    <script src="js/battledata.js?v0.9xy32"></script>
+    <script src="data/search-index.js?v0.9xy31"></script>
+    <!-- This guy needs to be generated using the client repo -->
+    <script src="https://play.pokemonshowdown.com/data/teambuilder-tables.js?v0.9xy31"></script>
+    <script src="data/typechart.js?v0.9xy31"></script>
+    <script src="https://play.pokemonshowdown.com/data/aliases.js?v0.9xy31"></script>
+    <script src="js/battle-dex-search.js?v0.9xy31"></script>
+    <script src="js/search.js?v0.9xy31"></script>
+
+    <!-- Custom data files pulled from porydex extraction -->
+    <script src="data/species.js?v0.9xy31"></script>
+    <script src="data/learnsets.js?v0.9xy31"></script>
+    <script src="data/encounters.js?v0.9xy31"></script>
+    <script src="data/moves.js?v0.9xy31"></script>
+    <script src="data/abilities.js?v0.9xy31"></script>
+    <script src="data/items.js?v0.9xy31"></script>
+
+    <script src="js/pokedex.js?b359"></script>
+    <script src="js/pokedex-pokemon.js?b361"></script>
+    <script src="js/pokedex-moves.js?b359"></script>
+    <script src="js/pokedex-encounters.js?b359"></script>
+    <script src="js/pokedex-search.js?b359"></script>
+    <script src="js/nulldex-encounters.js?b1"></script>
+    <script src="js/router.js?b359"></script>
+    <script src="js/theme-toggle.js?b1"></script>
+    <script src="js/update-checker.js?b4"></script>
+  </body>
+</html>

@@ -1,0 +1,29 @@
+/* ------------------------------------------------------------------
+   Damage calculator, repainted to match the trainer sheet.
+   Loaded after the calculator's own dark-theme.css, so it only has to
+   restate the six variables that theme is built on.
+   ------------------------------------------------------------------ */
+:root {
+  --text: #e6ecf8;
+  --background: #121212;
+  --button-hover: #20242c;
+  --button-selected: #2b3344;
+  --fieldset-color: #1a1a1a;
+  --column-1: #17191f;
+}
+
+html,
+body {
+  color: var(--text);
+  background-color: var(--background);
+}
+
+/* the calculator's own toggle, nudged to sit on the darker ground */
+#dark-theme-toggle {
+  filter: saturate(0.9);
+}
+
+/* embedded in the sheet there is no need for the page to scroll twice */
+body {
+  scrollbar-color: #3a3f4a #121212;
+}

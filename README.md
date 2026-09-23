@@ -58,6 +58,20 @@ the Haze family and phazing moves do to each setup move in the AI's move
 scoring, and the caveats around it (a −20 is a heavy penalty, not a hard
 block; the counter only counts on the Pokémon being targeted).
 
+## Sheet / Dex / Calc
+
+A bar at the top switches between the trainer sheet, the Pokédex and the
+damage calculator. Both tools are iframes that are built once and from then
+on only hidden, and the split pages are swapped in over `fetch` rather than
+navigated to — so whatever you have typed into the calculator survives
+moving around the sheet, and neither tool is ever loaded twice.
+
+`src/calc.html` and `src/dex.html` are served from here so they can be
+themed and defaulted to dark; their assets still come from
+`nullcalc.pokemon0null.workers.dev` and `nulldex.pokemon0null.workers.dev`.
+The dex keeps its own theme control but its navigation bar is hidden, since
+this page already has one. Both remember a theme you pick afterwards.
+
 ## Rebuilding
 
 `tools/enrich_sheets.py` reads `tools/null_sheet.xlsx` (an export of the

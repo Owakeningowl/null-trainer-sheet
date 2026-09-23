@@ -1,0 +1,2156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Pok&eacute;mon Damage Calculator</title>
+    <link type="text/css" rel="stylesheet" href="https://nullcalc.pokemon0null.workers.dev/js/vendor/select2/select2.css" />
+    <link type="text/css" rel="stylesheet" href="https://nullcalc.pokemon0null.workers.dev/css/main.css?27b5d965" />
+    <link type="text/css" rel="stylesheet" href="https://nullcalc.pokemon0null.workers.dev/css/vendor/bootstrap.css" />
+    <link type="text/css" rel="stylesheet" href="https://nullcalc.pokemon0null.workers.dev/css/dark-theme.css" id="dark-theme-styles">
+    <link type="text/css" rel="stylesheet" href="../theme/calc-dark.css?v1" />
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-26211653-3"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-26211653-3');
+
+        window.onerror = function(err, uri, line) {
+            gtag('event', 'exception', {'description': uri + ':' + line + ': ' + err});
+            return false;
+        };
+    </script>
+    <!-- Immediately loads the dark theme in order to reduce FOIT -->
+    <script>
+        /*
+        * localStorage will only store strings
+        * This means that if it has the value 'false',
+        * It will be truey and incorrectly cause the
+        * dark theme to load.
+        */
+        // Default to dark on a first visit; a later toggle still sticks.
+        if (localStorage.getItem('darkTheme') === null) {
+            localStorage.setItem('darkTheme', 'true');
+        }
+        if (localStorage.getItem('darkTheme') !== 'true') {
+            document.getElementById('dark-theme-styles').disabled = true;
+        }
+    </script>
+<style id="astral">
+/* ============================================================
+   ASTRAL — night theme + readability pass for the Null calculator
+   ============================================================
+
+   HOW TO INSTALL
+   Paste this whole block at the BOTTOM of your calc's
+   css/dark-theme.css and redeploy the Worker.
+
+   Appending is all that's needed — this :root comes after the
+   original one in the same file, so it wins automatically. You do
+   not have to find or delete the old block.
+
+   WHAT IT CHANGES
+   1. Recolors the dark theme (softer, slate instead of blue-black)
+   2. Enlarges the controls in the two Pokemon panels
+   3. Enlarges the move-selection boxes and damage percentages
+   4. Hides the Pokedex/Calculator bar at the top
+
+   To undo any section, delete just that section.
+   ============================================================ */
+
+
+/* ---- 1. COLOURS ------------------------------------------------
+   The original was #e4e4e4 text on #1b1b1b with pure-black hovers:
+   13.5:1 contrast, which is what caused the glare. This keeps
+   contrast high enough to stay AAA (10-12:1) but shifts everything
+   to slate and removes pure black entirely. */
+
+:root{
+    --text: #d1d5de;             /* was #e4e4e4 */
+    --background: #15181f;       /* was #1b1b1b */
+
+    --button-hover: #272b35;     /* was black  */
+    --button-selected: #3a4462;  /* was #232e51 */
+    --fieldset-color: #1c2028;   /* was #2a2a2a */
+
+    --column-1: #20242e;         /* was #2a2a2a */
+}
+
+fieldset, input, select{
+    border-color: #31374a;
+}
+
+
+/* ---- 2. BIGGER CONTROLS IN THE POKEMON PANELS ------------------
+   Scoped to .poke-info so the middle Field column keeps its normal
+   size and does not stretch.
+
+   The four move-row controls are excluded deliberately. That row
+   has only ~7px of spare width, so enlarging anything inside it
+   pushes the Crit and Z buttons onto a second line. */
+
+.poke-info .calc-trigger:not(.move-selector):not(.move-bp):not(.move-type):not(.move-cat){
+    font-size: 1.12em;
+    height: auto;
+    padding: 2px 4px;
+}
+
+/* :not(.btn) keeps Crit / Z out of this — they sit in the move row */
+.poke-info label:not(.btn){
+    font-size: 1.05em;
+}
+
+
+/* ---- 3. MOVE BOXES AND PERCENTAGES -----------------------------
+   These sit in open space at the top and can grow freely. */
+
+.move-result-subgroup .btn{
+    font-size: 1.12em;
+    padding: 6px 10px;
+    line-height: 1.3;
+}
+
+span[id^="resultDamage"]{
+    /* Mono + tabular figures so the percentages line up in a true column,
+       and so they match the mono numerals used in the AI reference doc. */
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 1.08em;
+    font-weight: 600;
+    letter-spacing: -.2px;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
+    white-space: nowrap;
+}
+
+/* a little more air between the result rows */
+.move-result-subgroup{
+    line-height: 1.9;
+}
+
+#mainResult{
+    font-size: 1.1em;
+    line-height: 1.45;
+}
+
+#resultHeaderL, #resultHeaderR{
+    font-size: 1.05em;
+}
+
+
+/* ---- 4. HIDE THE TOP NAV BAR -----------------------------------
+   Delete this rule if you ever want the bar back. Note its
+   "Calculator" link points at nullcalc.mehdibouazra1998.workers.dev,
+   which is not your Worker. */
+
+nav{
+    display: none;
+}
+
+
+/* ---- 5. HIDE THE LIGHT/DARK TOGGLE AT THE BOTTOM ---------------
+   The "Click for Light Theme" button. Astral is a dark theme, so
+   switching to light would undo it. Delete this rule to bring the
+   button back. */
+
+#dark-theme-toggle{
+    display: none;
+}
+
+
+#sav-bar{
+  position:fixed; top:8px; left:8px; z-index:99999;
+  display:flex; align-items:center; gap:9px;
+  font:600 12px/1.2 -apple-system,Segoe UI,Roboto,sans-serif;
+}
+#sav-btn{
+  background:#3a4462; color:#eef1f6; border:1px solid #5a6486;
+  border-radius:7px; padding:7px 12px; cursor:pointer; font-weight:600; font-size:12px;
+}
+#sav-btn:hover{ background:#48548096; background:#485480; }
+#sav-msg{ color:#a2aab8; max-width:44vw; }
+#sav-msg.bad{ color:#f0908a; }
+#sav-msg.ok{ color:#8fc9a4; }
+@media print{ #sav-bar{ display:none !important; } }
+
+</style>
+<script>window.__NULL_MAPS__={"species":{"1":"Bulbasaur","2":"Ivysaur","3":"Venusaur","4":"Charmander","5":"Charmeleon","6":"Charizard","7":"Squirtle","8":"Wartortle","9":"Blastoise","10":"Caterpie","11":"Metapod","12":"Butterfree","13":"Weedle","14":"Kakuna","15":"Beedrill","16":"Pidgey","17":"Pidgeotto","18":"Pidgeot","19":"Rattata","20":"Raticate","21":"Spearow","22":"Fearow","23":"Ekans","24":"Arbok","25":"Pikachu","26":"Raichu","27":"Sandshrew","28":"Sandslash","29":"Nidoran-F","30":"Nidorina","31":"Nidoqueen","32":"Nidoran-M","33":"Nidorino","34":"Nidoking","35":"Clefairy","36":"Clefable","37":"Vulpix","38":"Ninetales","39":"Jigglypuff","40":"Wigglytuff","41":"Zubat","42":"Golbat","43":"Oddish","44":"Gloom","45":"Vileplume","46":"Paras","47":"Parasect","48":"Venonat","49":"Venomoth","50":"Diglett","51":"Dugtrio","52":"Meowth","53":"Persian","54":"Psyduck","55":"Golduck","56":"Mankey","57":"Primeape","58":"Growlithe","59":"Arcanine","60":"Poliwag","61":"Poliwhirl","62":"Poliwrath","63":"Abra","64":"Kadabra","65":"Alakazam","66":"Machop","67":"Machoke","68":"Machamp","69":"Bellsprout","70":"Weepinbell","71":"Victreebel","72":"Tentacool","73":"Tentacruel","74":"Geodude","75":"Graveler","76":"Golem","77":"Ponyta","78":"Rapidash","79":"Slowpoke","80":"Slowbro","81":"Magnemite","82":"Magneton","83":"Farfetch\u2019d","84":"Doduo","85":"Dodrio","86":"Seel","87":"Dewgong","88":"Grimer","89":"Muk","90":"Shellder","91":"Cloyster","92":"Gastly","93":"Haunter","94":"Gengar","95":"Onix","96":"Drowzee","97":"Hypno","98":"Krabby","99":"Kingler","100":"Voltorb","101":"Electrode","102":"Exeggcute","103":"Exeggutor","104":"Cubone","105":"Marowak","106":"Hitmonlee","107":"Hitmonchan","108":"Lickitung","109":"Koffing","110":"Weezing","111":"Rhyhorn","112":"Rhydon","113":"Chansey","114":"Tangela","115":"Kangaskhan","116":"Horsea","117":"Seadra","118":"Goldeen","119":"Seaking","120":"Staryu","121":"Starmie","122":"Mr. Mime","123":"Scyther","124":"Jynx","125":"Electabuzz","126":"Magmar","127":"Pinsir","128":"Tauros","129":"Magikarp","130":"Gyarados","131":"Lapras","132":"Ditto","133":"Eevee","134":"Vaporeon","135":"Jolteon","136":"Flareon","137":"Porygon","138":"Omanyte","139":"Omastar","140":"Kabuto","141":"Kabutops","142":"Aerodactyl","143":"Snorlax","144":"Articuno","145":"Zapdos","146":"Moltres","147":"Dratini","148":"Dragonair","149":"Dragonite","150":"Mewtwo","151":"Mew","152":"Chikorita","153":"Bayleef","154":"Meganium","155":"Cyndaquil","156":"Quilava","157":"Typhlosion","158":"Totodile","159":"Croconaw","160":"Feraligatr","161":"Sentret","162":"Furret","163":"Hoothoot","164":"Noctowl","165":"Ledyba","166":"Ledian","167":"Spinarak","168":"Ariados","169":"Crobat","170":"Chinchou","171":"Lanturn","172":"Pichu","173":"Cleffa","174":"Igglybuff","175":"Togepi","176":"Togetic","177":"Natu","178":"Xatu","179":"Mareep","180":"Flaaffy","181":"Ampharos","182":"Bellossom","183":"Marill","184":"Azumarill","185":"Sudowoodo","186":"Politoed","187":"Hoppip","188":"Skiploom","189":"Jumpluff","190":"Aipom","191":"Sunkern","192":"Sunflora","193":"Yanma","194":"Wooper","195":"Quagsire","196":"Espeon","197":"Umbreon","198":"Murkrow","199":"Slowking","200":"Misdreavus","201":"Unown","202":"Wobbuffet","203":"Girafarig","204":"Pineco","205":"Forretress","206":"Dunsparce","207":"Gligar","208":"Steelix","209":"Snubbull","210":"Granbull","211":"Qwilfish","212":"Scizor","213":"Shuckle","214":"Heracross","215":"Sneasel","216":"Teddiursa","217":"Ursaring","218":"Slugma","219":"Magcargo","220":"Swinub","221":"Piloswine","222":"Corsola","223":"Remoraid","224":"Octillery","225":"Delibird","226":"Mantine","227":"Skarmory","228":"Houndour","229":"Houndoom","230":"Kingdra","231":"Phanpy","232":"Donphan","233":"Porygon2","234":"Stantler","235":"Smeargle","236":"Tyrogue","237":"Hitmontop","238":"Smoochum","239":"Elekid","240":"Magby","241":"Miltank","242":"Blissey","243":"Raikou","244":"Entei","245":"Suicune","246":"Larvitar","247":"Pupitar","248":"Tyranitar","249":"Lugia","250":"Ho-Oh","251":"Celebi","252":"Treecko","253":"Grovyle","254":"Sceptile","255":"Torchic","256":"Combusken","257":"Blaziken","258":"Mudkip","259":"Marshtomp","260":"Swampert","261":"Poochyena","262":"Mightyena","263":"Zigzagoon","264":"Linoone","265":"Wurmple","266":"Silcoon","267":"Beautifly","268":"Cascoon","269":"Dustox","270":"Lotad","271":"Lombre","272":"Ludicolo","273":"Seedot","274":"Nuzleaf","275":"Shiftry","276":"Taillow","277":"Swellow","278":"Wingull","279":"Pelipper","280":"Ralts","281":"Kirlia","282":"Gardevoir","283":"Surskit","284":"Masquerain","285":"Shroomish","286":"Breloom","287":"Slakoth","288":"Vigoroth","289":"Slaking","290":"Nincada","291":"Ninjask","292":"Shedinja","293":"Whismur","294":"Loudred","295":"Exploud","296":"Makuhita","297":"Hariyama","298":"Azurill","299":"Nosepass","300":"Skitty","301":"Delcatty","302":"Sableye","303":"Mawile","304":"Aron","305":"Lairon","306":"Aggron","307":"Meditite","308":"Medicham","309":"Electrike","310":"Manectric","311":"Plusle","312":"Minun","313":"Volbeat","314":"Illumise","315":"Roselia","316":"Gulpin","317":"Swalot","318":"Carvanha","319":"Sharpedo","320":"Wailmer","321":"Wailord","322":"Numel","323":"Camerupt","324":"Torkoal","325":"Spoink","326":"Grumpig","327":"Spinda","328":"Trapinch","329":"Vibrava","330":"Flygon","331":"Cacnea","332":"Cacturne","333":"Swablu","334":"Altaria","335":"Zangoose","336":"Seviper","337":"Lunatone","338":"Solrock","339":"Barboach","340":"Whiscash","341":"Corphish","342":"Crawdaunt","343":"Baltoy","344":"Claydol","345":"Lileep","346":"Cradily","347":"Anorith","348":"Armaldo","349":"Feebas","350":"Milotic","351":"Castform","352":"Kecleon","353":"Shuppet","354":"Banette","355":"Duskull","356":"Dusclops","357":"Tropius","358":"Chimecho","359":"Absol","360":"Wynaut","361":"Snorunt","362":"Glalie","363":"Spheal","364":"Sealeo","365":"Walrein","366":"Clamperl","367":"Huntail","368":"Gorebyss","369":"Relicanth","370":"Luvdisc","371":"Bagon","372":"Shelgon","373":"Salamence","374":"Beldum","375":"Metang","376":"Metagross","377":"Regirock","378":"Regice","379":"Registeel","380":"Latias","381":"Latios","382":"Kyogre","383":"Groudon","384":"Rayquaza","385":"Jirachi","386":"Deoxys","387":"Turtwig","388":"Grotle","389":"Torterra","390":"Chimchar","391":"Monferno","392":"Infernape","393":"Piplup","394":"Prinplup","395":"Empoleon","396":"Starly","397":"Staravia","398":"Staraptor","399":"Bidoof","400":"Bibarel","401":"Kricketot","402":"Kricketune","403":"Shinx","404":"Luxio","405":"Luxray","406":"Budew","407":"Roserade","408":"Cranidos","409":"Rampardos","410":"Shieldon","411":"Bastiodon","412":"Burmy","413":"Wormadam","414":"Mothim","415":"Combee","416":"Vespiquen","417":"Pachirisu","418":"Buizel","419":"Floatzel","420":"Cherubi","421":"Cherrim","422":"Shellos","423":"Gastrodon","424":"Ambipom","425":"Drifloon","426":"Drifblim","427":"Buneary","428":"Lopunny","429":"Mismagius","430":"Honchkrow","431":"Glameow","432":"Purugly","433":"Chingling","434":"Stunky","435":"Skuntank","436":"Bronzor","437":"Bronzong","438":"Bonsly","439":"Mime Jr.","440":"Happiny","441":"Chatot","442":"Spiritomb","443":"Gible","444":"Gabite","445":"Garchomp","446":"Munchlax","447":"Riolu","448":"Lucario","449":"Hippopotas","450":"Hippowdon","451":"Skorupi","452":"Drapion","453":"Croagunk","454":"Toxicroak","455":"Carnivine","456":"Finneon","457":"Lumineon","458":"Mantyke","459":"Snover","460":"Abomasnow","461":"Weavile","462":"Magnezone","463":"Lickilicky","464":"Rhyperior","465":"Tangrowth","466":"Electivire","467":"Magmortar","468":"Togekiss","469":"Yanmega","470":"Leafeon","471":"Glaceon","472":"Gliscor","473":"Mamoswine","474":"Porygon-Z","475":"Gallade","476":"Probopass","477":"Dusknoir","478":"Froslass","479":"Rotom","480":"Uxie","481":"Mesprit","482":"Azelf","483":"Dialga","484":"Palkia","485":"Heatran","486":"Regigigas","487":"Giratina","488":"Cresselia","489":"Phione","490":"Manaphy","491":"Darkrai","492":"Shaymin","493":"Arceus","494":"Victini","495":"Snivy","496":"Servine","497":"Serperior","498":"Tepig","499":"Pignite","500":"Emboar","501":"Oshawott","502":"Dewott","503":"Samurott","504":"Patrat","505":"Watchog","506":"Lillipup","507":"Herdier","508":"Stoutland","509":"Purrloin","510":"Liepard","511":"Pansage","512":"Simisage","513":"Pansear","514":"Simisear","515":"Panpour","516":"Simipour","517":"Munna","518":"Musharna","519":"Pidove","520":"Tranquill","521":"Unfezant","522":"Blitzle","523":"Zebstrika","524":"Roggenrola","525":"Boldore","526":"Gigalith","527":"Woobat","528":"Swoobat","529":"Drilbur","530":"Excadrill","531":"Audino","532":"Timburr","533":"Gurdurr","534":"Conkeldurr","535":"Tympole","536":"Palpitoad","537":"Seismitoad","538":"Throh","539":"Sawk","540":"Sewaddle","541":"Swadloon","542":"Leavanny","543":"Venipede","544":"Whirlipede","545":"Scolipede","546":"Cottonee","547":"Whimsicott","548":"Petilil","549":"Lilligant","550":"Basculin","551":"Sandile","552":"Krokorok","553":"Krookodile","554":"Darumaka","555":"Darmanitan","556":"Maractus","557":"Dwebble","558":"Crustle","559":"Scraggy","560":"Scrafty","561":"Sigilyph","562":"Yamask","563":"Cofagrigus","564":"Tirtouga","565":"Carracosta","566":"Archen","567":"Archeops","568":"Trubbish","569":"Garbodor","570":"Zorua","571":"Zoroark","572":"Minccino","573":"Cinccino","574":"Gothita","575":"Gothorita","576":"Gothitelle","577":"Solosis","578":"Duosion","579":"Reuniclus","580":"Ducklett","581":"Swanna","582":"Vanillite","583":"Vanillish","584":"Vanilluxe","585":"Deerling","586":"Sawsbuck","587":"Emolga","588":"Karrablast","589":"Escavalier","590":"Foongus","591":"Amoonguss","592":"Frillish","593":"Jellicent","594":"Alomomola","595":"Joltik","596":"Galvantula","597":"Ferroseed","598":"Ferrothorn","599":"Klink","600":"Klang","601":"Klinklang","602":"Tynamo","603":"Eelektrik","604":"Eelektross","605":"Elgyem","606":"Beheeyem","607":"Litwick","608":"Lampent","609":"Chandelure","610":"Axew","611":"Fraxure","612":"Haxorus","613":"Cubchoo","614":"Beartic","615":"Cryogonal","616":"Shelmet","617":"Accelgor","618":"Stunfisk","619":"Mienfoo","620":"Mienshao","621":"Druddigon","622":"Golett","623":"Golurk","624":"Pawniard","625":"Bisharp","626":"Bouffalant","627":"Rufflet","628":"Braviary","629":"Vullaby","630":"Mandibuzz","631":"Heatmor","632":"Durant","633":"Deino","634":"Zweilous","635":"Hydreigon","636":"Larvesta","637":"Volcarona","638":"Cobalion","639":"Terrakion","640":"Virizion","641":"Tornadus","642":"Thundurus","643":"Reshiram","644":"Zekrom","645":"Landorus","646":"Kyurem","647":"Keldeo","648":"Meloetta","649":"Genesect","650":"Chespin","651":"Quilladin","652":"Chesnaught","653":"Fennekin","654":"Braixen","655":"Delphox","656":"Froakie","657":"Frogadier","658":"Greninja","659":"Bunnelby","660":"Diggersby","661":"Fletchling","662":"Fletchinder","663":"Talonflame","664":"Scatterbug","665":"Spewpa","666":"Vivillon","667":"Litleo","668":"Pyroar","669":"Flabe\u0301be\u0301","670":"Floette","671":"Florges","672":"Skiddo","673":"Gogoat","674":"Pancham","675":"Pangoro","676":"Furfrou","677":"Espurr","678":"Meowstic","679":"Honedge","680":"Doublade","681":"Aegislash","682":"Spritzee","683":"Aromatisse","684":"Swirlix","685":"Slurpuff","686":"Inkay","687":"Malamar","688":"Binacle","689":"Barbaracle","690":"Skrelp","691":"Dragalge","692":"Clauncher","693":"Clawitzer","694":"Helioptile","695":"Heliolisk","696":"Tyrunt","697":"Tyrantrum","698":"Amaura","699":"Aurorus","700":"Sylveon","701":"Hawlucha","702":"Dedenne","703":"Carbink","704":"Goomy","705":"Sliggoo","706":"Goodra","707":"Klefki","708":"Phantump","709":"Trevenant","710":"Pumpkaboo","711":"Gourgeist","712":"Bergmite","713":"Avalugg","714":"Noibat","715":"Noivern","716":"Xerneas","717":"Yveltal","718":"Zygarde","719":"Diancie","720":"Hoopa","721":"Volcanion","722":"Rowlet","723":"Dartrix","724":"Decidueye","725":"Litten","726":"Torracat","727":"Incineroar","728":"Popplio","729":"Brionne","730":"Primarina","731":"Pikipek","732":"Trumbeak","733":"Toucannon","734":"Yungoos","735":"Gumshoos","736":"Grubbin","737":"Charjabug","738":"Vikavolt","739":"Crabrawler","740":"Crabominable","741":"Oricorio","742":"Cutiefly","743":"Ribombee","744":"Rockruff","745":"Lycanroc","746":"Wishiwashi","747":"Mareanie","748":"Toxapex","749":"Mudbray","750":"Mudsdale","751":"Dewpider","752":"Araquanid","753":"Fomantis","754":"Lurantis","755":"Morelull","756":"Shiinotic","757":"Salandit","758":"Salazzle","759":"Stufful","760":"Bewear","761":"Bounsweet","762":"Steenee","763":"Tsareena","764":"Comfey","765":"Oranguru","766":"Passimian","767":"Wimpod","768":"Golisopod","769":"Sandygast","770":"Palossand","771":"Pyukumuku","772":"Type: Null","773":"Silvally","774":"Minior","775":"Komala","776":"Turtonator","777":"Togedemaru","778":"Mimikyu","779":"Bruxish","780":"Drampa","781":"Dhelmise","782":"Jangmo-o","783":"Hakamo-o","784":"Kommo-o","785":"Tapu Koko","786":"Tapu Lele","787":"Tapu Bulu","788":"Tapu Fini","789":"Cosmog","790":"Cosmoem","791":"Solgaleo","792":"Lunala","793":"Nihilego","794":"Buzzwole","795":"Pheromosa","796":"Xurkitree","797":"Celesteela","798":"Kartana","799":"Guzzlord","800":"Necrozma","801":"Magearna","802":"Marshadow","803":"Poipole","804":"Naganadel","805":"Stakataka","806":"Blacephalon","807":"Zeraora","808":"Meltan","809":"Melmetal","810":"Grookey","811":"Thwackey","812":"Rillaboom","813":"Scorbunny","814":"Raboot","815":"Cinderace","816":"Sobble","817":"Drizzile","818":"Inteleon","819":"Skwovet","820":"Greedent","821":"Rookidee","822":"Corvisquire","823":"Corviknight","824":"Blipbug","825":"Dottler","826":"Orbeetle","827":"Nickit","828":"Thievul","829":"Gossifleur","830":"Eldegoss","831":"Wooloo","832":"Dubwool","833":"Chewtle","834":"Drednaw","835":"Yamper","836":"Boltund","837":"Rolycoly","838":"Carkol","839":"Coalossal","840":"Applin","841":"Flapple","842":"Appletun","843":"Silicobra","844":"Sandaconda","845":"Cramorant","846":"Arrokuda","847":"Barraskewda","848":"Toxel","849":"Toxtricity","850":"Sizzlipede","851":"Centiskorch","852":"Clobbopus","853":"Grapploct","854":"Sinistea","855":"Polteageist","856":"Hatenna","857":"Hattrem","858":"Hatterene","859":"Impidimp","860":"Morgrem","861":"Grimmsnarl","862":"Obstagoon","863":"Perrserker","864":"Cursola","865":"Sirfetch\u2019d","866":"Mr. Rime","867":"Runerigus","868":"Milcery","869":"Alcremie","870":"Falinks","871":"Pincurchin","872":"Snom","873":"Frosmoth","874":"Stonjourner","875":"Eiscue","876":"Indeedee","877":"Morpeko","878":"Cufant","879":"Copperajah","880":"Dracozolt","881":"Arctozolt","882":"Dracovish","883":"Arctovish","884":"Duraludon","885":"Dreepy","886":"Drakloak","887":"Dragapult","888":"Zacian","889":"Zamazenta","890":"Eternatus","891":"Kubfu","892":"Urshifu","893":"Zarude","894":"Regieleki","895":"Regidrago","896":"Glastrier","897":"Spectrier","898":"Calyrex","899":"Wyrdeer","900":"Kleavor","901":"Ursaluna","902":"Basculegion","903":"Sneasler","904":"Overqwil","905":"Enamorus","906":"Sprigatito","907":"Floragato","908":"Meowscarada","909":"Fuecoco","910":"Crocalor","911":"Skeledirge","912":"Quaxly","913":"Quaxwell","914":"Quaquaval","915":"Lechonk","916":"Oinkologne","917":"Tarountula","918":"Spidops","919":"Nymble","920":"Lokix","921":"Pawmi","922":"Pawmo","923":"Pawmot","924":"Tandemaus","925":"Maushold","926":"Fidough","927":"Dachsbun","928":"Smoliv","929":"Dolliv","930":"Arboliva","931":"Squawkabilly","932":"Nacli","933":"Naclstack","934":"Garganacl","935":"Charcadet","936":"Armarouge","937":"Ceruledge","938":"Tadbulb","939":"Bellibolt","940":"Wattrel","941":"Kilowattrel","942":"Maschiff","943":"Mabosstiff","944":"Shroodle","945":"Grafaiai","946":"Bramblin","947":"Brambleghast","948":"Toedscool","949":"Toedscruel","950":"Klawf","951":"Capsakid","952":"Scovillain","953":"Rellor","954":"Rabsca","955":"Flittle","956":"Espathra","957":"Tinkatink","958":"Tinkatuff","959":"Tinkaton","960":"Wiglett","961":"Wugtrio","962":"Bombirdier","963":"Finizen","964":"Palafin","965":"Varoom","966":"Revavroom","967":"Cyclizar","968":"Orthworm","969":"Glimmet","970":"Glimmora","971":"Greavard","972":"Houndstone","973":"Flamigo","974":"Cetoddle","975":"Cetitan","976":"Veluza","977":"Dondozo","978":"Tatsugiri","979":"Annihilape","980":"Clodsire","981":"Farigiraf","982":"Dudunsparce","983":"Kingambit","984":"Great Tusk","985":"Scream Tail","986":"Brute Bonnet","987":"Flutter Mane","988":"Slither Wing","989":"Sandy Shocks","990":"Iron Treads","991":"Iron Bundle","992":"Iron Hands","993":"Iron Jugulis","994":"Iron Moth","995":"Iron Thorns","996":"Frigibax","997":"Arctibax","998":"Baxcalibur","999":"Gimmighoul","1000":"Gholdengo","1001":"Wo-Chien","1002":"Chien-Pao","1003":"Ting-Lu","1004":"Chi-Yu","1005":"Roaring Moon","1006":"Iron Valiant","1007":"Koraidon","1008":"Miraidon","1009":"Walking Wake","1010":"Iron Leaves","1011":"Dipplin","1012":"Poltchageist","1013":"Sinistcha","1014":"Okidogi","1015":"Munkidori","1016":"Fezandipiti","1017":"Ogerpon","1018":"Archaludon","1019":"Hydrapple","1020":"Gouging-Fire","1021":"Raging-Bolt","1022":"Iron-Boulder","1023":"Iron-Crown","1024":"Terapagos","1025":"Pecharunt"},"moves":{"1":"Pound","2":"Karate Chop","3":"Double Slap","4":"Comet Punch","5":"Mega Punch","6":"Pay Day","7":"Fire Punch","8":"Ice Punch","9":"Thunder Punch","10":"Scratch","11":"Vise Grip","12":"Guillotine","13":"Razor Wind","14":"Swords Dance","15":"Cut","16":"Gust","17":"Wing Attack","18":"Whirlwind","19":"Fly","20":"Bind","21":"Slam","22":"Vine Whip","23":"Stomp","24":"Double Kick","25":"Mega Kick","26":"Jump Kick","27":"Rolling Kick","28":"Sand Attack","29":"Headbutt","30":"Horn Attack","31":"Fury Attack","32":"Horn Drill","33":"Tackle","34":"Body Slam","35":"Wrap","36":"Take Down","37":"Thrash","38":"Double-Edge","39":"Tail Whip","40":"Poison Sting","41":"Twineedle","42":"Pin Missile","43":"Leer","44":"Bite","45":"Growl","46":"Roar","47":"Sing","48":"Supersonic","49":"Sonic Boom","50":"Disable","51":"Acid","52":"Ember","53":"Flamethrower","54":"Mist","55":"Water Gun","56":"Hydro Pump","57":"Surf","58":"Ice Beam","59":"Blizzard","60":"Psybeam","61":"Bubble Beam","62":"Aurora Beam","63":"Hyper Beam","64":"Peck","65":"Drill Peck","66":"Submission","67":"Low Kick","68":"Counter","69":"Seismic Toss","70":"Strength","71":"Absorb","72":"Mega Drain","73":"Leech Seed","74":"Growth","75":"Razor Leaf","76":"Solar Beam","77":"Poison Powder","78":"Stun Spore","79":"Sleep Powder","80":"Petal Dance","81":"String Shot","82":"Dragon Rage","83":"Fire Spin","84":"Thunder Shock","85":"Thunderbolt","86":"Thunder Wave","87":"Thunder","88":"Rock Throw","89":"Earthquake","90":"Fissure","91":"Dig","92":"Toxic","93":"Confusion","94":"Psychic","95":"Hypnosis","96":"Meditate","97":"Agility","98":"Quick Attack","99":"Rage","100":"Teleport","101":"Night Shade","102":"Mimic","103":"Screech","104":"Double Team","105":"Recover","106":"Harden","107":"Minimize","108":"Smokescreen","109":"Confuse Ray","110":"Withdraw","111":"Defense Curl","112":"Barrier","113":"Light Screen","114":"Haze","115":"Reflect","116":"Focus Energy","117":"Bide","118":"Metronome","119":"Mirror Move","120":"Self-Destruct","121":"Egg Bomb","122":"Lick","123":"Smog","124":"Sludge","125":"Bone Club","126":"Fire Blast","127":"Waterfall","128":"Clamp","129":"Swift","130":"Skull Bash","131":"Spike Cannon","132":"Constrict","133":"Amnesia","134":"Kinesis","135":"Soft-Boiled","136":"High Jump Kick","137":"Glare","138":"Dream Eater","139":"Poison Gas","140":"Barrage","141":"Leech Life","142":"Lovely Kiss","143":"Sky Attack","144":"Transform","145":"Bubble","146":"Dizzy Punch","147":"Spore","148":"Flash","149":"Psywave","150":"Splash","151":"Acid Armor","152":"Crabhammer","153":"Explosion","154":"Fury Swipes","155":"Bonemerang","156":"Rest","157":"Rock Slide","158":"Hyper Fang","159":"Sharpen","160":"Conversion","161":"Tri Attack","162":"Super Fang","163":"Slash","164":"Substitute","165":"Struggle","166":"Sketch","167":"Triple Kick","168":"Thief","169":"Spider Web","170":"Mind Reader","171":"Nightmare","172":"Flame Wheel","173":"Snore","174":"Curse","175":"Flail","176":"Conversion 2","177":"Aeroblast","178":"Cotton Spore","179":"Reversal","180":"Spite","181":"Powder Snow","182":"Protect","183":"Mach Punch","184":"Scary Face","185":"Feint Attack","186":"Sweet Kiss","187":"Belly Drum","188":"Sludge Bomb","189":"Mud-Slap","190":"Octazooka","191":"Spikes","192":"Zap Cannon","193":"Foresight","194":"Destiny Bond","195":"Perish Song","196":"Icy Wind","197":"Detect","198":"Bone Rush","199":"Lock-On","200":"Outrage","201":"Sandstorm","202":"Giga Drain","203":"Endure","204":"Charm","205":"Rollout","206":"False Swipe","207":"Swagger","208":"Milk Drink","209":"Spark","210":"Fury Cutter","211":"Steel Wing","212":"Mean Look","213":"Attract","214":"Sleep Talk","215":"Heal Bell","216":"Return","217":"Present","218":"Frustration","219":"Safeguard","220":"Pain Split","221":"Sacred Fire","222":"Magnitude","223":"Dynamic Punch","224":"Megahorn","225":"Dragon Breath","226":"Baton Pass","227":"Encore","228":"Pursuit","229":"Rapid Spin","230":"Sweet Scent","231":"Iron Tail","232":"Metal Claw","233":"Vital Throw","234":"Morning Sun","235":"Synthesis","236":"Moonlight","237":"Hidden Power","238":"Cross Chop","239":"Twister","240":"Rain Dance","241":"Sunny Day","242":"Crunch","243":"Mirror Coat","244":"Psych Up","245":"Extreme Speed","246":"Ancient Power","247":"Shadow Ball","248":"Future Sight","249":"Rock Smash","250":"Whirlpool","251":"Beat Up","252":"Fake Out","253":"Uproar","254":"Stockpile","255":"Spit Up","256":"Swallow","257":"Heat Wave","258":"Hail","259":"Torment","260":"Flatter","261":"Will-O-Wisp","262":"Memento","263":"Facade","264":"Focus Punch","265":"Smelling Salts","266":"Follow Me","267":"Nature Power","268":"Charge","269":"Taunt","270":"Helping Hand","271":"Trick","272":"Role Play","273":"Wish","274":"Assist","275":"Ingrain","276":"Superpower","277":"Magic Coat","278":"Recycle","279":"Revenge","280":"Brick Break","281":"Yawn","282":"Knock Off","283":"Endeavor","284":"Eruption","285":"Skill Swap","286":"Imprison","287":"Refresh","288":"Grudge","289":"Snatch","290":"Secret Power","291":"Dive","292":"Arm Thrust","293":"Camouflage","294":"Tail Glow","295":"Luster Purge","296":"Mist Ball","297":"Feather Dance","298":"Teeter Dance","299":"Blaze Kick","300":"Mud Sport","301":"Ice Ball","302":"Needle Arm","303":"Slack Off","304":"Hyper Voice","305":"Poison Fang","306":"Crush Claw","307":"Blast Burn","308":"Hydro Cannon","309":"Meteor Mash","310":"Astonish","311":"Weather Ball","312":"Aromatherapy","313":"Fake Tears","314":"Air Cutter","315":"Overheat","316":"Odor Sleuth","317":"Rock Tomb","318":"Silver Wind","319":"Metal Sound","320":"Grass Whistle","321":"Tickle","322":"Cosmic Power","323":"Water Spout","324":"Signal Beam","325":"Shadow Punch","326":"Extrasensory","327":"Sky Uppercut","328":"Sand Tomb","329":"Sheer Cold","330":"Muddy Water","331":"Bullet Seed","332":"Aerial Ace","333":"Icicle Spear","334":"Iron Defense","335":"Block","336":"Howl","337":"Dragon Claw","338":"Frenzy Plant","339":"Bulk Up","340":"Bounce","341":"Mud Shot","342":"Poison Tail","343":"Covet","344":"Volt Tackle","345":"Magical Leaf","346":"Water Sport","347":"Calm Mind","348":"Leaf Blade","349":"Dragon Dance","350":"Rock Blast","351":"Shock Wave","352":"Water Pulse","353":"Doom Desire","354":"Psycho Boost","355":"Roost","356":"Gravity","357":"Miracle Eye","358":"Wake-Up Slap","359":"Hammer Arm","360":"Gyro Ball","361":"Healing Wish","362":"Brine","363":"Natural Gift","364":"Feint","365":"Pluck","366":"Tailwind","367":"Acupressure","368":"Metal Burst","369":"U-turn","370":"Close Combat","371":"Payback","372":"Assurance","373":"Embargo","374":"Fling","375":"Psycho Shift","376":"Trump Card","377":"Heal Block","378":"Wring Out","379":"Power Trick","380":"Gastro Acid","381":"Lucky Chant","382":"Me First","383":"Copycat","384":"Power Swap","385":"Guard Swap","386":"Punishment","387":"Last Resort","388":"Worry Seed","389":"Sucker Punch","390":"Toxic Spikes","391":"Heart Swap","392":"Aqua Ring","393":"Magnet Rise","394":"Flare Blitz","395":"Force Palm","396":"Aura Sphere","397":"Rock Polish","398":"Poison Jab","399":"Dark Pulse","400":"Night Slash","401":"Aqua Tail","402":"Seed Bomb","403":"Air Slash","404":"X-Scissor","405":"Bug Buzz","406":"Dragon Pulse","407":"Dragon Rush","408":"Power Gem","409":"Drain Punch","410":"Vacuum Wave","411":"Focus Blast","412":"Energy Ball","413":"Brave Bird","414":"Earth Power","415":"Switcheroo","416":"Giga Impact","417":"Nasty Plot","418":"Bullet Punch","419":"Avalanche","420":"Ice Shard","421":"Shadow Claw","422":"Thunder Fang","423":"Ice Fang","424":"Fire Fang","425":"Shadow Sneak","426":"Mud Bomb","427":"Psycho Cut","428":"Zen Headbutt","429":"Mirror Shot","430":"Flash Cannon","431":"Rock Climb","432":"Defog","433":"Trick Room","434":"Draco Meteor","435":"Discharge","436":"Lava Plume","437":"Leaf Storm","438":"Power Whip","439":"Rock Wrecker","440":"Cross Poison","441":"Gunk Shot","442":"Iron Head","443":"Magnet Bomb","444":"Stone Edge","445":"Captivate","446":"Stealth Rock","447":"Grass Knot","448":"Chatter","449":"Judgment","450":"Bug Bite","451":"Charge Beam","452":"Wood Hammer","453":"Aqua Jet","454":"Attack Order","455":"Defend Order","456":"Heal Order","457":"Head Smash","458":"Double Hit","459":"Roar of Time","460":"Spacial Rend","461":"Lunar Dance","462":"Crush Grip","463":"Magma Storm","464":"Dark Void","465":"Seed Flare","466":"Ominous Wind","467":"Shadow Force","468":"Hone Claws","469":"Wide Guard","470":"Guard Split","471":"Power Split","472":"Wonder Room","473":"Psyshock","474":"Venoshock","475":"Autotomize","476":"Rage Powder","477":"Telekinesis","478":"Magic Room","479":"Smack Down","480":"Storm Throw","481":"Flame Burst","482":"Sludge Wave","483":"Quiver Dance","484":"Heavy Slam","485":"Synchronoise","486":"Electro Ball","487":"Soak","488":"Flame Charge","489":"Coil","490":"Low Sweep","491":"Acid Spray","492":"Foul Play","493":"Simple Beam","494":"Entrainment","495":"After You","496":"Round","497":"Echoed Voice","498":"Chip Away","499":"Clear Smog","500":"Stored Power","501":"Quick Guard","502":"Ally Switch","503":"Scald","504":"Shell Smash","505":"Heal Pulse","506":"Hex","507":"Sky Drop","508":"Shift Gear","509":"Circle Throw","510":"Incinerate","511":"Quash","512":"Acrobatics","513":"Reflect Type","514":"Retaliate","515":"Final Gambit","516":"Bestow","517":"Inferno","518":"Water Pledge","519":"Fire Pledge","520":"Grass Pledge","521":"Volt Switch","522":"Struggle Bug","523":"Bulldoze","524":"Frost Breath","525":"Dragon Tail","526":"Work Up","527":"Electroweb","528":"Wild Charge","529":"Drill Run","530":"Dual Chop","531":"Heart Stamp","532":"Horn Leech","533":"Sacred Sword","534":"Razor Shell","535":"Heat Crash","536":"Leaf Tornado","537":"Steamroller","538":"Cotton Guard","539":"Night Daze","540":"Psystrike","541":"Tail Slap","542":"Hurricane","543":"Head Charge","544":"Gear Grind","545":"Searing Shot","546":"Techno Blast","547":"Relic Song","548":"Secret Sword","549":"Glaciate","550":"Bolt Strike","551":"Blue Flare","552":"Fiery Dance","553":"Freeze Shock","554":"Ice Burn","555":"Snarl","556":"Icicle Crash","557":"V-create","558":"Fusion Flare","559":"Fusion Bolt","560":"Flying Press","561":"Mat Block","562":"Belch","563":"Rototiller","564":"Sticky Web","565":"Fell Stinger","566":"Phantom Force","567":"Trick-or-Treat","568":"Noble Roar","569":"Ion Deluge","570":"Parabolic Charge","571":"Forest's Curse","572":"Petal Blizzard","573":"Freeze-Dry","574":"Disarming Voice","575":"Parting Shot","576":"Topsy-Turvy","577":"Draining Kiss","578":"Crafty Shield","579":"Flower Shield","580":"Grassy Terrain","581":"Misty Terrain","582":"Electrify","583":"Play Rough","584":"Fairy Wind","585":"Moonblast","586":"Boomburst","587":"Fairy Lock","588":"King's Shield","589":"Play Nice","590":"Confide","591":"Diamond Storm","592":"Steam Eruption","593":"Hyperspace Hole","594":"Water Shuriken","595":"Mystical Fire","596":"Spiky Shield","597":"Aromatic Mist","598":"Eerie Impulse","599":"Venom Drench","600":"Powder","601":"Geomancy","602":"Magnetic Flux","603":"Happy Hour","604":"Electric Terrain","605":"Dazzling Gleam","606":"Celebrate","607":"Hold Hands","608":"Baby-Doll Eyes","609":"Nuzzle","610":"Hold Back","611":"Infestation","612":"Power-Up Punch","613":"Oblivion Wing","614":"Thousand Arrows","615":"Thousand Waves","616":"Land's Wrath","617":"Light Of Ruin","618":"Origin Pulse","619":"Precipice Blades","620":"Dragon Ascent","621":"Hyperspace Fury","622":"Shore Up","623":"First Impression","624":"Baneful Bunker","625":"Spirit Shackle","626":"Darkest Lariat","627":"Sparkling Aria","628":"Ice Hammer","629":"Floral Healing","630":"High Horsepower","631":"Strength Sap","632":"Solar Blade","633":"Leafage","634":"Spotlight","635":"Toxic Thread","636":"Laser Focus","637":"Gear Up","638":"Throat Chop","639":"Pollen Puff","640":"Anchor Shot","641":"Psychic Terrain","642":"Lunge","643":"Fire Lash","644":"Power Trip","645":"Burn Up","646":"Speed Swap","647":"Smart Strike","648":"Purify","649":"Revelation Dance","650":"Core Enforcer","651":"Trop Kick","652":"Instruct","653":"Beak Blast","654":"Clanging Scales","655":"Dragon Hammer","656":"Brutal Swing","657":"Aurora Veil","658":"Shell Trap","659":"Fleur Cannon","660":"Psychic Fangs","661":"Stomping Tantrum","662":"Shadow Bone","663":"Accelerock","664":"Liquidation","665":"Prismatic Laser","666":"Spectral Thief","667":"Sunsteel Strike","668":"Moongeist Beam","669":"Tearful Look","670":"Zing Zap","671":"Nature's Madness","672":"Multi-Attack","673":"Mind Blown","674":"Plasma Fists","675":"Photon Geyser","676":"Zippy Zap","677":"Splishy Splash","678":"Floaty Fall","679":"Pika Papow","680":"Bouncy Bubble","681":"Buzzy Buzz","682":"Sizzly Slide","683":"Glitzy Glow","684":"Baddy Bad","685":"Sappy Seed","686":"Freezy Frost","687":"Sparkly Swirl","688":"Veevee Volley","689":"Double Iron Bash","690":"Dynamax Cannon","691":"Snipe Shot","692":"Jaw Lock","693":"Stuff Cheeks","694":"No Retreat","695":"Tar Shot","696":"Magic Powder","697":"Dragon Darts","698":"Teatime","699":"Octolock","700":"Bolt Beak","701":"Fishious Rend","702":"Court Change","703":"Clangorous Soul","704":"Body Press","705":"Decorate","706":"Drum Beating","707":"Snap Trap","708":"Pyro Ball","709":"Behemoth Blade","710":"Behemoth Bash","711":"Aura Wheel","712":"Breaking Swipe","713":"Branch Poke","714":"Overdrive","715":"Apple Acid","716":"Grav Apple","717":"Spirit Break","718":"Strange Steam","719":"Life Dew","720":"Obstruct","721":"False Surrender","722":"Meteor Assault","723":"Eternabeam","724":"Steel Beam","725":"Expanding Force","726":"Steel Roller","727":"Scale Shot","728":"Meteor Beam","729":"Shell Side Arm","730":"Misty Explosion","731":"Grassy Glide","732":"Rising Voltage","733":"Terrain Pulse","734":"Skitter Smack","735":"Burning Jealousy","736":"Lash Out","737":"Poltergeist","738":"Corrosive Gas","739":"Coaching","740":"Flip Turn","741":"Triple Axel","742":"Dual Wingbeat","743":"Scorching Sands","744":"Jungle Healing","745":"Wicked Blow","746":"Surging Strikes","747":"Thunder Cage","748":"Dragon Energy","749":"Freezing Glare","750":"Fiery Wrath","751":"Thunderous Kick","752":"Glacial Lance","753":"Astral Barrage","754":"Eerie Spell","755":"Dire Claw","756":"Psyshield Bash","757":"Power Shift","758":"Stone Axe","759":"Springtide Storm","760":"Mystical Power","761":"Raging Fury","762":"Wave Crash","763":"Chloroblast","764":"Mountain Gale","765":"Victory Dance","766":"Headlong Rush","767":"Barb Barrage","768":"Esper Wing","769":"Bitter Malice","770":"Shelter","771":"Triple Arrows","772":"Infernal Parade","773":"Ceaseless Edge","774":"Bleakwind Storm","775":"Wildbolt Storm","776":"Sandsear Storm","777":"Lunar Blessing","778":"Take Heart","779":"Tera Blast","780":"Silk Trap","781":"Axe Kick","782":"Last Respects","783":"Lumina Crash","784":"Order Up","785":"Jet Punch","786":"Spicy Extract","787":"Spin Out","788":"Population Bomb","789":"Ice Spinner","790":"Glaive Rush","791":"Revival Blessing","792":"Salt Cure","793":"Triple Dive","794":"Mortal Spin","795":"Doodle","796":"Fillet Away","797":"Kowtow Cleave","798":"Flower Trick","799":"Torch Song","800":"Aqua Step","801":"Raging Bull","802":"Make It Rain","803":"Ruination","804":"Collision Course","805":"Electro Drift","806":"Shed Tail","807":"Chilly Reception","808":"Tidy Up","809":"Snowscape","810":"Pounce","811":"Trailblaze","812":"Chilling Water","813":"Hyper Drill","814":"Twin Beam","815":"Rage Fist","816":"Armor Cannon","817":"Bitter Blade","818":"Double Shock","819":"Gigaton Hammer","820":"Comeuppance","821":"Aqua Cutter","822":"Blazing Torque","823":"Wicked Torque","824":"Noxious Torque","825":"Combat Torque","826":"Magical Torque","827":"Psyblade","828":"Hydro Steam","829":"Blood Moon","830":"Matcha Gotcha","831":"Syrup Bomb","832":"Ivy Cudgel","833":"Electro Shot","834":"Tera Starstorm","835":"Fickle Beam","836":"Burning Bulwark","837":"Thunderclap","838":"Mighty Cleave","839":"Tachyon Cutter","840":"Hard Press","841":"Dragon Cheer","842":"Alluring Voice","843":"Temper Flare","844":"Supercell Slam","845":"Psychic Noise","846":"Upper Hand","847":"Malignant Chain","848":"Breakneck Blitz","849":"All Out Pummeling","850":"Supersonic Skystrike","851":"Acid Downpour","852":"Tectonic Rage","853":"Continental Crush","854":"Savage Spin Out","855":"Never Ending Nightmare","856":"Corkscrew Crash","857":"Inferno Overdrive","858":"Hydro Vortex","859":"Bloom Doom","860":"Gigavolt Havoc","861":"Shattered Psyche","862":"Subzero Slammer","863":"Devastating Drake","864":"Black Hole Eclipse","865":"Twinkle Tackle","866":"Catastropika","867":"10,000,000 Volt Thunderbolt","868":"Stoked Sparksurfer","869":"Extreme Evoboost","870":"Pulverizing Pancake","871":"Genesis Supernova","872":"Sinister Arrow Raid","873":"Malicious Moonsault","874":"Oceanic Operetta","875":"Splintered Stormshards","876":"Let's Snuggle Forever","877":"Clangorous Soulblaze","878":"Guardian of Alola","879":"Searing Sunraze Smash","880":"Menacing Moonraze Maelstrom","881":"Light That Burns The Sky","882":"Soul Stealing 7 Star Strike","883":"Max Guard","893":"Max Flare","890":"Max Flutterby","896":"Max Lightning","884":"Max Strike","885":"Max Knuckle","891":"Max Phantasm","898":"Max Hailstorm","887":"Max Ooze","894":"Max Geyser","886":"Max Airstream","901":"Max Starfall","899":"Max Wyrmwind","897":"Max Mindstorm","889":"Max Rockfall","888":"Max Quake","900":"Max Darkness","895":"Max Overgrowth","892":"Max Steelspike","902":"G-Max Vine Lash","903":"G-Max Wildfire","904":"G-Max Cannonade","905":"G-Max Befuddle","906":"G-Max Volt Crash","907":"G-Max Gold Rush","908":"G-Max Chi Strike","909":"G-Max Terror","910":"G-Max Foam Burst","911":"G-Max Resonance","912":"G-Max Cuddle","913":"G-Max Replenish","914":"G-Max Malodor","915":"G-Max Meltdown","916":"G-Max Drum Solo","917":"G-Max Fireball","918":"G-Max Hydrosnipe","919":"G-Max Wind Rage","920":"G-Max Gravitas","921":"G-Max Stonesurge","922":"G-Max Volcalith","923":"G-Max Tartness","924":"G-Max Sweetness","925":"G-Max Sandblast","926":"G-Max Stun Shock","927":"G-Max Centiferno","928":"G-Max Smite","929":"G-Max Snooze","930":"G-Max Finale","931":"G-Max Steelsurge","932":"G-Max Depletion","933":"G-Max One Blow","934":"Nihil Light"},"items":{"1881":"Ability Shield","674":"Abomasite","677":"Absolite","545":"Absorb Bulb","1777":"Adamant Crystal","135":"Adamant Orb","846":"Adrenaline Orb","672":"Aerodactylite","667":"Aggronite","162":"Aguav Berry","541":"Air Balloon","679":"Alakazite","803":"Aloraichium Z","755":"Altarianite","658":"Ampharosite","205":"Apicot Berry","104":"Armor Fossil","153":"Burnt Berry","640":"Assault Vest","757":"Audinite","2344":"Auspicious Armor","199":"Babiri Berry","668":"Banettite","851":"Beast Ball","770":"Beedrillite","183":"Belue Berry","43":"Berry Juice","1111":"Berry Sweet","581":"Big Nugget","296":"Big Root","544":"Binding Band","241":"Black Belt","240":"Black Glasses","281":"Black Sludge","661":"Blastoisinite","664":"Blazikenite","535":"Blue Orb","165":"Bluk Berry","1121":"Blunder Policy","1880":"Booster Energy","795":"Bottle Cap","213":"Bright Powder","558":"Bug Gem","909":"Bug Memory","787":"Buginium Z","118":"Burn Drive","767":"Cameruptite","546":"Cell Battery","249":"Charcoal","660":"Charizardite X","678":"Charizardite Y","195":"Charti Berry","149":"PRZ Cure Berry","16":"Cherish Ball","150":"Mint Berry","200":"Chilan Berry","119":"Chill Drive","1254":"Chipped Pot","220":"Choice Band","287":"Choice Scarf","297":"Choice Specs","189":"Chople Berry","100":"Claw Fossil","1882":"Clear Amulet","1112":"Clover Sweet","192":"Coba Berry","198":"Colbur Berry","2406":"Cornerstone Mask","175":"Cornn Berry","572":"Cover Fossil","1885":"Covert Cloak","1253":"Cracked Pot","210":"Custap Berry","285":"Damp Rock","562":"Dark Gem","919":"Dark Memory","791":"Darkinium Z","109":"Dawn Stone","798":"Decidium Z","227":"Deep Sea Scale","226":"Deep Sea Tooth","280":"Destiny Knot","764":"Diancite","7":"Dive Ball","102":"Dome Fossil","116":"Douse Drive","311":"Draco Plate","250":"Dragon Fang","561":"Dragon Gem","918":"Dragon Memory","235":"Dragon Scale","790":"Dragonium Z","312":"Dread Plate","576":"Dream Ball","324":"Dubious Disc","182":"Durin Berry","13":"Dusk Ball","108":"Dusk Stone","305":"Earth Plate","805":"Eevium Z","547":"Eject Button","1119":"Eject Pack","322":"Electirizer","550":"Electric Gem","915":"Electric Memory","881":"Electric Seed","779":"Electrium Z","208":"Enigma Berry","538":"Eviolite","268":"Expert Belt","793":"Fairium Z","2401":"Fairy Feather","715":"Fairy Gem","920":"Fairy Memory","492":"Fast Ball","553":"Fighting Gem","904":"Fighting Memory","782":"Fightinium Z","159":"Figy Berry","548":"Fire Gem","912":"Fire Memory","82":"Fire Stone","777":"Firium Z","303":"Fist Plate","273":"Flame Orb","298":"Flame Plate","539":"Float Stone","1113":"Flower Sweet","556":"Flying Gem","905":"Flying Memory","785":"Flyinium Z","230":"Focus Band","275":"Focus Sash","1105":"Fossilized Bird","1108":"Fossilized Dino","1107":"Fossilized Drake","1106":"Fossilized Fish","497":"Friend Ball","316":"Full Incense","1582":"Galarica Cuff","1592":"Galarica Wreath","756":"Galladite","202":"Ganlon Berry","683":"Garchompite","657":"Gardevoirite","656":"Gengarite","560":"Ghost Gem","910":"Ghost Memory","789":"Ghostium Z","763":"Glalitite","796":"Gold Bottle Cap","551":"Grass Gem","914":"Grass Memory","780":"Grassium Z","884":"Grassy Seed","3":"Great Ball","173":"Grepa Berry","286":"Grip Claw","1779":"Griseous Core","112":"Griseous Orb","555":"Ground Gem","907":"Ground Memory","784":"Groundium Z","676":"Gyaradosite","197":"Haban Berry","238":"Hard Stone","14":"Heal Ball","2408":"Hearthflame Mask","284":"Heat Rock","495":"Heavy Ball","1120":"Heavy-Duty Boots","101":"Helix Fossil","680":"Heracronite","172":"Hondew Berry","666":"Houndoominite","163":"Iapapa Berry","552":"Ice Gem","917":"Ice Memory","849":"Ice Stone","302":"Icicle Plate","781":"Icium Z","282":"Icy Rock","799":"Incinium Z","308":"Insect Plate","278":"Iron Ball","313":"Iron Plate","211":"Jaboca Berry","710":"Jaw Fossil","196":"Kasib Berry","190":"Kebia Berry","687":"Kee Berry","170":"Kelpsy Berry","675":"Kangaskhanite","221":"King's Rock","926":"Kommonium Z","279":"Lagging Tail","206":"Lansat Berry","684":"Latiasite","685":"Latiosite","255":"Lax Incense","85":"Leaf Stone","259":"Stick","234":"Leftovers","154":"Mystery Berry","493":"Level Ball","201":"Liechi Berry","270":"Life Orb","236":"Light Ball","269":"Light Clay","1886":"Loaded Dice","768":"Lopunnite","496":"Love Ball","1110":"Love Sweet","673":"Lucarionite","256":"Lucky Punch","157":"Miracle Berry","648":"Luminous Moss","922":"Lunalium Z","494":"Lure Ball","1778":"Lustrous Globe","136":"Lustrous Orb","11":"Luxury Ball","925":"Lycanium Z","215":"Macho Brace","323":"Magmarizer","242":"Magnet","161":"Mago Berry","176":"Magost Berry","137":"Mail","1861":"Malicious Armor","682":"Manectite","688":"Maranga Berry","802":"Marshadium Z","1":"Master Ball","2404":"Masterpiece Teacup","681":"Mawilite","301":"Meadow Plate","665":"Medichamite","219":"Mental Herb","758":"Metagrossite","2482":"Metal Alloy","233":"Metal Coat","257":"Metal Powder","277":"Metronome","806":"Mewnium Z","662":"Mewtwonite X","663":"Mewtwonite Y","209":"Micle Berry","924":"Mimikium Z","307":"Mind Plate","239":"Miracle Seed","1883":"Mirror Herb","883":"Misty Seed","498":"Moon Ball","81":"Moon Stone","266":"Muscle Band","243":"Mystic Water","166":"Nanab Berry","8":"Nest Ball","6":"Net Ball","246":"Never-Melt Ice","178":"Nomel Berry","564":"Normal Gem","776":"Normalium Z","184":"Occa Berry","314":"Odd Incense","103":"Old Amber","155":"Berry","110":"Oval Stone","180":"Pamtre Berry","500":"Park Ball","185":"Passho Berry","193":"Payapa Berry","151":"PSN Cure Berry","156":"Bitter Berry","204":"Petaya Berry","762":"Pidgeotite","794":"Pikanium Z","836":"Pikashunium Z","168":"Pinap Berry","671":"Pinsirite","644":"Pixie Plate","573":"Plume Fossil","245":"Poison Barb","554":"Poison Gem","906":"Poison Memory","783":"Poisonium Z","4":"Poke Ball","169":"Pomeg Berry","293":"Power Anklet","292":"Power Band","290":"Power Belt","289":"Power Bracer","271":"Power Herb","291":"Power Lens","294":"Power Weight","12":"Premier Ball","800":"Primarium Z","537":"Prism Scale","880":"Protective Pads","321":"Protector","557":"Psychic Gem","916":"Psychic Memory","882":"Psychic Seed","786":"Psychium Z","1884":"Punching Glove","171":"Qualot Berry","15":"Quick Ball","217":"Quick Claw","274":"Quick Powder","177":"Rabuta Berry","106":"Rare Bone","152":"Ice Berry","326":"Razor Claw","327":"Razor Fang","164":"Razz Berry","325":"Reaper Cloth","542":"Red Card","534":"Red Orb","9":"Repeat Ball","1115":"Ribbon Sweet","187":"Rindo Berry","543":"Ring Target","559":"Rock Gem","315":"Rock Incense","908":"Rock Memory","788":"Rockium Z","540":"Rocky Helmet","1122":"Room Service","99":"Root Fossil","318":"Rose Incense","686":"Roseli Berry","212":"Rowap Berry","1104":"Rusted Shield","1103":"Rusted Sword","754":"Sablenite","647":"Sachet","5":"Safari Ball","650":"Safety Goggles","711":"Sail Fossil","203":"Salac Berry","769":"Salamencite","753":"Sceptilite","670":"Scizorite","232":"Scope Lens","254":"Sea Incense","244":"Sharp Beak","759":"Sharpedonite","295":"Shed Shell","253":"Shell Bell","107":"Shiny Stone","117":"Shock Drive","191":"Shuca Berry","251":"Polkadot Bow","222":"Silver Powder","158":"Gold Berry","105":"Skull Fossil","306":"Sky Plate","760":"Slowbronite","283":"Smooth Rock","804":"Snorlium Z","649":"Snowball","237":"Soft Sand","921":"Solganium Z","225":"Soul Dew","247":"Spell Tag","179":"Spelon Berry","299":"Splash Plate","310":"Spooky Plate","499":"Sport Ball","207":"Starf Berry","1114":"Star Sweet","761":"Steelixite","563":"Steel Gem","911":"Steel Memory","792":"Steelium Z","288":"Sticky Barb","309":"Stone Plate","1785":"Strange Ball","1109":"Strawberry Sweet","80":"Sun Stone","752":"Swampertite","1116":"Sweet Apple","2402":"Syrupy Apple","174":"Tamato Berry","194":"Tanga Berry","801":"Tapunium Z","1117":"Tart Apple","879":"Terrain Extender","258":"Thick Club","1118":"Throat Spray","83":"Thunder Stone","10":"Timer Ball","272":"Toxic Orb","304":"Toxic Plate","1130":"TR00","1131":"TR01","1132":"TR02","1133":"TR03","1134":"TR04","1135":"TR05","1136":"TR06","1137":"TR07","1138":"TR08","1139":"TR09","1140":"TR10","1141":"TR11","1142":"TR12","1143":"TR13","1144":"TR14","1145":"TR15","1146":"TR16","1147":"TR17","1148":"TR18","1149":"TR19","1150":"TR20","1151":"TR21","1152":"TR22","1153":"TR23","1154":"TR24","1155":"TR25","1156":"TR26","1157":"TR27","1158":"TR28","1159":"TR29","1160":"TR30","1161":"TR31","1162":"TR32","1163":"TR33","1164":"TR34","1165":"TR35","1166":"TR36","1167":"TR37","1168":"TR38","1169":"TR39","1170":"TR40","1171":"TR41","1172":"TR42","1173":"TR43","1174":"TR44","1175":"TR45","1176":"TR46","1177":"TR47","1178":"TR48","1179":"TR49","1180":"TR50","1181":"TR51","1182":"TR52","1183":"TR53","1184":"TR54","1185":"TR55","1186":"TR56","1187":"TR57","1188":"TR58","1189":"TR59","1190":"TR60","1191":"TR61","1192":"TR62","1193":"TR63","1194":"TR64","1195":"TR65","1196":"TR66","1197":"TR67","1198":"TR68","1199":"TR69","1200":"TR70","1201":"TR71","1202":"TR72","1203":"TR73","1204":"TR74","1205":"TR75","1206":"TR76","1207":"TR77","1208":"TR78","1209":"TR79","1210":"TR80","1211":"TR81","1212":"TR82","1213":"TR83","1214":"TR84","1215":"TR85","1216":"TR86","1217":"TR87","1218":"TR88","1219":"TR89","1220":"TR90","1221":"TR91","1222":"TR92","1223":"TR93","1224":"TR94","1225":"TR95","1226":"TR96","1227":"TR97","1228":"TR98","1229":"TR99","248":"Twisted Spoon","669":"Tyranitarite","2":"Ultra Ball","923":"Ultranecrozium Z","2403":"Unremarkable Teacup","252":"Up-Grade","1123":"Utility Umbrella","659":"Venusaurite","186":"Wacan Berry","549":"Water Gem","913":"Water Memory","84":"Water Stone","778":"Waterium Z","181":"Watmel Berry","317":"Wave Incense","639":"Weakness Policy","2407":"Wellspring Mask","167":"Wepear Berry","646":"Whipped Dream","214":"White Herb","265":"Wide Lens","160":"Wiki Berry","267":"Wise Glasses","188":"Yache Berry","300":"Zap Plate","276":"Zoom Lens"},"abilities":{"91":"Adaptability","184":"Aerilate","106":"Aftermath","76":"Air Lock","148":"Analytic","83":"Anger Point","271":"Anger Shell","107":"Anticipation","71":"Arena Trap","296":"Armor Tail","165":"Aroma Veil","266":"As One (Glastrier)","267":"As One (Spectrier)","188":"Aura Break","123":"Bad Dreams","237":"Ball Fetch","217":"Battery","4":"Battle Armor","210":"Battle Bond","284":"Vessel of Ruin","224":"Beast Boost","201":"Berserk","145":"Big Pecks","66":"Blaze","171":"Bulletproof","167":"Cheek Pouch","264":"Chilling Neigh","34":"Chlorophyll","29":"Clear Body","13":"Cloud Nine","16":"Color Change","213":"Comatose","279":"Commander","172":"Competitive","14":"Compound Eyes","126":"Contrary","212":"Corrosion","294":"Costar","238":"Cotton Down","291":"Cud Chew","261":"Curious Medicine","130":"Cursed Body","56":"Cute Charm","6":"Damp","216":"Dancer","186":"Dark Aura","235":"Dauntless Shield","219":"Dazzling","129":"Defeatist","128":"Defiant","191":"Delta Stream","190":"Desolate Land","209":"Disguise","88":"Download","263":"Dragon's Maw","2":"Drizzle","70":"Drought","87":"Dry Skin","48":"Early Bird","297":"Earth Eater","27":"Effect Spore","226":"Electric Surge","280":"Electromorphosis","304":"Embody Aspect (Cornerstone)","303":"Embody Aspect (Hearthflame)","301":"Embody Aspect (Teal)","302":"Embody Aspect (Wellspring)","194":"Emergency Exit","187":"Fairy Aura","111":"Filter","49":"Flame Body","138":"Flare Boost","18":"Flash Fire","122":"Flower Gift","166":"Flower Veil","218":"Fluffy","59":"Forecast","108":"Forewarn","132":"Friend Guard","119":"Frisk","230":"Full Metal Body","169":"Fur Coat","177":"Gale Wings","206":"Galvanize","82":"Gluttony","283":"Good as Gold","183":"Gooey","255":"Gorilla Tactics","179":"Grass Pelt","229":"Grassy Surge","265":"Grim Neigh","275":"Guard Dog","241":"Gulp Missile","62":"Guts","289":"Hadron Engine","139":"Harvest","131":"Healer","85":"Heatproof","134":"Heavy Metal","118":"Honey Gather","299":"Hospitality","37":"Huge Power","258":"Hunger Switch","55":"Hustle","93":"Hydration","52":"Hyper Cutter","115":"Ice Body","248":"Ice Face","246":"Ice Scales","35":"Illuminate","149":"Illusion","17":"Immunity","150":"Imposter","151":"Infiltrator","215":"Innards Out","39":"Inner Focus","15":"Insomnia","22":"Intimidate","234":"Intrepid Sword","160":"Iron Barbs","89":"Iron Fist","154":"Justified","51":"Keen Eye","103":"Klutz","102":"Leaf Guard","26":"Levitate","236":"Libero","135":"Light Metal","31":"Lightning Rod","7":"Limber","268":"Lingering Aroma","64":"Liquid Ooze","204":"Liquid Voice","203":"Long Reach","156":"Magic Bounce","98":"Magic Guard","170":"Magician","40":"Magma Armor","42":"Magnet Pull","63":"Marvel Scale","178":"Mega Launcher","196":"Merciless","250":"Mimicry","300":"Mind's Eye","58":"Minus","240":"Mirror Armor","228":"Misty Surge","104":"Mold Breaker","141":"Moody","78":"Motor Drive","153":"Moxie","136":"Multiscale","121":"Multitype","152":"Mummy","298":"Mycelium Might","30":"Natural Cure","233":"Neuroforce","256":"Neutralizing Gas","99":"No Guard","96":"Normalize","12":"Oblivious","290":"Opportunist","288":"Orichalcum Pulse","142":"Overcoat","65":"Overgrow","20":"Own Tempo","185":"Parental Bond","257":"Pastel Veil","253":"Perish Body","124":"Pickpocket","53":"Pickup","182":"Pixilate","57":"Plus","90":"Poison Heal","38":"Poison Point","310":"Poison Puppeteer","143":"Poison Touch","211":"Power Construct","223":"Power of Alchemy","249":"Power Spot","158":"Prankster","46":"Pressure","189":"Primordial Sea","232":"Prism Armor","239":"Propeller Tail","168":"Protean","281":"Protosynthesis","227":"Psychic Surge","244":"Punk Rock","74":"Pure Power","272":"Purifying Salt","282":"Quark Drive","214":"Queenly Majesty","259":"Quick Draw","95":"Quick Feet","44":"Rain Dish","155":"Rattled","222":"Receiver","120":"Reckless","174":"Refrigerate","144":"Regenerator","247":"Ripen","79":"Rivalry","225":"RKS System","69":"Rock Head","276":"Rocky Payload","24":"Rough Skin","50":"Run Away","159":"Sand Force","146":"Sand Rush","245":"Sand Spit","45":"Sand Stream","8":"Sand Veil","157":"Sap Sipper","208":"Schooling","113":"Scrappy","251":"Screen Cleaner","269":"Seed Sower","32":"Serene Grace","231":"Shadow Shield","23":"Shadow Tag","292":"Sharpness","61":"Shed Skin","125":"Sheer Force","75":"Shell Armor","19":"Shield Dust","197":"Shields Down","86":"Simple","92":"Skill Link","112":"Slow Start","202":"Slush Rush","97":"Sniper","81":"Snow Cloak","117":"Snow Warning","94":"Solar Power","116":"Solid Rock","220":"Soul-Heart","43":"Soundproof","3":"Speed Boost","198":"Stakeout","100":"Stall","242":"Stalwart","192":"Stamina","176":"Stance Change","9":"Static","80":"Steadfast","243":"Steam Engine","200":"Steelworker","252":"Steely Spirit","1":"Stench","60":"Sticky Hold","114":"Storm Drain","173":"Strong Jaw","5":"Sturdy","21":"Suction Cups","105":"Super Luck","306":"Supersweet Syrup","293":"Supreme Overlord","207":"Surge Surfer","68":"Swarm","175":"Sweet Veil","33":"Swift Swim","180":"Symbiosis","28":"Synchronize","285":"Sword of Ruin","77":"Tangled Feet","221":"Tangling Hair","101":"Technician","140":"Telepathy","309":"Teraform Zero","308":"Tera Shell","307":"Tera Shift","164":"Teravolt","270":"Thermal Exchange","47":"Thick Fat","110":"Tinted Lens","67":"Torrent","181":"Tough Claws","137":"Toxic Boost","305":"Toxic Chain","295":"Toxic Debris","36":"Trace","262":"Transistor","205":"Triage","54":"Truant","163":"Turboblaze","109":"Unaware","84":"Unburden","127":"Unnerve","260":"Unseen Fist","162":"Victory Star","72":"Vital Spirit","10":"Volt Absorb","254":"Wandering Spirit","11":"Water Absorb","199":"Water Bubble","195":"Water Compaction","41":"Water Veil","133":"Weak Armor","273":"Well-Baked Body","73":"White Smoke","193":"Wimp Out","277":"Wind Power","274":"Wind Rider","25":"Wonder Guard","147":"Wonder Skin","161":"Zen Mode","278":"Zero to Hero"}};</script>
+</head>
+
+<body class="dark-theme">
+    <nav><div class="header"><div class="header-color"><div class="header-inner">
+        <ul class="nav">
+            <li><a class="button nav-first" href="https://nulldex.pokemon0null.workers.dev/">Pok&eacute;dex</a></li>
+            <li><a class="button nav-last button cur" href="https://nullcalc.mehdibouazra1998.workers.dev/">Calculator</a></li>
+        </ul>
+        <div style="clear:both"></div>
+    </div></div></div></nav>
+
+<div class="wrapper">
+
+    <div aria-label="Settings" role="region">
+        <span class="title-text">Pok&eacute;mon Damage Calculator</span>
+        <span class="genSelection" aria-labelledby="selectGenInstruction" role="radiogroup" title="Select the generation.">
+            <span class="visually-hidden" id="selectGenInstruction">Select the generation.</span>
+            <input class="gen visually-hidden" type="radio" name="gen" value="9" id="gen9" checked="checked" />
+        </span>
+        <span class="notationSelection" aria-labelledby="selectNotationInstruction" role="radiogroup" title="Select the output notation.">
+            <span class="visually-hidden" id="selectNotationInstruction">Select the output notation.</span>
+            <input class="notation visually-hidden" type="radio" name="notation" id="pixels" value="px" />
+            <input class="notation visually-hidden" type="radio" name="notation" id="percentage" value="%" />
+        </span>
+        <span class="modeSelection" aria-labelledby="selectModeInstruction" role="radiogroup" title="Select the calculator's mode of function.">
+            <span class="visually-hidden" id="selectModeInstruction">Select the calculator's mode of function.</span>
+            <input class="mode visually-hidden" type="radio" name="mode" id="one-vs-one" checked="checked" />
+            <input class="mode visually-hidden" type="radio" name="mode" id="one-vs-all" />
+            <input class="mode visually-hidden" type="radio" name="mode" id="all-vs-one" />
+            <input class="mode visually-hidden" type="radio" name="mode" id="randoms" />
+        </span>
+    </div>
+    <hr />
+    <div aria-label="Move selection" class="move-result-group" role="region" title="Select a move to show detailed results.">
+        <div  aria-labelledby="resultHeaderL" class="move-result-subgroup" role="radiogroup">
+            <div class="result-move-header"><span id="resultHeaderL">Pok&eacute;mon 1's Moves (select one to show detailed results)</span>
+            </div>
+            <div>
+                <input class="result-move visually-hidden" type="radio" name="resultMove" id="resultMoveL1" checked="checked" aria-describedby="resultDamageL1" />
+                <label class="btn btn-xxxwide btn-top" for="resultMoveL1">Loading...</label>
+                <span id="resultDamageL1">??? - ???%</span>
+            </div>
+            <div>
+                <input class="result-move visually-hidden" type="radio" name="resultMove" id="resultMoveL2" aria-describedby="resultDamageL2" />
+                <label class="btn btn-xxxwide btn-mid" for="resultMoveL2">Loading...</label>
+                <span id="resultDamageL2">??? - ???%</span>
+            </div>
+            <div>
+                <input class="result-move visually-hidden" type="radio" name="resultMove" id="resultMoveL3" aria-describedby="resultDamageL3" />
+                <label class="btn btn-xxxwide btn-mid" for="resultMoveL3">Loading...</label>
+                <span id="resultDamageL3">??? - ???%</span>
+            </div>
+            <div>
+                <input class="result-move visually-hidden" type="radio" name="resultMove" id="resultMoveL4" aria-describedby="resultDamageL4" />
+                <label class="btn btn-xxxwide btn-bottom" for="resultMoveL4">Loading...</label>
+                <span id="resultDamageL4">??? - ???%</span>
+            </div>
+        </div>
+        <div aria-labelledby="resultHeaderR" class="move-result-subgroup" role="radiogroup">
+            <div class="result-move-header"><span id="resultHeaderR">Pok&eacute;mon 2's Moves (select one to show detailed results)</span>
+            </div>
+            <div>
+                <input class="result-move visually-hidden" type="radio" name="resultMove" id="resultMoveR1" aria-describedby="resultDamageR1" />
+                <label class="btn btn-xxxwide btn-top" for="resultMoveR1">Loading...</label>
+                <span id="resultDamageR1">??? - ???%</span>
+            </div>
+            <div>
+                <input class="result-move visually-hidden" type="radio" name="resultMove" id="resultMoveR2" aria-describedby="resultDamageR2" />
+                <label class="btn btn-xxxwide btn-mid" for="resultMoveR2">Loading...</label>
+                <span id="resultDamageR2">??? - ???%</span>
+            </div>
+            <div>
+                <input class="result-move visually-hidden" type="radio" name="resultMove" id="resultMoveR3" aria-describedby="resultDamageR3" />
+                <label class="btn btn-xxxwide btn-mid" for="resultMoveR3">Loading...</label>
+                <span id="resultDamageR3">??? - ???%</span>
+            </div>
+            <div>
+                <input class="result-move visually-hidden" type="radio" name="resultMove" id="resultMoveR4" aria-describedby="resultDamageR4" />
+                <label class="btn btn-xxxwide btn-bottom" for="resultMoveR4">Loading...</label>
+                <span id="resultDamageR4">??? - ???%</span>
+            </div>
+        </div>
+    </div>
+    <div aria-label="Calculation results" class="main-result-group" role="region">
+        <div class="big-text" title="Click to copy.">
+            <span id="mainResult">Loading...</span>
+            <span id="tooltipText">Copied</span>
+        </div>
+        <div class="small-text"><span id="damageValues">(If you see this message for more than a few seconds, try enabling JavaScript.)</span>
+        </div>
+    </div>
+    <div class="left-side-pannel side-pannel">
+        <button data-set="i-f-type" class="l-side-button">
+            <i class="s-arrow arrowdown"></i>
+            <span>Type</span>
+        </button>
+        <button data-set="i-f-stats" class="l-side-button">
+            <i class="s-arrow arrowdown"></i>
+            <span>Stats</span>
+        </button>
+        <button data-set="i-f-hp" class="l-side-button">
+            <i class="s-arrow arrowdown"></i>
+            <span>HP</span>
+        </button>
+        <button data-set="i-f-move" class="l-side-button">
+            <i class="s-arrow arrowdown"></i>
+            <span>Moves</span>
+        </button>
+    </div>
+    <div class="panel">
+        <div aria-label="Pok&eacute;mon 1" role="region">
+            <fieldset class="poke-info" id="p1">
+                <legend align="center">Pok&eacute;mon 1
+                    <img id="p1mon" src="" alt="">
+                </legend>
+                <input type="text" class="set-selector calc-trigger player" />
+                <span id="importedSetsOptions" style="width:auto; display:none">
+                    <input type="checkbox" id="importedSets"> Only show imported sets</input> 
+                </span>
+                <div class="info-group top i-f-type">
+                    <div>
+                        <label>Type</label>
+                        <select aria-label="type1" class="type1 terrain-trigger calc-trigger"></select>
+                        <select aria-label="type2" class="type2 terrain-trigger calc-trigger"></select>
+                        <small class="right">(<a class="analysis links-lighten" target="_blank" href="">Smogon&nbsp;analysis</a>)</small>
+                    </div>
+                    <div class="gen-specific g9">
+                        <label>Tera Type</label>
+                        <select class="teraType terrain-trigger calc-trigger"></select>
+                        <input type="checkbox" title= "Has this Pok&eacute;mon terastalized?" class="teraToggle terrain-trigger calc-trigger">
+                    </div>
+                    <div class="hide">
+                        <label>Forme</label>
+                        <select class="forme calc-trigger"></select>
+                    </div>
+                    <div class="hide">
+                        <label>Gender</label>
+                        <select class="gender calc-trigger"><option></option><option selected="selected">Male</option><option>Female</option></select>
+                    </div>
+                    <div>
+                        <label for="levelL1">Level</label>
+                        <input class="level calc-trigger" id="levelL1" value="100" />
+                    </div>
+                    <div class="hide">
+                        <label for="weightL1">Weight (kg)</label>
+                        <input class="weight calc-trigger" id="weightL1" value="10.0" />
+                    </div>
+                </div>
+                <div class="info-group i-f-stats">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th scope="col">Base</th>
+                                <th class="gen-specific g3 g4 g5 g6 g7 g8 g9" scope="col">IVs</th>
+                                <th class="gen-specific g3 g4 g5 g6 g7 g8 g9" scope="col">EVs</th>
+                                <th class="gen-specific g1 g2 hide" scope="col">DVs</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="hp">
+                                <th scope="row">
+                                    <label>HP</label>
+                                </th>
+                                <td>
+                                    <input class="base calc-trigger" value="100" />
+                                </td>
+                                <td class="gen-specific g3 g4 g5 g6 g7 g8 g9">
+                                    <input class="ivs calc-trigger" value="31" />
+                                </td>
+                                <td class="gen-specific g3 g4 g5 g6 g7 g8 g9">
+                                    <input class="evs calc-trigger" type="number" min="0" max="252" step="4" value="0" />
+                                </td>
+                                <td class="gen-specific g1 g2 hide">
+                                    <input class="dvs calc-trigger" value="15" disabled="disabled" />
+                                </td>
+                                <td><span class="total">341</span>
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr class="at">
+                                <th scope="row">
+                                    <label>Attack</label>
+                                </th>
+                                <td>
+                                    <input class="base calc-trigger" value="100" />
+                                </td>
+                                <td class="gen-specific g3 g4 g5 g6 g7 g8 g9">
+                                    <input class="ivs calc-trigger" value="31" />
+                                </td>
+                                <td class="gen-specific g3 g4 g5 g6 g7 g8 g9">
+                                    <input class="evs calc-trigger" type="number" min="0" max="252" step="4" value="0" />
+                                </td>
+                                <td class="gen-specific g1 g2 hide">
+                                    <input class="dvs calc-trigger" value="15" />
+                                </td>
+                                <td><span class="total">236</span>
+                                </td>
+                                <td>
+                                    <select class="boost calc-trigger">
+                                        <option value="6">+6</option>
+                                        <option value="5">+5</option>
+                                        <option value="4">+4</option>
+                                        <option value="3">+3</option>
+                                        <option value="2">+2</option>
+                                        <option value="1">+1</option>
+                                        <option value="0" selected="selected">--</option>
+                                        <option value="-1">-1</option>
+                                        <option value="-2">-2</option>
+                                        <option value="-3">-3</option>
+                                        <option value="-4">-4</option>
+                                        <option value="-5">-5</option>
+                                        <option value="-6">-6</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr class="df">
+                                <th scope="row">
+                                    <label>Defense</label>
+                                </th>
+                                <td>
+                                    <input class="base calc-trigger" value="100" />
+                                </td>
+                                <td class="gen-specific g3 g4 g5 g6 g7 g8 g9">
+                                    <input class="ivs calc-trigger" value="31" />
+                                </td>
+                                <td class="gen-specific g3 g4 g5 g6 g7 g8 g9">
+                                    <input class="evs calc-trigger" type="number" min="0" max="252" step="4" value="0" />
+                                </td>
+                                <td class="gen-specific g1 g2 hide">
+                                    <input class="dvs calc-trigger" value="15" />
+                                </td>
+                                <td><span class="total">236</span>
+                                </td>
+                                <td>
+                                    <select class="boost calc-trigger">
+                                        <option value="6">+6</option>
+                                        <option value="5">+5</option>
+                                        <option value="4">+4</option>
+                                        <option value="3">+3</option>
+                                        <option value="2">+2</option>
+                                        <option value="1">+1</option>
+                                        <option value="0" selected="selected">--</option>
+                                        <option value="-1">-1</option>
+                                        <option value="-2">-2</option>
+                                        <option value="-3">-3</option>
+                                        <option value="-4">-4</option>
+                                        <option value="-5">-5</option>
+                                        <option value="-6">-6</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr class="sa gen-specific g2 g3 g4 g5 g6 g7 g8 g9">
+                                <th scope="row">
+                                    <label>Sp. Atk</label>
+                                </th>
+                                <td>
+                                    <input class="base calc-trigger" value="100" />
+                                </td>
+                                <td class="gen-specific g3 g4 g5 g6 g7 g8 g9">
+                                    <input class="ivs calc-trigger" value="31" />
+                                </td>
+                                <td class="gen-specific g3 g4 g5 g6 g7 g8 g9">
+                                    <input class="evs calc-trigger" type="number" min="0" max="252" step="4" value="0" />
+                                </td>
+                                <td class="gen-specific g1 g2 hide">
+                                    <input class="dvs calc-trigger" value="15" />
+                                </td>
+                                <td><span class="total">236</span>
+                                </td>
+                                <td>
+                                    <select class="boost calc-trigger">
+                                        <option value="6">+6</option>
+                                        <option value="5">+5</option>
+                                        <option value="4">+4</option>
+                                        <option value="3">+3</option>
+                                        <option value="2">+2</option>
+                                        <option value="1">+1</option>
+                                        <option value="0" selected="selected">--</option>
+                                        <option value="-1">-1</option>
+                                        <option value="-2">-2</option>
+                                        <option value="-3">-3</option>
+                                        <option value="-4">-4</option>
+                                        <option value="-5">-5</option>
+                                        <option value="-6">-6</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr class="sd gen-specific g2 g3 g4 g5 g6 g7 g8 g9">
+                                <th scope="row">
+                                    <label>Sp. Def</label>
+                                </th>
+                                <td>
+                                    <input class="base calc-trigger" value="100" />
+                                </td>
+                                <td class="gen-specific g3 g4 g5 g6 g7 g8 g9">
+                                    <input class="ivs calc-trigger" value="31" />
+                                </td>
+                                <td class="gen-specific g3 g4 g5 g6 g7 g8 g9">
+                                    <input class="evs calc-trigger" type="number" min="0" max="252" step="4" value="0" />
+                                </td>
+                                <td class="gen-specific g1 g2 hide">
+                                    <input class="dvs calc-trigger" value="15" disabled="disabled" />
+                                </td>
+                                <td><span class="total">236</span>
+                                </td>
+                                <td>
+                                    <select class="boost calc-trigger">
+                                        <option value="6">+6</option>
+                                        <option value="5">+5</option>
+                                        <option value="4">+4</option>
+                                        <option value="3">+3</option>
+                                        <option value="2">+2</option>
+                                        <option value="1">+1</option>
+                                        <option value="0" selected="selected">--</option>
+                                        <option value="-1">-1</option>
+                                        <option value="-2">-2</option>
+                                        <option value="-3">-3</option>
+                                        <option value="-4">-4</option>
+                                        <option value="-5">-5</option>
+                                        <option value="-6">-6</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr class="sl gen-specific g1 hide">
+                                <th scope="row">
+                                    <label>Special</label>
+                                </th>
+                                <td>
+                                    <input class="base calc-trigger" value="100" />
+                                </td>
+                                <td>
+                                    <input class="dvs calc-trigger" value="15" />
+                                </td>
+                                <td><span class="total">236</span>
+                                </td>
+                                <td>
+                                    <select class="boost calc-trigger">
+                                        <option value="6">+6</option>
+                                        <option value="5">+5</option>
+                                        <option value="4">+4</option>
+                                        <option value="3">+3</option>
+                                        <option value="2">+2</option>
+                                        <option value="1">+1</option>
+                                        <option value="0" selected="selected">--</option>
+                                        <option value="-1">-1</option>
+                                        <option value="-2">-2</option>
+                                        <option value="-3">-3</option>
+                                        <option value="-4">-4</option>
+                                        <option value="-5">-5</option>
+                                        <option value="-6">-6</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr class="sp">
+                                <th scope="row">
+                                    <label>Speed</label>
+                                </th>
+                                <td>
+                                    <input class="base calc-trigger" value="100" />
+                                </td>
+                                <td class="gen-specific g3 g4 g5 g6 g7 g8 g9">
+                                    <input class="ivs calc-trigger" value="31" />
+                                </td>
+                                <td class="gen-specific g3 g4 g5 g6 g7 g8 g9">
+                                    <input class="evs calc-trigger" type="number" min="0" max="252" step="4" value="0" />
+                                </td>
+                                <td class="gen-specific g1 g2 hide">
+                                    <input class="dvs calc-trigger" value="15" />
+                                </td>
+                                <td><span class="total">236</span>
+                                </td>
+                                <td>
+                                    <select class="boost calc-trigger">
+                                        <option value="6">+6</option>
+                                        <option value="5">+5</option>
+                                        <option value="4">+4</option>
+                                        <option value="3">+3</option>
+                                        <option value="2">+2</option>
+                                        <option value="1">+1</option>
+                                        <option value="0" selected="selected">--</option>
+                                        <option value="-1">-1</option>
+                                        <option value="-2">-2</option>
+                                        <option value="-3">-3</option>
+                                        <option value="-4">-4</option>
+                                        <option value="-5">-5</option>
+                                        <option value="-6">-6</option>
+                                    </select>
+                                </td>
+                                <td><span class="totalMod">---</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="info-group info-selectors i-f-stats">
+                    <div class="gen-specific g3 g4 g5 g6 g7 g8 g9">
+                        <label for="natureL1">Nature</label>
+                        <select class="nature calc-trigger" id="natureL1">
+                            <option value="Adamant">Adamant (+Atk, -SpA)</option>
+                            <option value="Bashful">Bashful</option>
+                            <option value="Bold">Bold (+Def, -Atk)</option>
+                            <option value="Brave">Brave (+Atk, -Spe)</option>
+                            <option value="Calm">Calm (+SpD, -Atk)</option>
+                            <option value="Careful">Careful (+SpD, -SpA)</option>
+                            <option value="Docile">Docile</option>
+                            <option value="Gentle">Gentle (+SpD, -Def)</option>
+                            <option value="Hardy" selected="selected">Hardy</option>
+                            <option value="Hasty">Hasty (+Spe, -Def)</option>
+                            <option value="Impish">Impish (+Def, -SpA)</option>
+                            <option value="Jolly">Jolly (+Spe, -SpA)</option>
+                            <option value="Lax">Lax (+Def, -SpD)</option>
+                            <option value="Lonely">Lonely (+Atk, -Def)</option>
+                            <option value="Mild">Mild (+SpA, -Def)</option>
+                            <option value="Modest">Modest (+SpA, -Atk)</option>
+                            <option value="Naive">Naive (+Spe, -SpD)</option>
+                            <option value="Naughty">Naughty (+Atk, -SpD)</option>
+                            <option value="Quiet">Quiet (+SpA, -Spe)</option>
+                            <option value="Quirky">Quirky</option>
+                            <option value="Rash">Rash (+SpA, -SpD)</option>
+                            <option value="Relaxed">Relaxed (+Def, -Spe)</option>
+                            <option value="Sassy">Sassy (+SpD, -Spe)</option>
+                            <option value="Serious">Serious</option>
+                            <option value="Timid">Timid (+Spe, -Atk)</option>
+                        </select>
+                    </div>
+                    <div class="gen-specific g3 g4 g5 g6 g7 g8 g9">
+                        <label for="abilityL1">Ability</label>
+                        <select class="ability terrain-trigger calc-trigger" id="abilityL1"></select>
+                        <input hidden type="checkbox" title= "Is this ability active?" class="abilityToggle calc-trigger">
+                            <select hidden aria-label="Allies fainted" class="alliesFainted calc-trigger">
+                                    <option value="0">Zero allies fainted</option>
+                                    <option value="1">One ally fainted</option>
+                                    <option value="2">Two allies fainted</option>
+                                    <option value="3">Three allies fainted</option>
+                                    <option value="4">Four allies fainted</option>
+                                    <option value="5">Five allies fainted</option>
+                            </select>
+                            <select hidden aria-label="Boosted Stat" title="What stat is boosted by this ability?" class="boostedStat calc-trigger">
+							 <option value="auto">Auto-Select</option>
+                             <option value="">Inactive</option>
+							 <option value="atk">Attack</option>
+							 <option value="def">Defense</option>
+							 <option value="spa">Special Attack</option>
+							 <option value="spd">Special Defense</option>
+							 <option value="spe">Speed</option>
+						    </select>
+                    </div>
+                    <div class="gen-specific g2 g3 g4 g5 g6 g7 g8 g9">
+                        <label for="itemL1">Item</label>
+                        <select class="item terrain-trigger calc-trigger" id="itemL1"></select>
+                    </div>
+                    <div>
+                        <label for="statusL1">Status</label>
+                        <select class="status calc-trigger" id="statusL1">
+                            <option value="Healthy">Healthy</option>
+                            <option value="Poisoned">Poisoned</option>
+                            <option value="Badly Poisoned">Badly Poisoned</option>
+                            <option value="Burned">Burned</option>
+                            <option value="Frostbite">Frostbite</option>
+                            <option value="Paralyzed">Paralyzed</option>
+                            <option value="Asleep">Asleep</option>
+                            <option value="Frozen">Frozen</option>
+                        </select>
+                        <select aria-label="Toxic counter" class="toxic-counter calc-trigger hide">
+                            <option value="1">1/16</option>
+                            <option value="2">2/16</option>
+                            <option value="3">3/16</option>
+                            <option value="4">4/16</option>
+                            <option value="5">5/16</option>
+                            <option value="6">6/16</option>
+                            <option value="7">7/16</option>
+                            <option value="8">8/16</option>
+                            <option value="9">9/16</option>
+                            <option value="10">10/16</option>
+                            <option value="11">11/16</option>
+                            <option value="12">12/16</option>
+                            <option value="13">13/16</option>
+                            <option value="14">14/16</option>
+                            <option value="15">15/16</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="info-group toggle-actions">
+                    <div class="gen-specific g9 salt-cure-control" title="Has this Pok&eacute;mon been cured with Salt Cure?">
+                        <div hidden id="selectRevealInstruction">Has this Pok&eacute;mon been cured with Salt Cure?</div>
+                        <input aria-describedby="selectRevealInstruction" class="visually-hidden saltcure calc-trigger" type="checkbox" id="cureL" />
+                        <label class="btn btn-xxwide" for="cureL">Salt Cure</label>
+                    </div>
+                    <div class="gen-specific g1 g2 g3 g4 g5 g6 g7 g8 g9 transform-control hide">
+                        <div hidden id="transformInstructionL">Treat this Pok&eacute;mon as transformed into its target.</div>
+                        <input aria-describedby="transformInstructionL" class="visually-hidden transform-toggle calc-trigger" type="checkbox" id="transformL1" />
+                        <label class="btn btn-wide transform-btn" for="transformL1" title="Treat this Pok&eacute;mon as transformed into its target.">Transform</label>
+                    </div>
+                </div>
+                <div class="info-group i-f-hp">
+                    <label for="currentHpL1">Current HP</label>
+                    <input class="current-hp calc-trigger" id="currentHpL1" value="341" />/<span class="max-hp">341</span> (
+                    <input class="percent-hp calc-trigger" value="100" />%)
+                        <input class="visually-hidden max calc-trigger btn-input" type="checkbox" id="maxL" />
+                        <label class="btn btn-xwide gen-specific g8 hide" for="maxL"
+                        title="Use the corresponding Max Move?">Dynamax</label>
+                        <br />
+                    <br />
+                    Health <div class="hpbar"></div>
+                </div>
+                <div hidden id="criticalHitInstruction">Force this attack to be a critical hit?</div>
+                <div hidden id="zMoveInstruction">Make this attack a Z-move?</div>
+                <div class="move1 i-f-move">
+                    <select class="move-selector calc-trigger small-select"></select>
+                    <input class="move-bp calc-trigger" value="50" />
+                    <select class="move-type calc-trigger"></select>
+                    <select class="move-cat calc-trigger gen-specific g4 g5 g6 g7 g8 g9">
+                        <option value="Physical">Physical</option>
+                        <option value="Special">Special</option>
+                    </select>
+                    <input aria-describedby="criticalHitInstruction" class="move-crit calc-trigger visually-hidden" type="checkbox" id="critL1" />
+                    <label class="btn crit-btn" for="critL1" title="Force this attack to be a critical hit?">Crit</label>
+                    <input aria-describedby="zMoveInstruction" class="move-z calc-trigger visually-hidden" type="checkbox" id="zL1"/>
+                    <label class="btn z-btn gen-specific g7 g8 g9" for="zL1" title="Make this attack a Z-move?">Z</label>
+                    <select class="move-hits calc-trigger hide">
+                        <option value="2">2 hits</option>
+                        <option value="3">3 hits</option>
+                        <option value="4">4 hits</option>
+                        <option value="5">5 hits</option>
+                    </select>
+                    <select class="stat-drops calc-trigger hide" title="How many times was this move used in a row?">>
+                        <option value="1">Once</option>
+                        <option value="2">Twice</option>
+                        <option value="3">3 times</option>
+                        <option value="4">4 times</option>
+                        <option value="5">5 times</option>
+                    </select>
+                    <select class="metronome calc-trigger hide" title="How many times was this move successfully and consecutively used while holding Metronome before this turn?">
+                        <option value="0">Never</option>
+                        <option value="1">Once</option>
+                        <option value="2">Twice</option>
+                        <option value="3">3 times</option>
+                        <option value="4">4 times</option>
+                        <option value="5">5 times</option>
+                    </select>
+                </div>
+                <div class="move2 i-f-move"">
+                    <select class="move-selector calc-trigger small-select"></select>
+                    <input class="move-bp calc-trigger" value="0" />
+                    <select class="move-type calc-trigger"></select>
+                    <select class="move-cat calc-trigger gen-specific g4 g5 g6 g7 g8 g9">
+                        <option value="Physical">Physical</option>
+                        <option value="Special">Special</option>
+                    </select>
+                    <input aria-describedby="criticalHitInstruction" class="move-crit calc-trigger visually-hidden" type="checkbox" id="critL2" />
+                    <label class="btn crit-btn" for="critL2" title="Force this attack to be a critical hit?">Crit</label>
+                    <input aria-describedby="zMoveInstruction" class="move-z calc-trigger visually-hidden" type="checkbox" id="zL2"/>
+                    <label class="btn z-btn gen-specific g7 g8 g9" for="zL2" title="Make this attack a Z-move?">Z</label>
+                    <select class="move-hits calc-trigger hide">
+                        <option value="2">2 hits</option>
+                        <option value="3">3 hits</option>
+                        <option value="4">4 hits</option>
+                        <option value="5">5 hits</option>
+                    </select>
+                    <select class="stat-drops calc-trigger hide" title="How many times was this move used in a row?">>
+                        <option value="1">Once</option>
+                        <option value="2">Twice</option>
+                        <option value="3">3 times</option>
+                        <option value="4">4 times</option>
+                        <option value="5">5 times</option>
+                    </select>
+                    <select class="metronome calc-trigger hide" title="How many times was this move successfully and consecutively used while holding Metronome before this turn?">
+                        <option value="0">Never</option>
+                        <option value="1">Once</option>
+                        <option value="2">Twice</option>
+                        <option value="3">3 times</option>
+                        <option value="4">4 times</option>
+                        <option value="5">5 times</option>
+                    </select>
+                </div>
+                <div class="move3 i-f-move"">
+                    <select class="move-selector calc-trigger small-select"></select>
+                    <input class="move-bp calc-trigger" value="0" />
+                    <select class="move-type calc-trigger"></select>
+                    <select class="move-cat calc-trigger gen-specific g4 g5 g6 g7 g8 g9">
+                        <option value="Physical">Physical</option>
+                        <option value="Special">Special</option>
+                    </select>
+                    <input aria-describedby="criticalHitInstruction" class="move-crit calc-trigger visually-hidden" type="checkbox" id="critL3" />
+                    <label class="btn crit-btn" for="critL3" title="Force this attack to be a critical hit?">Crit</label>
+                    <input aria-describedby="zMoveInstruction" class="move-z calc-trigger visually-hidden" type="checkbox" id="zL3"/>
+                    <label class="btn z-btn gen-specific g7 g8 g9" for="zL3" title="Make this attack a Z-move?">Z</label>
+                    <select class="move-hits calc-trigger hide">
+                        <option value="2">2 hits</option>
+                        <option value="3">3 hits</option>
+                        <option value="4">4 hits</option>
+                        <option value="5">5 hits</option>
+                    </select>
+                    <select class="stat-drops calc-trigger hide" title="How many times was this move used in a row?">>
+                        <option value="1">Once</option>
+                        <option value="2">Twice</option>
+                        <option value="3">3 times</option>
+                        <option value="4">4 times</option>
+                        <option value="5">5 times</option>
+                    </select>
+                    <select class="metronome calc-trigger hide" title="How many times was this move successfully and consecutively used while holding Metronome before this turn?">
+                        <option value="0">Never</option>
+                        <option value="1">Once</option>
+                        <option value="2">Twice</option>
+                        <option value="3">3 times</option>
+                        <option value="4">4 times</option>
+                        <option value="5">5 times</option>
+                    </select>
+                </div>
+                <div class="move4 i-f-move"">
+                    <select class="move-selector calc-trigger small-select"></select>
+                    <input class="move-bp calc-trigger" value="0" />
+                    <select class="move-type calc-trigger"></select>
+                    <select class="move-cat calc-trigger gen-specific g4 g5 g6 g7 g8 g9">
+                        <option value="Physical">Physical</option>
+                        <option value="Special">Special</option>
+                    </select>
+                    <input aria-describedby="criticalHitInstruction" class="move-crit calc-trigger visually-hidden" type="checkbox" id="critL4" />
+                    <label class="btn crit-btn" for="critL4" title="Force this attack to be a critical hit?">Crit</label>
+                    <input aria-describedby="zMoveInstruction" class="move-z calc-trigger visually-hidden" type="checkbox" id="zL4"/>
+                    <label class="btn z-btn gen-specific g7 g8 g9" for="zL4" title="Make this attack a Z-move?">Z</label>
+                    <select class="move-hits calc-trigger hide">
+                        <option value="2">2 hits</option>
+                        <option value="3">3 hits</option>
+                        <option value="4">4 hits</option>
+                        <option value="5">5 hits</option>
+                    </select>
+                    <select class="stat-drops calc-trigger hide" title="How many times was this move used in a row?">>
+                        <option value="1">Once</option>
+                        <option value="2">Twice</option>
+                        <option value="3">3 times</option>
+                        <option value="4">4 times</option>
+                        <option value="5">5 times</option>
+                    </select>
+                    <select class="metronome calc-trigger hide" title="How many times was this move successfully and consecutively used while holding Metronome before this turn?">
+                        <option value="0">Never</option>
+                        <option value="1">Once</option>
+                        <option value="2">Twice</option>
+                        <option value="3">3 times</option>
+                        <option value="4">4 times</option>
+                        <option value="5">5 times</option>
+                    </select>
+                </div>
+            </fieldset>
+        </div>
+        <div aria-label="trainer-poks" role="region">
+            <fieldset class="poke-info" id="trainer-mons">
+                <legend align="center">Team/Box</legend>
+                <div>
+                    <legend align="center">Team</legend>
+                    <div id="team-poke-list" class="box-poke dropzone">
+                    </div>
+                </div>
+                <hr>
+                <div>
+                    <legend align="center">Box</legend>
+                    <div id="box-poke-list" class="box-poke dropzone">
+                    </div>
+                </div>
+                <div>
+                    <legend align="center">Box 2</legend>
+                    <div id="box-poke-list2" class="box-poke dropzone">
+                    </div>
+                </div>
+                <hr>
+                <div>
+                    <legend align="center">Trash</legend>
+                    <div id="trash-box" class="box-poke dropzone">
+                    </div>
+                    <button class="deadzone" id="trash-pok">Remove Pokémon from the trash</button>
+                    <button class="deadzone" id="clearSets">Remove Pokémon from all boxes</button>
+                </div>
+                <hr>
+                <div>
+                    <legend align="center">Color Coding</legend>
+                    <button id="show-cc">Show</button>
+                    <button id="hide-cc" hidden>Hide</button>
+                    <button id="refr-cc" hidden>Refresh</button>
+                    <button id="info-cc" hidden>Color Code Explanation</button>
+                    <div id="info-cc-field" class="info-paragraph" hidden>
+                        <h5>Speed Borders</h5>
+                        <b class="mon-speed-F">Blue</b> Outspeeds
+                        <b class="mon-speed-T">Purple</b> Speed Tie
+                        <b class="mon-speed-S">Black</b> Slower
+                        <h5>OHKO Colors</h5>
+                        <b class="mon-dmg-WMO">Hard Counter</b> (Gets 4HKO'd at worse and may OHKO)
+                        <br>
+                        <b class="mon-dmg-W">Walls</b> (Gets 4HKO'd at worse and does more damage)
+                        <br>
+                        <b class="mon-dmg-1">Always OHKOs</b>
+                        <br>
+                        <b class="mon-dmg-2">Might OHKO</b>
+                        <br>
+                        <b class="mon-dmg-3">Might get OHKO'd</b>
+                        <br>
+                        <b class="mon-dmg-4">Always gets OHKO'd</b>
+                        <br>
+                        <b class="mon-dmg-14">Both sides OHKO each other</b>
+                        <br>
+                        <b class="mon-dmg-23">Both sides might OHKO each other</b>
+                        <br>
+                        <b class="mon-dmg-13">Always OHKOs but may get OHKO'd</b>
+                        <br>
+                        <b class="mon-dmg-24">Might OHKO but always gets OHKO'd</b>
+                        <p>
+                            Note: Color coding is intended to help, though some caveats and quirks are missed
+                        </p>
+                    </div>
+                    <div id ="cc-sets" hidden>
+                        <input type="checkbox" name="cc-spe-border" id="cc-spe-border" checked>Speed Border
+                        <input type="checkbox" name="cc-ohko-color" id="cc-ohko-color" checked>OHKO Color
+                        <input type="checkbox" name="cc-auto-refr" id="cc-auto-refr" autocomplete="off">Auto-Refresh
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+    <div class="panel">
+        <div aria-label="Field information" role="region">
+            <fieldset class="field-info">
+                <legend align="center">Field
+                    <img id="monSingle" src="https://raw.githubusercontent.com/May8th1995/sprites/master/Minun.png" alt="">
+                    <img id="monDouble" src="https://raw.githubusercontent.com/May8th1995/sprites/master/Plusle.png" alt="" hidden>
+                </legend>
+                <div aria-labelledby="selectBattleFormatInstruction" class="gen-specific g3 g4 g5 g6 g7 g8 g9" role="radiogroup" style="width: 10.6em; margin: 0 auto 5px;" title="Select the battle format.">
+                    <span class="visually-hidden" id="selectBattleFormatInstruction">Select the battle format.</span>
+                    <input class="visually-hidden calc-trigger" type="radio" name="format" value="Singles" id="singles-format" />
+                    <label class="btn btn-left" for="singles-format">Singles</label>
+                    <input class="visually-hidden calc-trigger" type="radio" name="format" value="Doubles" id="doubles-format" />
+                    <label class="btn btn-right" for="doubles-format">Doubles</label>
+                </div>
+                <div aria-labelledby="selectTerrainInstruction" class="gen-specific g6 g7 g8 g9" role="group" title="Select the current terrain.">
+                    <span class="visually-hidden" id="selectTerrainInstruction">Select the current terrain.</span>
+                    <input class="visually-hidden terrain-trigger calc-trigger" type="checkbox" name="terrain" value="Electric" id="electric" /><label class="btn btn-xxxwide btn-left" for="electric">Electric Terrain</label>
+                    <input class="visually-hidden terrain-trigger calc-trigger" type="checkbox" name="terrain" value="Grassy" id="grassy" /><label class="btn btn-xxxwide btn-mid" for="grassy">Grassy Terrain</label>
+                    <input class="visually-hidden terrain-trigger calc-trigger" type="checkbox" name="terrain" value="Misty" id="misty" /><label class="btn btn-xxxwide btn-right" for="misty">Misty Terrain</label>
+                    <input class="visually-hidden terrain-trigger calc-trigger" type="checkbox" name="terrain" value="Psychic" id="psychic" /><label class="btn btn-xxxwide btn-mid" for="psychic">Psychic Terrain</label>
+                </div>
+					 <div aria-labelledby="selectRuinInstruction" class="gen-specific g9 format-specific doubles" role="group" style="margin: 5px auto auto;" title="Select the ruin abilities from other Pok&eacute;mon on the field.">
+                    <span class="visually-hidden" id="selectRuinInstruction">Select the active Ruin abilities from other Poke&eacute;mon on the field.</span>
+                    <input class="visually-hidden calc-trigger" type="checkbox" name="ruin" value="Beads" id="beads" />
+						  <label class="btn btn-xxxwide btn-left" for="beads">Beads of Ruin</label>
+                    <input class="visually-hidden calc-trigger" type="checkbox" name="ruin" value="Tablets" id="tablets" />
+						  <label class="btn btn-xxxwide btn-mid" for="tablets">Tablets of Ruin</label>
+                    <input class="visually-hidden calc-trigger" type="checkbox" name="ruin" value="Sword" id="sword" />
+						  <label class="btn btn-xxxwide btn-right" for="sword">Sword of Ruin</label>
+                    <input class="visually-hidden calc-trigger" type="checkbox" name="ruin" value="Vessel" id="vessel" />
+						  <label class="btn btn-xxxwide btn-mid" for="vessel">Vessel of Ruin</label>
+                </div>
+                <hr class="gen-specific g6 g7 g8 g9" />
+                <div aria-labelledby="selectWeatherInstruction" role="radiogroup">
+                    <span class="visually-hidden" id="selectWeatherInstruction">Select the current weather condition.</span>
+                    <div class="gen-specific g9" style="width: 22.2em; margin: 5px auto;" title="Select the current weather condition.">
+                        <input class="visually-hidden calc-trigger" type="radio" name="weather" value="" id="clear" checked="checked" />
+                        <label class="btn btn-small btn-left" for="clear">None</label>
+                        <input class="visually-hidden calc-trigger" type="radio" name="weather" value="Sun" id="sun" />
+                        <label class="btn btn-small btn-mid" for="sun">Sun</label>
+                        <input class="visually-hidden calc-trigger" type="radio" name="weather" value="Rain" id="rain" />
+                        <label class="btn btn-small btn-mid" for="rain">Rain</label>
+                        <input class="visually-hidden calc-trigger" type="radio" name="weather" value="Sand" id="sand" />
+                        <label class="btn btn-small btn-mid" for="sand">Sand</label>
+                        <input class="visually-hidden calc-trigger" type="radio" name="weather" value="Snow" id="snow" />
+                        <label class="btn btn-small btn-right" for="snow">Snow</label>
+                        <input class="visually-hidden calc-trigger" type="radio" name="weather" value="Hail" id="hail" />
+                        <label class="btn btn-small btn-mid" for="hail">Hail</label>
+                    </div>
+                    <div class="gen-specific g6 g7 g8 g9" title="Select the current weather condition.">
+                        <input class="visually-hidden calc-trigger" type="radio" name="weather" value="Harsh Sunshine" id="harsh-sunshine" />
+                        <label class="btn btn-xxxwide btn-left" for="harsh-sunshine">Harsh Sunshine</label>
+                        <input class="visually-hidden calc-trigger" type="radio" name="weather" value="Heavy Rain" id="heavy-rain" />
+                        <label class="btn btn-xxxwide btn-mid" for="heavy-rain">Heavy Rain</label>
+                        <input class="visually-hidden calc-trigger" type="radio" name="weather" value="Strong Winds" id="strong-winds" />
+                        <label class="btn btn-xxxwide btn-right" for="strong-winds">Strong Winds</label>
+                    </div>
+                  </div>
+                <div aria-labelledby="selectGscWeatherInstruction" class="gen-specific g2 hide" role="radiogroup" style="width: 17.8em; margin: 0 auto 5px;" title="Select the current weather condition.">
+                    <span class="visually-hidden" id="selectGscWeatherInstruction">Select the current weather condition.</span>
+                    <input class="visually-hidden calc-trigger" type="radio" name="gscWeather" value="" id="gscClear" checked="checked" />
+                    <label class="btn btn-small btn-left" for="gscClear">None</label>
+                    <input class="visually-hidden calc-trigger" type="radio" name="gscWeather" value="Sun" id="gscSun" />
+                    <label class="btn btn-small btn-mid" for="gscSun">Sun</label>
+                    <input class="visually-hidden calc-trigger" type="radio" name="gscWeather" value="Rain" id="gscRain" />
+                    <label class="btn btn-small btn-mid" for="gscRain">Rain</label>
+                    <input class="visually-hidden calc-trigger" type="radio" name="gscWeather" value="Sand" id="gscSand" />
+                    <label class="btn btn-small btn-right" for="gscSand">Sand</label>
+                </div>
+                <div class="gen-specific g5 g6 g7 g8 g9" style="width: 22.2em; margin: 5px auto; display: inline-block;">
+                    <span hidden id="magicRoomInstruction">Is Magic Room in effect?</span>
+                    <span hidden id="wonderRoomInstruction">Is Wonder Room in effect?</span>
+                    <input aria-describedby="magicRoomInstruction" class="visually-hidden calc-trigger" type="checkbox" id="magicroom" />
+                    <label class="btn btn-xxxwide btn-left" for="magicroom">Magic Room</label>
+                    <input aria-describedby="wonderRoomInstruction" class="visually-hidden calc-trigger" type="checkbox" id="wonderroom" />
+                    <label class="btn btn-xxxwide btn-right" for="wonderroom">Wonder Room</label>
+                </div>
+                <div class="gen-specific g4 g5 g6 g7 g8 g9" style="width: 5.3em; margin: 5px auto;" title="Is gravity in effect?">
+                    <span hidden id="gravityInstruction">Is gravity in effect?</span>
+                    <input aria-describedby="gravityInstruction" class="visually-hidden calc-trigger" type="checkbox" id="gravity" />
+                    <label class="btn" for="gravity">Gravity</label>
+                </div>
+                <div class="gen-specific g4 g5 g6 g7 g8 g9" style="width: 22.2em; margin: 5px auto; display: inline-block;" title="Is inverse battle in effect?">
+                    <span hidden id="inverseInstruction">Is inverse battle in effect?</span>
+                    <input aria-describedby="inverseInstruction" class="visually-hidden calc-trigger" type="checkbox" id="inverse" />
+                    <label class="btn btn-xxxwide btn-mid" for="inverse">Inverse Battle</label>
+                </div>
+                <hr class="gen-specific g2 g3 g4 g5 g6 g7 g8 g9" />
+                <table class="field">
+                    <thead>
+                        <tr>
+                            <th scope="col"><div class="visually-hidden">Pok&eacute;mon 1's side</div></th>
+                            <th scope="col"><div class="visually-hidden">Pok&eacute;mon 2's side</div></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="gen-specific g4 g5 g6 g7 g8 g9">
+                            <div hidden id="selectStealthRockInstruction">Is Stealth Rock affecting this side of the field?</div>
+                            <td><div class="left" title="Is Stealth Rock affecting this side of the field?">
+                                <input aria-describedby="selectStealthRockInstruction" class="visually-hidden calc-trigger" type="checkbox" id="srL" />
+                                <label class="btn btn-xwide" for="srL">Stealth Rock</label>
+                            </div></td>
+                            <td><div class="right" title="Is Stealth Rock affecting this side of the field?">
+                                <input aria-describedby="selectStealthRockInstruction" class="visually-hidden calc-trigger" type="checkbox" id="srR" />
+                                <label class="btn btn-xwide" for="srR">Stealth Rock</label>
+                            </div></td>
+                        </tr>
+                        <tr class="gen-specific g8 hide">
+                            <div hidden id="selectSteelsurgeInstruction">Is Steelsurge affecting this side of the field?</div>
+                            <td><div class="left" title="Is Steelsurge affecting this side of the field?">
+                                <input aria-describedby="selectSteelsurgeInstruction" class="visually-hidden calc-trigger" type="checkbox" id="steelsurgeL" />
+                                <label class="btn btn-xwide" for="steelsurgeL">Steelsurge</label>
+                            </div></td>
+                            <td><div class="right" title="Is Steelsurge affecting this side of the field?">
+                                <input aria-describedby="selectSteelsurgeInstruction" class="visually-hidden calc-trigger" type="checkbox" id="steelsurgeR" />
+                                <label class="btn btn-xwide" for="steelsurgeR">Steelsurge</label>
+                            </div></td>
+                        </tr>
+                        <tr class="gen-specific g8 hide">
+                            <div hidden id="selectVinefireInstruction">Is Vine Lash and/or Wildfire affecting this side of the field?</div>
+                            <td><div class="left" title="Is Vine Lash/Wildfire affecting this side of the field?">
+                                <input aria-describedby="selectVinefireInstruction" class="visually-hidden calc-trigger" type="checkbox" id="vinelashL" />
+                                <label class="btn btn-wide btn-left" for="vinelashL">Vine Lash</label>
+                                <input aria-describedby="selectVinefireInstruction" class="visually-hidden calc-trigger" type="checkbox" id="wildfireL" />
+                                <label class="btn btn-right" for="wildfireL">Wildfire</label>
+                            </div></td>
+                            <td><div class="right" title="Is Vine Lash/Wildfire affecting this side of the field?">
+                                <input aria-describedby="selectVinefireInstruction" class="visually-hidden calc-trigger" type="checkbox" id="wildfireR" />
+                                <label class="btn btn-left" for="wildfireR">Wildfire</label>
+                                <input aria-describedby="selectVinefireInstruction" class="visually-hidden calc-trigger" type="checkbox" id="vinelashR" />
+                                <label class="btn btn-wide btn-right" for="vinelashR">Vine Lash</label>
+                            </div></td>
+                        </tr>
+                        <tr class="gen-specific g8 hide">
+                            <div hidden id="selectCannonlithInstruction">Is Cannonade and/or Volcalith affecting this side of the field?</div>
+                            <td><div class="left" title="Is Cannonade/Volcalith affecting this side of the field?">
+                                <input aria-describedby="selectCannonlithInstruction" class="visually-hidden calc-trigger" type="checkbox" id="cannonadeL" />
+                                <label class="btn btn-wide btn-left" for="cannonadeL">Cannonade</label>
+                                <input aria-describedby="selectCannonlithInstruction" class="visually-hidden calc-trigger" type="checkbox" id="volcalithL" />
+                                <label class="btn btn-right" for="volcalithL">Volcalith</label>
+                            </div></td>
+                            <td><div class="right" title="Is Cannonade/Volcalith affecting this side of the field?">
+                                <input aria-describedby="selectCannonlithInstruction" class="visually-hidden calc-trigger" type="checkbox" id="volcalithR" />
+                                <label class="btn btn-left" for="volcalithR">Volcalith</label>
+                                <input aria-describedby="selectCannonlithInstruction" class="visually-hidden calc-trigger" type="checkbox" id="cannonadeR" />
+                                <label class="btn btn-wide btn-right" for="cannonadeR">Cannonade</label>
+                            </div></td>
+                        </tr>
+                        <tr class="gen-specific g3 g4 g5 g6 g7 g8 g9">
+                            <div hidden id="selectSpikeInstruction">Are there Spikes on this side of the field?</div>
+                            <td><div aria-labelledby="selectSpikeInstruction" class="left" role="radiogroup" title="Are there Spikes on this side of the field?">
+                                <input class="visually-hidden calc-trigger" type="radio" name="spikesL" value="0" id="spikesL0" checked="checked" />
+                                <label class="btn btn-xsmall btn-left" for="spikesL0">0</label>
+                                <input class="visually-hidden calc-trigger" type="radio" name="spikesL" value="1" id="spikesL1" />
+                                <label class="btn btn-xsmall btn-mid" for="spikesL1">1</label>
+                                <input class="visually-hidden calc-trigger" type="radio" name="spikesL" value="2" id="spikesL2" />
+                                <label class="btn btn-xsmall btn-mid" for="spikesL2">2</label>
+                                <input class="visually-hidden calc-trigger" type="radio" name="spikesL" value="3" id="spikesL3" />
+                                <label class="btn btn-wide btn-right" for="spikesL3">3 Spikes</label>
+                            </div></td>
+                            <td><div aria-labelledby="selectSpikeInstruction" class="right" role="radiogroup" title="Are there Spikes on this side of the field?">
+                                <input class="visually-hidden calc-trigger" type="radio" name="spikesR" value="3" id="spikesR3" />
+                                <label class="btn btn-wide btn-left" for="spikesR3">3 Spikes</label>
+                                <input class="visually-hidden calc-trigger" type="radio" name="spikesR" value="2" id="spikesR2" />
+                                <label class="btn btn-xsmall btn-mid" for="spikesR2">2</label>
+                                <input class="visually-hidden calc-trigger" type="radio" name="spikesR" value="1" id="spikesR1" />
+                                <label class="btn btn-xsmall btn-mid" for="spikesR1">1</label>
+                                <input class="visually-hidden calc-trigger" type="radio" name="spikesR" value="0" id="spikesR0" checked="checked" />
+                                <label class="btn btn-xsmall btn-right" for="spikesR0">0</label>
+                            </div></td>
+                        </tr>
+                        <tr class="gen-specific g2">
+                            <td><div class="left" title="Are there Spikes on this side of the field?">
+                                <input aria-describedby="selectSpikeInstruction" class="visually-hidden calc-trigger" type="checkbox" id="gscSpikesL" />
+                                <label class="btn" for="gscSpikesL">Spikes</label>
+                            </div></td>
+                            <td><div class="right" title="Are there Spikes on this side of the field?">
+                                <input aria-describedby="selectSpikeInstruction" class="visually-hidden calc-trigger" type="checkbox" id="gscSpikesR" />
+                                <label class="btn" for="gscSpikesR">Spikes</label>
+                            </div></td>
+                        </tr>
+                        <tr>
+                            <td><div class="left" title="Is this Pok&eacute;mon protected by Reflect and/or Light Screen?">
+                                <div hidden id="selectScreenInstruction">Is this Pok&eacute;mon protected by Reflect and/or Light Screen?</div>
+                                <input aria-describedby="selectScreenInstruction" class="visually-hidden calc-trigger" type="checkbox" id="reflectL" />
+                                <label class="btn btn-left" for="reflectL">Reflect</label>
+                                <input aria-describedby="selectScreenInstruction" class="visually-hidden calc-trigger" type="checkbox" id="lightScreenL" />
+                                <label class="btn btn-xwide btn-right" for="lightScreenL">Light Screen</label>
+                            </div></td>
+                            <td><div class="right" title="Is this Pok&eacute;mon protected by Reflect and/or Light Screen?">
+                                <input aria-describedby="selectScreenInstruction" class="visually-hidden calc-trigger" type="checkbox" id="lightScreenR" />
+                                <label class="btn btn-xwide btn-left" for="lightScreenR">Light Screen</label>
+                                <input aria-describedby="selectScreenInstruction" class="visually-hidden calc-trigger" type="checkbox" id="reflectR" />
+                                <label class="btn btn-right" for="reflectR">Reflect</label>
+                            </div></td>
+                        </tr>
+                        <tr class="gen-specific g2 g3 g4 g5 g6 g7 g8 g9">
+                            <td><div class="left" title="Is this Pok&eacute;mon protected?">
+                                <div hidden id="selectProtectInstruction">Is this Pok&eacute;mon protected?</div>
+                                <input aria-describedby="selectProtectInstruction" class="visually-hidden calc-trigger" type="checkbox" id="protectL" />
+                                <label class="btn btn-wide" for="protectL">Protect</label>
+                            </div></td>
+                            <td><div class="right" title="Is this Pok&eacute;mon protected?">
+                                <input aria-describedby="selectProtectInstruction" class="visually-hidden calc-trigger" type="checkbox" id="protectR" />
+                                <label class="btn btn-wide" for="protectR">Protect</label>
+                            </div></td>
+                        </tr>
+                        <tr>
+                            <td><div class="left" title="Has this Pok&eacute;mon been affected by Leech Seed?">
+                                <div hidden id="selectLeechSeedInstruction">Has this Pok&eacute;mon been affected by Leech Seed?</div>
+                                <input aria-describedby="selectLeechSeedInstruction" class="visually-hidden calc-trigger" type="checkbox" id="leechSeedL" />
+                                <label class="btn btn-wide" for="leechSeedL">Leech Seed</label>
+                            </div></td>
+                            <td><div class="right" title="Has this Pok&eacute;mon been affected by Leech Seed?">
+                                <input aria-describedby="selectLeechSeedInstruction" class="visually-hidden calc-trigger" type="checkbox" id="leechSeedR" />
+                                <label class="btn btn-wide" for="leechSeedR">Leech Seed</label>
+                            </div></td>
+                        </tr>
+                        <tr class="gen-specific g2 g3 g4 g5 g6 g7 g8 g9">
+                            <td><div class="left" title="Has this Pok&eacute;mon been revealed with Foresight or Odor Sleuth?">
+                                <div hidden id="selectRevealInstruction">Has this Pok&eacute;mon been revealed with Foresight or Odor Sleuth?</div>
+                                <input aria-describedby="selectRevealInstruction" class="visually-hidden calc-trigger" type="checkbox" id="foresightL" />
+                                <label class="btn btn-wide" for="foresightL">Foresight</label>
+                            </div></td>
+                            <td><div class="right" title="Has this Pok&eacute;mon been revealed with Foresight or Odor Sleuth?">
+                                <input aria-describedby="selectRevealInstruction" class="visually-hidden calc-trigger" type="checkbox" id="foresightR" />
+                                <label class="btn btn-wide" for="foresightR">Foresight</label>
+                            </div></td>
+                        </tr>
+                        <tr class="gen-specific g3 g4 g5 g6 g7 g8 g9">
+                            <td><div class="left" title="Has this Pok&eacute;mon's power been boosted by an ally's Helping Hand?">
+                                <div hidden id="selectHelpingHandInstruction">Has this Pok&eacute;mon's power been boosted by an ally's Helping Hand?</div>
+                                <input aria-describedby="selectHelpingHandInstruction" class="visually-hidden calc-trigger" type="checkbox" id="helpingHandL" />
+                                <label class="btn btn-xxwide" for="helpingHandL">Helping Hand</label>
+                            </div></td>
+                            <td><div class="right" title="Has this Pok&eacute;mon's power been boosted by an ally's Helping Hand?">
+                                <input aria-describedby="selectHelpingHandInstruction" class="visually-hidden calc-trigger" type="checkbox" id="helpingHandR" />
+                                <label class="btn btn-xxwide" for="helpingHandR">Helping Hand</label>
+                            </div></td>
+                        </tr>
+                        <tr class="gen-specific g4 g5 g6 g7 g8 g9">
+                            <td><div class="left" title="Has this Pok&eacute;mon's speed been boosted by Tailwind?">
+                                <div hidden id="selectTailwindInstruction">Has this Pok&eacute;mon's power been boosted by an ally's Helping Hand?</div>
+                                <input aria-describedby="selectTailwindInstruction" class="visually-hidden calc-trigger" type="checkbox" id="tailwindL" />
+                                <label class="btn btn-xxwide" for="tailwindL">Tailwind</label>
+                            </div></td>
+                            <td><div class="right" title="Has this Pok&eacute;mon's speed been boosted by Tailwind?">
+                                <input aria-describedby="selectTailwindInstruction" class="visually-hidden calc-trigger" type="checkbox" id="tailwindR" />
+                                <label class="btn btn-xxwide" for="tailwindR">Tailwind</label>
+                            </div></td>
+                        </tr>
+                        <tr class="gen-specific g4 g5 g6 g7 g8 g9">
+                            <td><div class="left" title="Is the Pok&eacute;mon affected by an ally's Flower Gift?">
+                                <div hidden id="selectFlowerGiftInstruction">Is the Pok&eacute;mon affected by an ally's Flower Gift?</div>
+                                <input aria-describedby="selectFlowerGiftInstruction" class="visually-hidden calc-trigger" type="checkbox" id="flowerGiftL" />
+                                <label class="btn btn-xxwide" for="flowerGiftL">Flower Gift</label>
+                            </div></td>
+                            <td><div class="right" title="Is the Pok&eacute;mon affected by an ally's Flower Gift?">
+                                <input aria-describedby="selectFlowerGiftInstruction" class="visually-hidden calc-trigger" type="checkbox" id="flowerGiftR" />
+                                <label class="btn btn-xxwide" for="flowerGiftR">Flower Gift</label>
+                            </div></td>
+                        </tr>
+                        <tr class="gen-specific g4 g5 g6 g7 g8 g9">
+                            <td><div class="left" title="Is the Pok&eacute;mon affected by Power Trick?">
+                                <div hidden id="selectPowerTrickInstruction">Is the Pok&eacute;mon affected by Power Trick?</div>
+                                <input aria-describedby="selectPowerTrickInstruction" class="visually-hidden calc-trigger" type="checkbox" id="powerTrickL" />
+                                <label class="btn btn-xxwide" for="powerTrickL">Power Trick</label>
+                            </div></td>
+                            <td><div class="right" title="Is the Pok&eacute;mon affected by Power Trick?">
+                                <input aria-describedby="selectPowerTrickInstruction" class="visually-hidden calc-trigger" type="checkbox" id="powerTrickR" />
+                                <label class="btn btn-xxwide" for="powerTrickR">Power Trick</label>
+                            </div></td>
+                        </tr>
+                        <tr class="gen-specific g5 g6 g7 g8 g9">
+                            <td><div class="left" title="Is the Pok&eacute;mon protected by an ally's Friend Guard?">
+                                <div hidden id="selectFriendGuardInstruction">Is the Pok&eacute;mon protected by an ally's Friend Guard?</div>
+                                <input aria-describedby="selectFriendGuardInstruction" class="visually-hidden calc-trigger" type="checkbox" id="friendGuardL" />
+                                <label class="btn btn-xxwide" for="friendGuardL">Friend Guard</label>
+                            </div></td>
+                            <td><div class="right" title="Is the Pok&eacute;mon protected by an ally's Friend Guard?">
+                                <input aria-describedby="selectFriendGuardInstruction" class="visually-hidden calc-trigger" type="checkbox" id="friendGuardR" />
+                                <label class="btn btn-xxwide" for="friendGuardR">Friend Guard</label>
+                            </div></td>
+                        </tr>
+                        <tr class="gen-specific g7 g8 g9">
+                            <td><div class="left" title="Is the Pok&eacute;mon protected by an ally's Aurora Veil?">
+                                <div hidden id="selectAuroraVeilInstruction">Is the Pok&eacute;mon protected by an ally's Aurora Veil?</div>
+                                <input aria-describedby="selectAuroraVeilInstruction" class="visually-hidden calc-trigger" type="checkbox" id="auroraVeilL" />
+                                <label class="btn btn-xxwide" for="auroraVeilL">Aurora Veil</label>
+                            </div></td>
+                            <td><div class="right" title="Is the Pok&eacute;mon protected by an ally's Aurora Veil?">
+                                <input aria-describedby="selectAuroraVeilInstruction" class="visually-hidden calc-trigger" type="checkbox" id="auroraVeilR" />
+                                <label class="btn btn-xxwide" for="auroraVeilR">Aurora Veil</label>
+                            </div></td>
+                        </tr>
+                        <tr class="gen-specific g7">
+                          <td><div class="left" title="Has the Pok&eacute;mon boosted all its stats one stage?">
+                              <div hidden id="selectStatBoostInstruction">Has the Pok&eacute;mon boosted all its stats one stage?</div>
+                                <input aria-describedby="selectStatBoostInstruction" class="visually-hidden calc-trigger" type="checkbox" id="StatBoostL" />
+                                <label class="btn btn-xxwide" for="StatBoostL">+1 All Stats</label>
+                              </div></td>
+                            <td><div class="right" title="Has the Pok&eacute;mon boosted all its stats one stage?">
+                                <input aria-describedby="selectStatBoostInstruction" class="visually-hidden calc-trigger" type="checkbox" id="StatBoostR" />
+                                <label class="btn btn-xxwide" for="StatBoostR">+1 All Stats</label>
+                            </div></td>
+                        </tr>
+                        <tr class="gen-specific g7 g8 g9">
+                          <td><div class="left" title="Is the Pok&eacute;mon boosted by an ally's Battery ability?">
+                              <div hidden id="selectBatteryInstruction">Is the Pok&eacute;mon boosted by an ally's Battery ability?</div>
+                                <input aria-describedby="selectBatteryInstruction" class="visually-hidden calc-trigger" type="checkbox" id="batteryL" />
+                                <label class="btn btn-xxwide" for="batteryL">Battery</label>
+                              </div></td>
+                            <td><div class="right" title="Is the Pok&eacute;mon boosted by an ally's Battery ability?">
+                                <input aria-describedby="selectBatteryInstruction" class="visually-hidden calc-trigger" type="checkbox" id="batteryR" />
+                                <label class="btn btn-xxwide" for="batteryR">Battery</label>
+                            </div></td>
+                        </tr>
+                        <tr class="gen-specific g8 g9">
+                          <td><div class="left" title="Is the Pok&eacute;mon boosted by an ally's Power Spot ability?">
+                              <div hidden id="selectPowerSpotInstruction">Is the Pok&eacute;mon boosted by an ally's Power Spot ability?</div>
+                                <input aria-describedby="selectPowerSpotInstruction" class="visually-hidden calc-trigger" type="checkbox" id="powerSpotL" />
+                                <label class="btn btn-xxwide" for="powerSpotL">Power Spot</label>
+                              </div></td>
+                            <td><div class="right" title="Is the Pok&eacute;mon boosted by an ally's Power Spot ability?">
+                                <input aria-describedby="selectPowerSpotInstruction" class="visually-hidden calc-trigger" type="checkbox" id="powerSpotR" />
+                                <label class="btn btn-xxwide" for="powerSpotR">Power Spot</label>
+                            </div></td>
+                        </tr>
+                        <tr class="gen-specific g2 g3 g4 g5 g6 g7 g8 g9">
+                            <td><div class="left" title="Is the defending Pok&eacute;mon switching out?">
+                              <div hidden id="selectSwitchingInstruction">Is the defending Pok&eacute;mon switching out?</div>
+                                <input aria-describedby="selectSwitchingInstruction" class="visually-hidden calc-trigger" type="checkbox" id="switchingL" />
+                                <label class="btn btn-xxwide" for="switchingL">Switching Out</label>
+                              </div></td>
+                            <td><div class="right" title="Is the defending Pok&eacute;mon switching out?">
+                                <input aria-describedby="selectSwitchingInstruction" class="visually-hidden calc-trigger" type="checkbox" id="switchingR" />
+                                <label class="btn btn-xxwide" for="switchingR">Switching Out</label>
+                            </div></td>
+                        </tr>
+                        <tr>
+                            <td><div class="left" title="Export the leftmost Pok&eacute;mon set">
+                                <button id="exportL">Export</button>
+                            </div></td>
+                            <td><div class="right" title="Export the rightmost Pok&eacute;mon set">
+                                <button id="exportR">Export</button>
+                            </div></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </fieldset>
+        </div>
+        <div aria-label="Import team" role="region">
+            <fieldset class="poke-import">
+                <legend align="center">Import / Export</legend>
+                <div id="import-1_wrapper" class="dataTables_wrapper no-footer">
+                    <form class="import-team">
+                        <input class="import-name-text" value="Custom Set"></input>
+                        <textarea class="import-team-text"></textarea>
+                        <!--<button style='position:absolute' class='bs-btn bs-btn-default'>Import</button>-->
+                    </form>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+    <div class="panel">
+        <div aria-label="Pok&eacute;mon 2" role="region">
+            <fieldset class="poke-info" id="p2">
+                <legend align="center">Pok&eacute;mon 2
+                    <img id="p2mon" src="" alt="">
+                </legend>
+                <input type="text" class="set-selector calc-trigger opposing" />
+                <span id="importedSetsOptions" style="width:auto; display:none">
+                    <input type="checkbox" id="importedSets"> Only show imported sets</input>
+                </span>
+                <div class="info-group top i-f-o-type">
+                    <div>
+                        <label>Type</label>
+                        <select aria-label="Type 1" class="type1 terrain-trigger calc-trigger"></select>
+                        <select aria-label="Type 2" class="type2 terrain-trigger calc-trigger"></select>
+                        <small class="right">(<a class="analysis links-lighten" target="_blank" href="">Smogon&nbsp;analysis</a>)</small>
+                    </div>
+                    <div class="gen-specific g9">
+                        <label>Tera Type</label>
+                        <select class="teraType terrain-trigger calc-trigger"></select>
+                        <input type="checkbox" title= "Has this Pok&eacute;mon terastalized?" class="teraToggle terrain-trigger calc-trigger">
+                    </div>
+                    <div class="hide">
+                        <label>Forme</label>
+                        <select class="forme calc-trigger"></select>
+                    </div>
+                    <div class="hide">
+                        <label>Gender</label>
+                        <select class="gender calc-trigger"><option></option><option selected="selected">Male</option><option>Female</option></select>
+                    </div>
+                    <div>
+                        <label for="levelR1">Level</label>
+                        <input class="level calc-trigger" id="levelR1" value="100" />
+                    </div>
+                    <div class="hide">
+                        <label for="weightR1">Weight (kg)</label>
+                        <input class="weight calc-trigger" id="weightR1" value="10.0" />
+                    </div>
+                </div>
+                <div class="info-group i-f-o-stats">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th scope="col">Base</th>
+                                <th class="gen-specific g3 g4 g5 g6 g7 g8 g9" scope="col">IVs</th>
+                                <th class="gen-specific g3 g4 g5 g6 g7 g8 g9" scope="col">EVs</th>
+                                <th class="gen-specific g1 g2 hide" scope="col">DVs</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="hp">
+                                <th scope="row">
+                                    <label>HP</label>
+                                </th>
+                                <td>
+                                    <input class="base calc-trigger" value="100" />
+                                </td>
+                                <td class="gen-specific g3 g4 g5 g6 g7 g8 g9">
+                                    <input class="ivs calc-trigger" value="31" />
+                                </td>
+                                <td class="gen-specific g3 g4 g5 g6 g7 g8 g9">
+                                    <input class="evs calc-trigger" type="number" min="0" max="252" step="4" value="0" />
+                                </td>
+                                <td class="gen-specific g1 g2 hide">
+                                    <input class="dvs calc-trigger" value="15" disabled="disabled" />
+                                </td>
+                                <td><span class="total">341</span>
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr class="at">
+                                <th scope="row">
+                                    <label>Attack</label>
+                                </th>
+                                <td>
+                                    <input class="base calc-trigger" value="100" />
+                                </td>
+                                <td class="gen-specific g3 g4 g5 g6 g7 g8 g9">
+                                    <input class="ivs calc-trigger" value="31" />
+                                </td>
+                                <td class="gen-specific g3 g4 g5 g6 g7 g8 g9">
+                                    <input class="evs calc-trigger" type="number" min="0" max="252" step="4" value="0" />
+                                </td>
+                                <td class="gen-specific g1 g2 hide">
+                                    <input class="dvs calc-trigger" value="15" />
+                                </td>
+                                <td><span class="total">236</span>
+                                </td>
+                                <td>
+                                    <select class="boost calc-trigger">
+                                        <option value="6">+6</option>
+                                        <option value="5">+5</option>
+                                        <option value="4">+4</option>
+                                        <option value="3">+3</option>
+                                        <option value="2">+2</option>
+                                        <option value="1">+1</option>
+                                        <option value="0" selected="selected">--</option>
+                                        <option value="-1">-1</option>
+                                        <option value="-2">-2</option>
+                                        <option value="-3">-3</option>
+                                        <option value="-4">-4</option>
+                                        <option value="-5">-5</option>
+                                        <option value="-6">-6</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr class="df">
+                                <th scope="row">
+                                    <label>Defense</label>
+                                </th>
+                                <td>
+                                    <input class="base calc-trigger" value="100" />
+                                </td>
+                                <td class="gen-specific g3 g4 g5 g6 g7 g8 g9">
+                                    <input class="ivs calc-trigger" value="31" />
+                                </td>
+                                <td class="gen-specific g3 g4 g5 g6 g7 g8 g9">
+                                    <input class="evs calc-trigger" type="number" min="0" max="252" step="4" value="0" />
+                                </td>
+                                <td class="gen-specific g1 g2 hide">
+                                    <input class="dvs calc-trigger" value="15" />
+                                </td>
+                                <td><span class="total">236</span>
+                                </td>
+                                <td>
+                                    <select class="boost calc-trigger">
+                                        <option value="6">+6</option>
+                                        <option value="5">+5</option>
+                                        <option value="4">+4</option>
+                                        <option value="3">+3</option>
+                                        <option value="2">+2</option>
+                                        <option value="1">+1</option>
+                                        <option value="0" selected="selected">--</option>
+                                        <option value="-1">-1</option>
+                                        <option value="-2">-2</option>
+                                        <option value="-3">-3</option>
+                                        <option value="-4">-4</option>
+                                        <option value="-5">-5</option>
+                                        <option value="-6">-6</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr class="sa gen-specific g2 g3 g4 g5 g6 g7 g8 g9">
+                                <th scope="row">
+                                    <label>Sp. Atk</label>
+                                </th>
+                                <td>
+                                    <input class="base calc-trigger" value="100" />
+                                </td>
+                                <td class="gen-specific g3 g4 g5 g6 g7 g8 g9">
+                                    <input class="ivs calc-trigger" value="31" />
+                                </td>
+                                <td class="gen-specific g3 g4 g5 g6 g7 g8 g9">
+                                    <input class="evs calc-trigger" type="number" min="0" max="252" step="4" value="0" />
+                                </td>
+                                <td class="gen-specific g1 g2 hide">
+                                    <input class="dvs calc-trigger" value="15" />
+                                </td>
+                                <td><span class="total">236</span>
+                                </td>
+                                <td>
+                                    <select class="boost calc-trigger">
+                                        <option value="6">+6</option>
+                                        <option value="5">+5</option>
+                                        <option value="4">+4</option>
+                                        <option value="3">+3</option>
+                                        <option value="2">+2</option>
+                                        <option value="1">+1</option>
+                                        <option value="0" selected="selected">--</option>
+                                        <option value="-1">-1</option>
+                                        <option value="-2">-2</option>
+                                        <option value="-3">-3</option>
+                                        <option value="-4">-4</option>
+                                        <option value="-5">-5</option>
+                                        <option value="-6">-6</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr class="sd gen-specific g2 g3 g4 g5 g6 g7 g8 g9">
+                                <th scope="row">
+                                    <label>Sp. Def</label>
+                                </th>
+                                <td>
+                                    <input class="base calc-trigger" value="100" />
+                                </td>
+                                <td class="gen-specific g3 g4 g5 g6 g7 g8 g9">
+                                    <input class="ivs calc-trigger" value="31" />
+                                </td>
+                                <td class="gen-specific g3 g4 g5 g6 g7 g8 g9">
+                                    <input class="evs calc-trigger" type="number" min="0" max="252" step="4" value="0" />
+                                </td>
+                                <td class="gen-specific g1 g2 hide">
+                                    <input class="dvs calc-trigger" value="15" disabled="disabled" />
+                                </td>
+                                <td><span class="total">236</span>
+                                </td>
+                                <td>
+                                    <select class="boost calc-trigger">
+                                        <option value="6">+6</option>
+                                        <option value="5">+5</option>
+                                        <option value="4">+4</option>
+                                        <option value="3">+3</option>
+                                        <option value="2">+2</option>
+                                        <option value="1">+1</option>
+                                        <option value="0" selected="selected">--</option>
+                                        <option value="-1">-1</option>
+                                        <option value="-2">-2</option>
+                                        <option value="-3">-3</option>
+                                        <option value="-4">-4</option>
+                                        <option value="-5">-5</option>
+                                        <option value="-6">-6</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr class="sl gen-specific g1 hide">
+                                <th scope="row">
+                                    <label>Special</label>
+                                </th>
+                                <td>
+                                    <input class="base calc-trigger" value="100" />
+                                </td>
+                                <td>
+                                    <input class="dvs calc-trigger" value="15" />
+                                </td>
+                                <td><span class="total">236</span>
+                                </td>
+                                <td>
+                                    <select class="boost calc-trigger">
+                                        <option value="6">+6</option>
+                                        <option value="5">+5</option>
+                                        <option value="4">+4</option>
+                                        <option value="3">+3</option>
+                                        <option value="2">+2</option>
+                                        <option value="1">+1</option>
+                                        <option value="0" selected="selected">--</option>
+                                        <option value="-1">-1</option>
+                                        <option value="-2">-2</option>
+                                        <option value="-3">-3</option>
+                                        <option value="-4">-4</option>
+                                        <option value="-5">-5</option>
+                                        <option value="-6">-6</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr class="sp">
+                                <th scope="row">
+                                    <label>Speed</label>
+                                </th>
+                                <td>
+                                    <input class="base calc-trigger" value="100" />
+                                </td>
+                                <td class="gen-specific g3 g4 g5 g6 g7 g8 g9">
+                                    <input class="ivs calc-trigger" value="31" />
+                                </td>
+                                <td class="gen-specific g3 g4 g5 g6 g7 g8 g9">
+                                    <input class="evs calc-trigger" type="number" min="0" max="252" step="4" value="0" />
+                                </td>
+                                <td class="gen-specific g1 g2 hide">
+                                    <input class="dvs calc-trigger" value="15" />
+                                </td>
+                                <td><span class="total">236</span>
+                                </td>
+                                <td>
+                                    <select class="boost calc-trigger">
+                                        <option value="6">+6</option>
+                                        <option value="5">+5</option>
+                                        <option value="4">+4</option>
+                                        <option value="3">+3</option>
+                                        <option value="2">+2</option>
+                                        <option value="1">+1</option>
+                                        <option value="0" selected="selected">--</option>
+                                        <option value="-1">-1</option>
+                                        <option value="-2">-2</option>
+                                        <option value="-3">-3</option>
+                                        <option value="-4">-4</option>
+                                        <option value="-5">-5</option>
+                                        <option value="-6">-6</option>
+                                    </select>
+                                </td>
+                                <td><span class="totalMod">---</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="info-group info-selectors i-f-o-stats">
+                    <div class="gen-specific g3 g4 g5 g6 g7 g8 g9">
+                        <label for="natureR1">Nature</label>
+                        <select class="nature calc-trigger" id="natureR1">
+                            <option value="Adamant">Adamant (+Atk, -SpA)</option>
+                            <option value="Bashful">Bashful</option>
+                            <option value="Bold">Bold (+Def, -Atk)</option>
+                            <option value="Brave">Brave (+Atk, -Spe)</option>
+                            <option value="Calm">Calm (+SpD, -Atk)</option>
+                            <option value="Careful">Careful (+SpD, -SpA)</option>
+                            <option value="Docile">Docile</option>
+                            <option value="Gentle">Gentle (+SpD, -Def)</option>
+                            <option value="Hardy" selected="selected">Hardy</option>
+                            <option value="Hasty">Hasty (+Spe, -Def)</option>
+                            <option value="Impish">Impish (+Def, -SpA)</option>
+                            <option value="Jolly">Jolly (+Spe, -SpA)</option>
+                            <option value="Lax">Lax (+Def, -SpD)</option>
+                            <option value="Lonely">Lonely (+Atk, -Def)</option>
+                            <option value="Mild">Mild (+SpA, -Def)</option>
+                            <option value="Modest">Modest (+SpA, -Atk)</option>
+                            <option value="Naive">Naive (+Spe, -SpD)</option>
+                            <option value="Naughty">Naughty (+Atk, -SpD)</option>
+                            <option value="Quiet">Quiet (+SpA, -Spe)</option>
+                            <option value="Quirky">Quirky</option>
+                            <option value="Rash">Rash (+SpA, -SpD)</option>
+                            <option value="Relaxed">Relaxed (+Def, -Spe)</option>
+                            <option value="Sassy">Sassy (+SpD, -Spe)</option>
+                            <option value="Serious">Serious</option>
+                            <option value="Timid">Timid (+Spe, -Atk)</option>
+                        </select>
+                    </div>
+                    <div class="gen-specific g3 g4 g5 g6 g7 g8 g9">
+                        <label for="abilityR1">Ability</label>
+                        <select class="ability terrain-trigger calc-trigger" id="abilityR1"></select>
+                        <input hidden type="checkbox" title= "Is this ability active?" class="abilityToggle calc-trigger">
+                            <select hidden aria-label="Allies fainted" class="alliesFainted calc-trigger">
+                                    <option value="0">Zero allies fainted</option>
+                                    <option value="1">One ally fainted</option>
+                                    <option value="2">Two allies fainted</option>
+                                    <option value="3">Three allies fainted</option>
+                                    <option value="4">Four allies fainted</option>
+                                    <option value="5">Five allies fainted</option>
+                            </select>
+                            <select hidden aria-label="Boosted Stat" title="What stat is boosted by this ability?" class="boostedStat calc-trigger">
+							 <option value="auto">Auto-Select</option>
+                             <option value="">Inactive</option>
+							 <option value="atk">Attack</option>
+							 <option value="def">Defense</option>
+							 <option value="spa">Special Attack</option>
+							 <option value="spd">Special Defense</option>
+							 <option value="spe">Speed</option>
+						    </select>
+                    </div>
+                    <div class="gen-specific g2 g3 g4 g5 g6 g7 g8 g9">
+                        <label for="itemR1">Item</label>
+                        <select class="item terrain-trigger calc-trigger" id="itemR1"></select>
+                    </div>
+                    <div>
+                        <label for="statusR1">Status</label>
+                        <select class="status calc-trigger" id="statusR1">
+                            <option value="Healthy">Healthy</option>
+                            <option value="Poisoned">Poisoned</option>
+                            <option value="Badly Poisoned">Badly Poisoned</option>
+                            <option value="Burned">Burned</option>
+                            <option value="Frostbite">Frostbite</option>
+                            <option value="Paralyzed">Paralyzed</option>
+                            <option value="Asleep">Asleep</option>
+                            <option value="Frozen">Frozen</option>
+                        </select>
+                        <select aria-label="Toxic counter" class="toxic-counter calc-trigger hide">
+                            <option value="1">1/16</option>
+                            <option value="2">2/16</option>
+                            <option value="3">3/16</option>
+                            <option value="4">4/16</option>
+                            <option value="5">5/16</option>
+                            <option value="6">6/16</option>
+                            <option value="7">7/16</option>
+                            <option value="8">8/16</option>
+                            <option value="9">9/16</option>
+                            <option value="10">10/16</option>
+                            <option value="11">11/16</option>
+                            <option value="12">12/16</option>
+                            <option value="13">13/16</option>
+                            <option value="14">14/16</option>
+                            <option value="15">15/16</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="info-group toggle-actions">
+                    <div class="gen-specific g9 salt-cure-control" title="Has this Pok&eacute;mon been cured with Salt Cure?">
+                        <div hidden id="selectRevealInstruction">Has this Pok&eacute;mon been cured with Salt Cure?</div>
+                        <input aria-describedby="selectRevealInstruction" class="visually-hidden saltcure calc-trigger" type="checkbox" id="cureR" />
+                        <label class="btn btn-xxwide" for="cureR">Salt Cure</label>
+                    </div>
+                    <div class="gen-specific g1 g2 g3 g4 g5 g6 g7 g8 g9 transform-control hide">
+                        <div hidden id="transformInstructionR">Treat this Pok&eacute;mon as transformed into its target.</div>
+                        <input aria-describedby="transformInstructionR" class="visually-hidden transform-toggle calc-trigger" type="checkbox" id="transformR1" />
+                        <label class="btn btn-wide transform-btn" for="transformR1" title="Treat this Pok&eacute;mon as transformed into its target.">Transform</label>
+                    </div>
+                </div>
+                <div class="info-group i-f-o-hp">
+                    <label for="currentHpR1">Current HP</label>
+                    <input class="current-hp calc-trigger" id="currentHpR1" value="341" />/<span class="max-hp">341</span> (
+                    <input class="percent-hp calc-trigger" value="100" />%)
+                        <input class="visually-hidden max calc-trigger btn-input" type="checkbox" id="maxR" />
+                        <label class="btn btn-xwide gen-specific g8 hide" for="maxR"
+                        title="Use the corresponding Max Move?">Dynamax</label>
+                        <br />
+                    <br />
+                    Health <div class="hpbar"></div>
+                </div>
+                <div class="move1 i-f-o-move">
+                    <select class="move-selector calc-trigger small-select"></select>
+                    <input class="move-bp calc-trigger" value="50" />
+                    <select class="move-type calc-trigger"></select>
+                    <select class="move-cat calc-trigger gen-specific g4 g5 g6 g7 g8 g9">
+                        <option value="Physical">Physical</option>
+                        <option value="Special">Special</option>
+                    </select>
+                    <input aria-describedby="criticalHitInstruction" class="move-crit calc-trigger visually-hidden" type="checkbox" id="critR1" />
+                    <label class="btn crit-btn" for="critR1" title="Force this attack to be a critical hit?">Crit</label>
+                    <input aria-describedby="zMoveInstruction" class="move-z calc-trigger visually-hidden" type="checkbox" id="zR1"/>
+                    <label class="btn z-btn gen-specific g7 g8 g9" for="zR1" title="Make this attack a Z-move?">Z</label>
+                    <select class="move-hits calc-trigger hide">
+                        <option value="2">2 hits</option>
+                        <option value="3">3 hits</option>
+                        <option value="4">4 hits</option>
+                        <option value="5">5 hits</option>
+                    </select>
+                    <select class="stat-drops calc-trigger hide" title="How many times was this move used in a row?">>
+                        <option value="1">Once</option>
+                        <option value="2">Twice</option>
+                        <option value="3">3 times</option>
+                        <option value="4">4 times</option>
+                        <option value="5">5 times</option>
+                    </select>
+                    <select class="metronome calc-trigger hide" title="How many times was this move successfully and consecutively used while holding Metronome before this turn?">
+                        <option value="0">Never</option>
+                        <option value="1">Once</option>
+                        <option value="2">Twice</option>
+                        <option value="3">3 times</option>
+                        <option value="4">4 times</option>
+                        <option value="5">5 times</option>
+                    </select>
+                </div>
+                <div class="move2 i-f-o-move">
+                    <select class="move-selector calc-trigger small-select"></select>
+                    <input class="move-bp calc-trigger" value="0" />
+                    <select class="move-type calc-trigger"></select>
+                    <select class="move-cat calc-trigger gen-specific g4 g5 g6 g7 g8 g9">
+                        <option value="Physical">Physical</option>
+                        <option value="Special">Special</option>
+                    </select>
+                    <input aria-describedby="criticalHitInstruction" class="move-crit calc-trigger visually-hidden" type="checkbox" id="critR2" />
+                    <label class="btn crit-btn" for="critR2" title="Force this attack to be a critical hit?">Crit</label>
+                    <input aria-describedby="zMoveInstruction" class="move-z calc-trigger visually-hidden" type="checkbox" id="zR2"/>
+                    <label class="btn z-btn gen-specific g7 g8 g9" for="zR2" title="Make this attack a Z-move?">Z</label>
+                    <select class="move-hits calc-trigger hide">
+                        <option value="2">2 hits</option>
+                        <option value="3">3 hits</option>
+                        <option value="4">4 hits</option>
+                        <option value="5">5 hits</option>
+                    </select>
+                    <select class="stat-drops calc-trigger hide" title="How many times was this move used in a row?">>
+                        <option value="1">Once</option>
+                        <option value="2">Twice</option>
+                        <option value="3">3 times</option>
+                        <option value="4">4 times</option>
+                        <option value="5">5 times</option>
+                    </select>
+                    <select class="metronome calc-trigger hide" title="How many times was this move successfully and consecutively used while holding Metronome before this turn?">
+                        <option value="0">Never</option>
+                        <option value="1">Once</option>
+                        <option value="2">Twice</option>
+                        <option value="3">3 times</option>
+                        <option value="4">4 times</option>
+                        <option value="5">5 times</option>
+                    </select>
+                </div>
+                <div class="move3 i-f-o-move">
+                    <select class="move-selector calc-trigger small-select"></select>
+                    <input class="move-bp calc-trigger" value="0" />
+                    <select class="move-type calc-trigger"></select>
+                    <select class="move-cat calc-trigger gen-specific g4 g5 g6 g7 g8 g9">
+                        <option value="Physical">Physical</option>
+                        <option value="Special">Special</option>
+                    </select>
+                    <input aria-describedby="criticalHitInstruction" class="move-crit calc-trigger visually-hidden" type="checkbox" id="critR3" />
+                    <label class="btn crit-btn" for="critR3" title="Force this attack to be a critical hit?">Crit</label>
+                    <input aria-describedby="zMoveInstruction" class="move-z calc-trigger visually-hidden" type="checkbox" id="zR3"/>
+                    <label class="btn z-btn gen-specific g7 g8 g9" for="zR3" title="Make this attack a Z-move?">Z</label>
+                    <select class="move-hits calc-trigger hide">
+                        <option value="2">2 hits</option>
+                        <option value="3">3 hits</option>
+                        <option value="4">4 hits</option>
+                        <option value="5">5 hits</option>
+                    </select>
+                    <select class="stat-drops calc-trigger hide" title="How many times was this move used in a row?">>
+                        <option value="1">Once</option>
+                        <option value="2">Twice</option>
+                        <option value="3">3 times</option>
+                        <option value="4">4 times</option>
+                        <option value="5">5 times</option>
+                    </select>
+                    <select class="metronome calc-trigger hide" title="How many times was this move successfully and consecutively used while holding Metronome before this turn?">
+                        <option value="0">Never</option>
+                        <option value="1">Once</option>
+                        <option value="2">Twice</option>
+                        <option value="3">3 times</option>
+                        <option value="4">4 times</option>
+                        <option value="5">5 times</option>
+                    </select>
+                </div>
+                <div class="move4 i-f-o-move">
+                    <select class="move-selector calc-trigger small-select"></select>
+                    <input class="move-bp calc-trigger" value="0" />
+                    <select class="move-type calc-trigger"></select>
+                    <select class="move-cat calc-trigger gen-specific g4 g5 g6 g7 g8 g9">
+                        <option value="Physical">Physical</option>
+                        <option value="Special">Special</option>
+                    </select>
+                    <input aria-describedby="criticalHitInstruction" class="move-crit calc-trigger visually-hidden" type="checkbox" id="critR4" />
+                    <label class="btn crit-btn" for="critR4" title="Force this attack to be a critical hit?">Crit</label>
+                    <input aria-describedby="zMoveInstruction" class="move-z calc-trigger visually-hidden" type="checkbox" id="zR4"/>
+                    <label class="btn z-btn gen-specific g7 g8 g9" for="zR4" title="Make this attack a Z-move?">Z</label>
+                    <select class="move-hits calc-trigger hide">
+                        <option value="2">2 hits</option>
+                        <option value="3">3 hits</option>
+                        <option value="4">4 hits</option>
+                        <option value="5">5 hits</option>
+                    </select>
+                    <select class="stat-drops calc-trigger hide" title="How many times was this move used in a row?">>
+                        <option value="1">Once</option>
+                        <option value="2">Twice</option>
+                        <option value="3">3 times</option>
+                        <option value="4">4 times</option>
+                        <option value="5">5 times</option>
+                    </select>
+                    <select class="metronome calc-trigger hide" title="How many times was this move successfully and consecutively used while holding Metronome before this turn?">
+                        <option value="0">Never</option>
+                        <option value="1">Once</option>
+                        <option value="2">Twice</option>
+                        <option value="3">3 times</option>
+                        <option value="4">4 times</option>
+                        <option value="5">5 times</option>
+                    </select>
+                </div>
+            </fieldset>
+        </div>
+        <div aria-label="trainer-poks" role="region">
+            <fieldset class="poke-info" id="trainer-mons">
+                <legend align="center"> OPPOSING TEAM</legend>
+                <div class="trainer-poks">
+                    <div class="trainer-pok-list-opposing">
+                        <div class="trainer-pok-container">
+                            <img class="trainer-pok-opposing" src="https://play.pokemonshowdown.com/sprites/gen5/charizard.png" title="Focus Blast 120">
+                        </div>
+                    </div>
+                    <!--div class="trainer-pok-list-opposing2" hidden>
+                        <div class="trainer-pok-container2">
+                            
+                        </div>
+                    </div-->
+                </div>
+                <!--hr>
+                <button id="set-double-opp">Set in doubles</button-->
+                <hr>
+                <div class="trainer-controls">
+                    <button type="button" id="previous-trainer"> Previous Trainer</button>
+                    <button type="button" id="next-trainer"> Next Trainer</button>
+                    <span id="gauntlet-name" class="gauntlet-name" hidden></span>
+                    <button type="button" id="reset-trainer">Reset</button>
+                </div>
+                <div id="gauntlet-section" class="gauntlet-section" hidden>
+                    <div class="gauntlet-trainer-list" aria-label="Gauntlet fights"></div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+    <div class="right-side-pannel side-pannel">
+        <button data-set="i-f-o-type" class="r-side-button">
+            <i class="s-arrow arrowdown"></i>
+            <span>Type</span>
+        </button>
+        <button data-set="i-f-o-stats" class="r-side-button">
+            <i class="s-arrow arrowdown"></i>
+            <span>Stats</span>
+        </button>
+        <button data-set="i-f-o-hp" class="r-side-button">
+            <i class="s-arrow arrowdown"></i>
+            <span>HP</span>
+        </button>
+        <button data-set="i-f-o-move" class="r-side-button">
+            <i class="s-arrow arrowdown"></i>
+            <span>Moves</span>
+        </button>
+    </div>
+    <script type="text/javascript">
+        var linkExtension = '.html';
+    </script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/js/vendor/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/js/vendor/select2/select2.min.js"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/js/vendor/url-search-params-0.1.2.min.js"></script>
+    <script type="text/javascript">
+        this.__createBinding = function(o, m, k) {
+            o[k] = m[k];
+        };
+        var calc = exports = {};
+        function require() { return exports };
+    </script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/calc/util.js?51463f0d"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/calc/stats.js?a9e37d1a"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/calc/data/species.js?791681cf"></script>
+	<script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/js/data/sets/gen9.js?1b5b734f"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/js/data/gauntlets.js?460f4e2c"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/js/data/sets/gen8.js?ecf43658"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/js/data/sets/gen7.js?5f5ba850"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/js/data/sets/gen6.js?eaf8dc5f"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/js/data/sets/gen5.js?d8d4ab96"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/js/data/sets/gen4.js?1cca0e4b"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/js/data/sets/gen3.js?1750a100"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/js/data/sets/gen2.js?8534fa4a"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/js/data/sets/gen1.js?6b6723b2"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/calc/data/types.js?a641e10b"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/calc/data/natures.js?28612810"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/calc/data/abilities.js?eac404af"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/calc/data/moves.js?df1fe815"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/calc/data/items.js?e49e3994"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/calc/data/index.js?abecbd82"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/calc/move.js?57ab9f0a"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/calc/pokemon.js?8a5dec08"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/calc/field.js?62847f6b"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/calc/items.js?067e42a4"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/calc/mechanics/util.js?b06eeb90"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/calc/mechanics/gen789.js?cc582382"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/calc/mechanics/gen56.js?ef8948c8"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/calc/mechanics/gen4.js?40c43b36"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/calc/mechanics/gen3.js?61df9cf3"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/calc/mechanics/gen12.js?199f8ca6"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/calc/calc.js?40a2d9b1"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/calc/desc.js?153726b7"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/calc/result.js?9f8881b5"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/calc/adaptable.js?92e49194"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/calc/index.js?0b1745b9"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/js/shared_controls.js?d5b7f00b"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/js/index_randoms_controls.js?4dacd79c"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/js/moveset_import.js?97e825f9"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/js/analytics/config.js?dd43b2f8"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/js/analytics/state.js?e83c8bca"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/js/analytics/tracker.js?b328f9c0"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/js/analytics/enums.js?7b0d32dc"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/js/analytics/identity.js?c2baf5fd"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/js/analytics/supabase.js?93440041"></script>
+    <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/js/analytics/bootstrap.js?c2d34dac"></script>
+</div>
+
+<div class="credits">Modification by ForwardFeed Originaly Created by Honko, maintained by Austin and Kris, Special thanks to Hzla
+    <ul>
+        <li><a href="https://github.com/ForwardFeed/runbuncalc" class="links-lighten" target="_blank">Modification Repository</a></li>
+        <br>
+        <li><a href="https://github.com/smogon/damage-calc/contributors" class="links-lighten" target="_blank">Smogon Contributors</a></li>
+        <li><a href="https://www.smogon.com/forums/threads/pok%C3%A9mon-showdown-damage-calculator.3593546/" class="links-lighten" target="_blank">Smogon Bug Reports</a></li>
+        <li><a href="https://github.com/smogon/damage-calc" class="links-lighten" target="_blank">Smogon GitHub repository</a></li></ul>
+    
+        <button type="button" id="dark-theme-toggle"></button>
+        <script type="text/javascript" src="https://nullcalc.pokemon0null.workers.dev/js/dark-theme-toggle.js?fc41b885"></script>
+    </div>
+
+<script>(function(){var d=document.getElementById("dark-theme-styles");if(d) d.disabled=false;})();</script>
+<script>
+/* ============================================================
+   Read .sav  —  imports your party from a GBA save into the calc
+   ------------------------------------------------------------
+   Parses a Gen 3 save (Emerald / FireRed based, incl. pokeemerald-
+   expansion hacks), converts the party to Showdown sets, and feeds
+   them to the calculator's own import form.
+
+   Runs entirely in your browser. The file is never uploaded.
+   ============================================================ */
+(function(){
+  var SIG = 0x08012025, SECTION = 4096, FOOTER = 0x0FF4, NSEC = 14;
+
+  var ORDER = ["GAEM","GAME","GEAM","GEMA","GMAE","GMEA","AGEM","AGME","AEGM","AEMG",
+               "AMGE","AMEG","EGAM","EGMA","EAGM","EAMG","EMGA","EMAG","MGAE","MGEA",
+               "MAGE","MAEG","MEGA","MEAG"];
+  var NATURES = ["Hardy","Lonely","Brave","Adamant","Naughty","Bold","Docile","Relaxed",
+    "Impish","Lax","Timid","Hasty","Serious","Jolly","Naive","Modest","Mild","Quiet",
+    "Bashful","Rash","Calm","Gentle","Sassy","Careful","Quirky"];
+  // save stores HP,Atk,Def,Spe,SpA,SpD - Showdown wants HP,Atk,Def,SpA,SpD,Spe
+  var REMAP = [0,1,2,4,5,3], STATN = ["HP","Atk","Def","SpA","SpD","Spe"];
+
+  function newestSlot(dv, len){
+    var best = null;
+    for (var slot = 0; slot < 2; slot++){
+      var base = slot * NSEC * SECTION, secs = {}, idx = null, ok = true;
+      for (var i = 0; i < NSEC; i++){
+        var off = base + i * SECTION;
+        if (off + SECTION > len){ ok = false; break; }
+        if (dv.getUint32(off + FOOTER + 4, true) !== SIG){ ok = false; break; }
+        secs[dv.getUint16(off + FOOTER, true)] = off;
+        idx = dv.getUint32(off + FOOTER + 8, true);
+      }
+      if (ok && Object.keys(secs).length === NSEC && (!best || idx > best.idx))
+        best = { idx: idx, secs: secs };
+    }
+    return best;
+  }
+
+  /* SaveBlock1 = sections 1..4 stitched together */
+  function saveBlock1(buf, slot){
+    var out = new Uint8Array(4 * 3968);
+    for (var i = 1; i <= 4; i++)
+      out.set(new Uint8Array(buf, slot.secs[i], 3968), (i-1) * 3968);
+    return out;
+  }
+
+  function decryptMon(b, at){
+    var dv = new DataView(b.buffer, b.byteOffset + at, 100);
+    var pid = dv.getUint32(0, true), otid = dv.getUint32(4, true), key = (pid ^ otid) >>> 0;
+    var dec = new Uint8Array(48);
+    for (var i = 0; i < 48; i += 4){
+      var v = (dv.getUint32(32 + i, true) ^ key) >>> 0;
+      dec[i]   =  v         & 0xFF; dec[i+1] = (v >>> 8)  & 0xFF;
+      dec[i+2] = (v >>> 16) & 0xFF; dec[i+3] = (v >>> 24) & 0xFF;
+    }
+    var ord = ORDER[pid % 24], pos = {};
+    for (var k = 0; k < 4; k++) pos[ord[k]] = k * 12;
+    var d = new DataView(dec.buffer);
+    var G = pos.G, A = pos.A, E = pos.E, M = pos.M;
+    var ivWord = d.getUint32(M + 4, true);
+    var ivs = [], evs = [], moves = [];
+    for (var s = 0; s < 6; s++){ ivs.push((ivWord >>> (5*s)) & 31); evs.push(dec[E + s]); }
+    for (var m = 0; m < 4; m++) moves.push(d.getUint16(A + m*2, true));
+    return {
+      species: d.getUint16(G, true),
+      item:    d.getUint16(G + 2, true),
+      moves: moves, evs: evs, ivs: ivs,
+      abilityBit: (ivWord >>> 31) & 1,
+      nature: pid % 25,
+      level: b[at + 84]
+    };
+  }
+
+  function readParty(buf){
+    var len = buf.byteLength, dv = new DataView(buf);
+    var slot = newestSlot(dv, len);
+    if (!slot) return { error: "That doesn't look like a GBA save file." };
+    var sb1 = saveBlock1(buf, slot);
+    var offsets = [0x234, 0x034, 0x238];   // Emerald / FireRed / fallback
+    for (var o = 0; o < offsets.length; o++){
+      var off = offsets[o], count = sb1[off];
+      if (count < 1 || count > 6) continue;
+      var mons = [], good = true;
+      for (var i = 0; i < count; i++){
+        var at = off + 4 + i * 100;
+        if (at + 100 > sb1.length){ good = false; break; }
+        var m = decryptMon(sb1, at);
+        if (!m.species || m.level < 1 || m.level > 100){ good = false; break; }
+        mons.push(m);
+      }
+      if (good && mons.length) return { mons: mons, offset: off };
+    }
+    return { error: "Couldn't find the party data in that save." };
+  }
+
+  function toShowdown(m){
+    var MAPS = window.__NULL_MAPS__;
+    var name = MAPS.species[m.species] || ("Species#" + m.species);
+    var item = MAPS.items[m.item];
+    var L = [ name + (item ? " @ " + item : "") ];
+    L.push("Level: " + m.level);
+    var evs = [], ivs = [];
+    for (var i = 0; i < 6; i++){ evs.push(m.evs[REMAP[i]]); ivs.push(m.ivs[REMAP[i]]); }
+    var e = [], v = [];
+    for (i = 0; i < 6; i++){ if (evs[i]) e.push(evs[i] + " " + STATN[i]);
+                             if (ivs[i] !== 31) v.push(ivs[i] + " " + STATN[i]); }
+    if (e.length) L.push("EVs: " + e.join(" / "));
+    L.push(NATURES[m.nature] + " Nature");
+    if (v.length) L.push("IVs: " + v.join(" / "));
+    for (i = 0; i < 4; i++){
+      if (!m.moves[i]) continue;
+      L.push("- " + (MAPS.moves[m.moves[i]] || ("Move#" + m.moves[i])));
+    }
+    return L.join("\n");
+  }
+
+
+  /* Box Pokemon are 80 bytes and store EXP, not level. Without per-species
+     growth rates we approximate with the Medium Fast curve (level = exp^(1/3)),
+     which is exact for many species and within a level or two for most others.
+     Party levels are read directly and are always exact. */
+  function decryptBoxMon(b, at){
+    var dv = new DataView(b.buffer, b.byteOffset + at, 80);
+    var pid = dv.getUint32(0, true), otid = dv.getUint32(4, true), key = (pid ^ otid) >>> 0;
+    var dec = new Uint8Array(48);
+    for (var i = 0; i < 48; i += 4){
+      var v = (dv.getUint32(32 + i, true) ^ key) >>> 0;
+      dec[i]   =  v         & 0xFF; dec[i+1] = (v >>> 8)  & 0xFF;
+      dec[i+2] = (v >>> 16) & 0xFF; dec[i+3] = (v >>> 24) & 0xFF;
+    }
+    var ord = ORDER[pid % 24], pos = {};
+    for (var k = 0; k < 4; k++) pos[ord[k]] = k * 12;
+    var d = new DataView(dec.buffer);
+    var G = pos.G, A = pos.A, E = pos.E, M = pos.M;
+    var ivWord = d.getUint32(M + 4, true);
+    var ivs = [], evs = [], moves = [];
+    for (var s = 0; s < 6; s++){ ivs.push((ivWord >>> (5*s)) & 31); evs.push(dec[E + s]); }
+    for (var m = 0; m < 4; m++) moves.push(d.getUint16(A + m*2, true));
+    var exp = d.getUint32(G + 4, true);
+    var lvl = Math.round(Math.cbrt(exp));
+    return {
+      species: d.getUint16(G, true), item: d.getUint16(G + 2, true),
+      moves: moves, evs: evs, ivs: ivs, abilityBit: (ivWord >>> 31) & 1,
+      nature: pid % 25, level: Math.max(1, Math.min(100, lvl)), boxed: true
+    };
+  }
+
+  function readBoxes(buf, slot){
+    var blob = new Uint8Array(9 * 3968), n = 0;
+    for (var i = 5; i <= 13; i++){
+      if (slot.secs[i] === undefined) return [];
+      blob.set(new Uint8Array(buf, slot.secs[i], 3968), (i - 5) * 3968);
+    }
+    var mons = [];
+    for (var k = 0; k < 14 * 30; k++){
+      var at = 4 + k * 80;
+      if (at + 80 > blob.length) break;
+      var dv = new DataView(blob.buffer, at, 80);
+      if (dv.getUint32(0, true) === 0 && dv.getUint32(4, true) === 0) continue;
+      var m;
+      try { m = decryptBoxMon(blob, at); } catch(e){ continue; }
+      if (!m.species || m.species > 1600) continue;
+      mons.push(m);
+    }
+    return mons;
+  }
+
+  function readAll(buf){
+    var dv = new DataView(buf), slot = newestSlot(dv, buf.byteLength);
+    if (!slot) return { error: "That doesn't look like a GBA save file." };
+    var party = readParty(buf);
+    var box = [];
+    try { box = readBoxes(buf, slot); } catch(e){ box = []; }
+    if (party.error && !box.length) return { error: party.error };
+    return { party: party.mons || [], box: box };
+  }
+
+  /* ---------------- UI ---------------- */
+  var bar = document.createElement('div');
+  bar.id = 'sav-bar';
+  bar.innerHTML =
+    '<button type="button" id="sav-btn">Read .sav</button>' +
+    '<span id="sav-msg"></span>' +
+    '<input type="file" id="sav-file" accept=".sav,.srm,.sa1,.fla,.dat" hidden>';
+  document.body.appendChild(bar);
+
+  var btn  = document.getElementById('sav-btn'),
+      file = document.getElementById('sav-file'),
+      msg  = document.getElementById('sav-msg');
+
+  function say(t, bad){ msg.textContent = t; msg.className = bad ? 'bad' : 'ok'; }
+
+  btn.addEventListener('click', function(){ file.value = ''; file.click(); });
+
+  file.addEventListener('change', function(){
+    var f = file.files && file.files[0];
+    if (!f) return;
+    say('reading ' + f.name + '…');
+    var fr = new FileReader();
+    fr.onload = function(){
+      var res;
+      try { res = readAll(fr.result); }
+      catch (err){ say('Could not read that file: ' + err.message, true); return; }
+      if (res.error){ say(res.error, true); return; }
+
+      var all = res.party.concat(res.box);
+      if (!all.length){ say('No Pokemon found in that save.', true); return; }
+      var text = all.map(toShowdown).join("\n\n");
+      var ta = document.querySelector('textarea.import-team-text');
+      if (!ta){ say('Parsed ' + res.mons.length + ' Pokemon, but the import box was not found.', true); return; }
+
+      // open the import panel if it is collapsed, then hand the sets to the calc
+      var form = ta.closest('form') || ta.parentNode;
+      var nameBox = document.querySelector('.import-name-text');
+      if (nameBox) nameBox.value = f.name.replace(/\.[^.]+$/, '');
+      ta.value = text;
+      ta.dispatchEvent(new Event('input',  { bubbles: true }));
+      ta.dispatchEvent(new Event('change', { bubbles: true }));
+
+      var go = form.querySelector('button');
+      if (go) go.click();
+
+      say('Imported ' + all.length + ' - ' + res.party.length + ' in party, ' +
+          res.box.length + ' from boxes' +
+          (res.box.length ? ' (box levels estimated from EXP)' : ''));
+    };
+    fr.onerror = function(){ say('Could not open that file.', true); };
+    fr.readAsArrayBuffer(f);
+  });
+})();
+
+</script>
+</body>
+
+</html>

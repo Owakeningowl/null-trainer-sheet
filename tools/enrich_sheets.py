@@ -574,6 +574,30 @@ def add_setup_panel(path):
     return True
 
 
+MODE_BAR = (
+    '<div class="mode-bar">'
+    '<a href="#sheet" data-mode="sheet" class="is-active">Trainer Sheet</a>'
+    '<a href="#dex" data-mode="dex">Pok&eacute;dex</a>'
+    '<a href="#calc" data-mode="calc">Calculator</a>'
+    '</div>'
+)
+
+SHELL_TAG = '<script src="../theme/shell.js?v1"></script>'
+
+
+def add_shell(page):
+    """Sheet / Dex / Calc switch above the split nav, and the script that
+    keeps both tools alive while you move around. Idempotent."""
+    if 'class="mode-bar"' not in page:
+        page = re.sub(r'(<body>)', r'\1\n' + MODE_BAR, page, count=1)
+    if 'theme/shell.js' not in page:
+        if '</body>' in page:
+            page = page.replace('</body>', SHELL_TAG + '\n</body>', 1)
+        else:
+            page = page.rstrip() + '\n' + SHELL_TAG + '\n'
+    return page
+
+
 def process(sheet, data, roles=None, verbose=True):
     path = os.path.join(SRC, PAGES[sheet])
     page = open(path, encoding='utf-8').read()
@@ -649,6 +673,7 @@ def process(sheet, data, roles=None, verbose=True):
     page, slug_fixes = fix_sprite_slugs(page)
     page, tagged = apply_roles(page)
     page = add_role_key(page)
+    page = add_shell(page)
 
     open(path, 'w', encoding='utf-8').write(page)
     if verbose:
@@ -700,7 +725,12 @@ def main():
         ta += a
         chips.update(c)
     print(f'\ntotal: {tn} cell notes attached, {ta} trainers restored')
-    if add_setup_panel(os.path.join(SRC, 'resources.html')):
+    home = os.path.join(SRC, 'resources.html')
+    with open(home, encoding='utf-8') as fh:
+        home_page = add_shell(fh.read())
+    with open(home, 'w', encoding='utf-8') as fh:
+        fh.write(home_page)
+    if add_setup_panel(home):
         print('setup reference panel written to resources.html')
     print('role chips: ' + ', '.join(
         f'{dict(ROLE_LABELS)[k]} {chips[k]}' for k, _ in ROLE_LABELS))
