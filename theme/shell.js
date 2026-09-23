@@ -14,6 +14,26 @@
   var frames = {};
   var mode = 'sheet';
 
+  /* A switcher that is always on screen, so you never scroll up to change
+     view -- and it sits above the tool iframes, so it works from inside
+     the calculator too. */
+  var fab = document.createElement('div');
+  fab.className = 'mode-fab';
+  fab.innerHTML =
+    '<button type="button" class="mode-fab-main" aria-label="Switch view" ' +
+    'aria-expanded="false">&#8646;</button>' +
+    '<div class="mode-fab-menu">' +
+    '<a href="#sheet" data-mode="sheet">Trainer Sheet</a>' +
+    '<a href="#dex" data-mode="dex">Pok\u00e9dex</a>' +
+    '<a href="#calc" data-mode="calc">Calculator</a>' +
+    '</div>';
+  document.body.appendChild(fab);
+
+  function fabOpen(on) {
+    fab.classList.toggle('is-open', on);
+    fab.querySelector('.mode-fab-main').setAttribute('aria-expanded', on ? 'true' : 'false');
+  }
+
   var pages = {};
   if (navbar) {
     [].forEach.call(navbar.querySelectorAll('a[href$=".html"]'), function (a) {
@@ -52,9 +72,10 @@
     place();
     for (var k in frames) frames[k].classList.toggle('is-open', k === next);
     document.body.classList.toggle('mode-open', next !== 'sheet');
-    [].forEach.call(bar.querySelectorAll('a[data-mode]'), function (a) {
+    [].forEach.call(document.querySelectorAll('a[data-mode]'), function (a) {
       a.classList.toggle('is-active', a.getAttribute('data-mode') === next);
     });
+    fabOpen(false);
     try { sessionStorage.setItem('nullMode', next); } catch (e) {}
   }
 
@@ -96,6 +117,17 @@
   }
 
   document.addEventListener('click', function (e) {
+    var main = e.target.closest ? e.target.closest('.mode-fab-main') : null;
+    if (main) {
+      e.preventDefault();
+      fabOpen(!fab.classList.contains('is-open'));
+      return;
+    }
+    if (fab.classList.contains('is-open') &&
+        !(e.target.closest && e.target.closest('.mode-fab'))) {
+      fabOpen(false);
+    }
+
     var a = e.target.closest ? e.target.closest('a') : null;
     if (!a) return;
 

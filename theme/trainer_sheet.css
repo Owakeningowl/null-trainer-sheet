@@ -945,8 +945,10 @@ td {
    once and then only hidden, so switching never reloads them.
    ------------------------------------------------------------------ */
 .mode-bar {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 110;
   display: flex;
   justify-content: center;
@@ -991,6 +993,11 @@ td {
   top: var(--mode-h, 43px);
 }
 
+/* the mode bar is out of flow, so the page starts below it */
+body {
+  padding-top: var(--mode-h, 43px);
+}
+
 .mode-view {
   display: none;
   position: fixed;
@@ -1015,4 +1022,84 @@ td {
 
 body.mode-open {
   overflow: hidden;
+}
+
+/* ------------------------------------------------------------------
+   Floating switcher. Always on screen, and above the tool iframes so
+   it still works while the dex or calculator is open.
+   ------------------------------------------------------------------ */
+.mode-fab {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 120;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.mode-fab-main {
+  width: 46px;
+  height: 46px;
+  padding: 0;
+  border: 1px solid #39435a;
+  border-radius: 50%;
+  background: #1d2430;
+  color: #ffcb5a;
+  font-size: 19px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  transition: background 0.12s, transform 0.12s;
+}
+
+.mode-fab-main:hover {
+  background: #28313f;
+  transform: translateY(-1px);
+}
+
+.mode-fab-menu {
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #2c3444;
+  border-radius: 7px;
+  background: #171b22;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+.mode-fab.is-open .mode-fab-menu {
+  display: flex;
+}
+
+.mode-fab-menu a {
+  padding: 9px 18px;
+  color: #9fb0cc;
+  font-size: 13px;
+  text-decoration: none;
+  white-space: nowrap;
+  border-bottom: 1px solid #242b38;
+}
+
+.mode-fab-menu a:last-child {
+  border-bottom: 0;
+}
+
+.mode-fab-menu a:hover {
+  background: #1f2531;
+  color: #e6ecf8;
+}
+
+.mode-fab-menu a.is-active {
+  color: #ffcb5a;
+  background: #232c3a;
+  font-weight: 600;
+}
+
+@media (max-width: 700px) {
+  .mode-fab {
+    right: 12px;
+    bottom: 12px;
+  }
 }

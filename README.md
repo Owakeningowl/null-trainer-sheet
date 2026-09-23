@@ -66,6 +66,11 @@ on only hidden, and the split pages are swapped in over `fetch` rather than
 navigated to — so whatever you have typed into the calculator survives
 moving around the sheet, and neither tool is ever loaded twice.
 
+The bar is pinned to the top of the window, and a floating switcher sits in
+the bottom-right corner — always on screen, and layered above the tool
+iframes, so you can jump back to the sheet from inside the calculator
+without scrolling anywhere.
+
 `src/calc.html` and `src/dex.html` are served from here so they can be
 themed and defaulted to dark; their assets still come from
 `nullcalc.pokemon0null.workers.dev` and `nulldex.pokemon0null.workers.dev`.
