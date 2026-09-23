@@ -407,7 +407,7 @@ def apply_roles(page):
 ROLE_KEY = (
     '<div class="role-key">'
     '<span class="rk-head">Leaves the field &mdash; chance per turn</span>'
-    '<span><b class="rk-support">Support</b> one damaging move at most &mdash; 20%</span>'
+    '<span><b class="rk-support">Support</b> at most one damaging move, nothing over 75 BP &mdash; 20%</span>'
     '<span><b class="rk-regen">Regen</b> Regenerator, heals a third &mdash; 40%</span>'
     '<span><b class="rk-weather">Weather</b> its weather ran out &mdash; 20%</span>'
     '<span><b class="rk-terrain">Terrain setter</b> highlighted ability, once it '
