@@ -10,18 +10,27 @@ sprite. Every fight is laid out on the same six-column grid, so tables
 line up whether the trainer has one Pokémon or six.
 
 Pokémon the switch AI treats specially carry a chip under their name. Null
-runs a separate mid-turn switch check for each class, so a chip means *this
-one leaves the field on you*, with the chance it does:
+runs a separate mid-turn check for each class, and the chip says which way
+that Pokémon moves:
 
-| Chip | Class | Chance |
+| Chip | Class | |
 |---|---|---|
-| **Support** | at most one damaging move, nothing over 75 BP, no Imposter | 20% |
-| **Regen** | Regenerator — heals a third on the way out | 40% |
-| **Absorb** | an immunity ability, once your move type feeds it | 75% |
-| **Weather** | its weather- or terrain-setting ability has expired | 20% |
-| **Hero** | Palafin, slower and about to be OHKO'd | always |
+| **Support** | at most one damaging move, nothing over 75 BP, no Imposter | 20% out |
+| **Regen** | Regenerator — heals a third on the way out | 40% out |
+| **Weather** | its weather-setting ability has expired | 20% out |
+| **Hero** | Palafin, slower and about to be OHKO'd | always out |
+| **Absorb** | your move type feeds its immunity ability | 75% **in** |
 
-All five are worked out from the sheet's own data — abilities, moves and
+Terrain setters carry no chip. The Ability cell is highlighted instead,
+since "Psychic Surge" already says which terrain.
+
+Absorb runs the other way from the rest. `FindMonThatAbsorbsOpponentsMove`
+reads the ability off `party[i]` and writes the winner to
+`AI_monToSwitchIntoId`, and it returns early when the Pokémon already on
+the field is the one holding the ability — so an Absorb mon is what the AI
+answers you with, and it never runs from the move it absorbs.
+
+Every class is worked out from the sheet's own data — abilities, moves and
 base powers in `tools/move_power.json` — rather than marked by hand. Moves
 whose power is decided at run time don't count against the 75 BP ceiling.
 `tools/null_roles.xlsx` is the hand-coloured copy they were cross-checked
