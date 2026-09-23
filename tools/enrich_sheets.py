@@ -79,6 +79,18 @@ SPEED_CONTROL_MOVES = {
     'Syrup Bomb', 'Bleakwind Storm',
 }
 
+# Moves whose power is worked out at run time don't trip the 75 BP ceiling
+# -- Terra calls them tax evaders. Most of them already sit at 1 in the move
+# table (Low Kick, Grass Knot, Gyro Ball, Heavy Slam, Flail, Return, Fling,
+# Magnitude, Beat Up, Super Fang, Endeavor, Ruination, Seismic Toss...), so
+# they need no help. Hard Press is the one the table stores at its ceiling
+# value, and Terra confirmed it evades. The same question hangs over Eruption,
+# Water Spout, Dragon Energy, Bolt Beak, Fishious Rend and Tera Starstorm, but
+# exempting any of them changes no Pokemon on this sheet, so it stays open.
+VARIABLE_POWER_MOVES = {
+    'Hard Press',
+}
+
 SUPPORT_POWER_CEILING = 75
 
 PAGES = {
@@ -279,7 +291,8 @@ def is_support(species, ability, moves):
             continue
         if info['status']:
             continue
-        if info['power'] > SUPPORT_POWER_CEILING:
+        if (name not in VARIABLE_POWER_MOVES
+                and info['power'] > SUPPORT_POWER_CEILING):
             return False
         damaging += 1
     return damaging <= 1

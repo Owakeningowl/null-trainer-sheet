@@ -22,7 +22,8 @@ one leaves the field on you*, with the chance it does:
 | **Hero** | Palafin, slower and about to be OHKO'd | always |
 
 All five are worked out from the sheet's own data — abilities, moves and
-base powers in `tools/move_power.json` — rather than marked by hand.
+base powers in `tools/move_power.json` — rather than marked by hand. Moves
+whose power is decided at run time don't count against the 75 BP ceiling.
 `tools/null_roles.xlsx` is the hand-coloured copy they were cross-checked
 against; nothing reads it at build time.
 
