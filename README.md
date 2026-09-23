@@ -15,11 +15,17 @@ that Pokémon moves:
 
 | Chip | Class | |
 |---|---|---|
-| **Support** | at most one damaging move, nothing over 75 BP, no Imposter | 20% out |
+| **Support** | at most one damaging move, nothing over 75 BP, no Imposter; in for more than 1 turn | 20% out |
 | **Regen** | Regenerator — heals a third on the way out | 40% out |
-| **Weather** | its weather-setting ability has expired | 20% out |
+| **Weather** | its weather-setting ability has expired; in for more than 1 turn | 20% out |
 | **Hero** | Palafin, slower and about to be OHKO'd | always out |
 | **Absorb** | your move type feeds its immunity ability | 75% **in** |
+
+**Avoid Switch** blocks Support, Regen, Weather and Terrain outright. It is
+active while the AI holds a stat boost, has a KO available, or the player
+carries Pursuit, a phazing move (Roar, Whirlwind, Dragon Tail, Circle
+Throw) or an OHKO move. Absorb and Hero ignore it. Nothing switches to a
+Pokémon whose switch-in score is negative.
 
 Support sits in two systems. Beyond the 20% chance its active Pokémon
 walks, a benched Support gets **+2 to its post-KO switch-in score, 10% of

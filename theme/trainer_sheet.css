@@ -804,6 +804,22 @@ td {
   margin-top: 4px;
 }
 
+.role-key .rk-foot {
+  flex-basis: 100%;
+  max-width: 860px;
+  margin: 8px auto 0;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: #7d8aa2;
+  font-size: 12px;
+  text-align: center;
+  white-space: normal;
+}
+
+.role-key .rk-foot b {
+  color: #9aa6bd;
+}
+
 .role-key .rk-support { color: var(--role-support); }
 .role-key .rk-regen { color: var(--role-regen); }
 .role-key .rk-absorb { color: var(--role-absorb); }
