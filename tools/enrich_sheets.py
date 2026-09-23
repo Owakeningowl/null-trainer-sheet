@@ -56,10 +56,19 @@ ABSORB_ABILITIES = {
     'Well-Baked Body', 'Wind Rider',
 }
 
+# One AI check covers both -- "weather or terrain setting ability, and the
+# corresponding weather or terrain faded" -- but they are split here because
+# what you do about it differs.
 WEATHER_ABILITIES = {
-    'Drought', 'Drizzle', 'Sand Stream', 'Snow Warning', 'Electric Surge',
-    'Grassy Surge', 'Misty Surge', 'Psychic Surge', 'Desolate Land',
-    'Primordial Sea', 'Delta Stream', 'Orichalcum Pulse', 'Hadron Engine',
+    'Drought', 'Drizzle', 'Sand Stream', 'Snow Warning', 'Desolate Land',
+    'Primordial Sea', 'Delta Stream', 'Orichalcum Pulse',
+}
+
+# Terrain setters get no chip; the ability itself is highlighted in the
+# Ability row instead, since the ability name already says which terrain.
+TERRAIN_ABILITIES = {
+    'Electric Surge', 'Grassy Surge', 'Misty Surge', 'Psychic Surge',
+    'Hadron Engine',
 }
 
 # Moves the doc lists as utility: they do not count toward the damaging-move
@@ -375,8 +384,21 @@ def apply_roles(page):
                         counts[r] += 1
             rebuilt.append(f'<th{attrs}>{inner}</th>')
 
-        new_row = '<tr>' + ''.join(rebuilt) + '</tr>'
-        return table.replace(species_row, new_row, 1)
+        table = table.replace(species_row,
+                              '<tr>' + ''.join(rebuilt) + '</tr>', 1)
+
+        ability_row = rows[4]
+        ability_cells = re.findall(r'<td([^>]*)>(.*?)</td>', ability_row, re.S)
+        marked = []
+        for attrs, inner in ability_cells:
+            attrs = re.sub(r'\s*class="ability-terrain"', '', attrs)
+            name = html.unescape(re.sub(r'<[^>]+>', '', inner)).strip()
+            if name in TERRAIN_ABILITIES:
+                attrs += ' class="ability-terrain"'
+                counts['terrain'] += 1
+            marked.append(f'<td{attrs}>{inner}</td>')
+        return table.replace(ability_row,
+                             '<tr>' + ''.join(marked) + '</tr>', 1)
 
     return TABLE_RE.sub(do_table, page), counts
 
@@ -384,12 +406,15 @@ def apply_roles(page):
 
 ROLE_KEY = (
     '<div class="role-key">'
-    '<span><b class="rk-support">Support</b> &mdash; one damaging move at most: 20%</span>'
-    '<span><b class="rk-regen">Regen</b> &mdash; Regenerator, heals a third: 40%</span>'
-    '<span><b class="rk-absorb">Absorb</b> &mdash; immunity ability you just fed: 75%</span>'
-    '<span><b class="rk-weather">Weather</b> &mdash; its weather or terrain ran out: 20%</span>'
-    '<span><b class="rk-hero">Hero</b> &mdash; Palafin, slower and about to be OHKO&rsquo;d: always</span>'
-    '<span class="rk-note">chance the AI switches it out mid-turn</span>'
+    '<span class="rk-head">Switches out</span>'
+    '<span><b class="rk-support">Support</b> one damaging move at most &mdash; 20%</span>'
+    '<span><b class="rk-regen">Regen</b> Regenerator, heals a third &mdash; 40%</span>'
+    '<span><b class="rk-weather">Weather</b> its weather ran out &mdash; 20%</span>'
+    '<span><b class="rk-terrain">Terrain setter</b> highlighted ability, once it '
+    'runs out &mdash; 20%</span>'
+    '<span><b class="rk-hero">Hero</b> Palafin, slower and about to be OHKO&rsquo;d &mdash; always</span>'
+    '<span class="rk-head rk-head-in">Switches in</span>'
+    '<span><b class="rk-absorb">Absorb</b> when your move type feeds its ability &mdash; 75%</span>'
     '</div>'
 )
 

@@ -684,13 +684,20 @@ td {
 }
 
 /* ------------------------------------------------------------------
-   Switch-AI roles. Null runs a separate mid-turn switch check for each
-   of these, so a chip means "this one leaves the field on you":
-     Support  <=1 damaging move, nothing over 75 BP   -> 20%
-     Regen    Regenerator, heals a third on the way   -> 40%
-     Absorb   immunity ability, your move type matched -> 75%
-     Weather  its weather/terrain ability has expired -> 20%
-     Hero     Palafin, slower and about to be OHKO'd  -> always
+   Switch-AI roles. Null runs a separate mid-turn check for each class.
+   Four of them make the active Pokemon leave; Absorb is the opposite --
+   FindMonThatAbsorbsOpponentsMove looks through the party, and the code
+   returns early if the Pokemon already on the field is the one with the
+   ability, so an Absorb mon never runs from what it absorbs.
+
+     out  Support  <=1 damaging move, nothing over 75 BP   -> 20%
+     out  Regen    Regenerator, heals a third on the way   -> 40%
+     out  Weather  its weather ability has expired         -> 20%
+     out  Terrain  its terrain ability has expired         -> 20%
+              (no chip -- the Ability cell is highlighted)
+     out  Hero     Palafin, slower and about to be OHKO'd  -> always
+     in   Absorb   your move type feeds its ability        -> 75%
+
    Rules run least-important first: a Pokemon in two classes takes its
    name colour from the first chip.
    ------------------------------------------------------------------ */
@@ -698,11 +705,13 @@ td {
   --role-support: #89cff0;
   --role-regen: #c9a7f0;
   --role-absorb: #7fd8b8;
-  --role-weather: #e8c07a;
+  --role-weather: #ffa94d;
+  --role-terrain: #c3e85f;
   --role-hero: #f09a9a;
 }
 
 .content-table th.role-hero { color: var(--role-hero); }
+.content-table th.role-terrain { color: var(--role-terrain); }
 .content-table th.role-weather { color: var(--role-weather); }
 .content-table th.role-absorb { color: var(--role-absorb); }
 .content-table th.role-regen { color: var(--role-regen); }
@@ -739,9 +748,18 @@ td {
 }
 
 .role-chip-weather {
-  border: 1px solid rgba(232, 192, 122, 0.45);
-  background: rgba(232, 192, 122, 0.12);
+  border: 1px solid rgba(255, 169, 77, 0.5);
+  background: rgba(255, 169, 77, 0.14);
   color: var(--role-weather);
+}
+
+/* Terrain setters carry no chip -- the ability name already says which
+   terrain, so the Ability cell is highlighted instead. */
+.content-table td.ability-terrain {
+  background: rgba(195, 232, 95, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(195, 232, 95, 0.35);
+  color: var(--role-terrain);
+  font-weight: 600;
 }
 
 .role-chip-hero {
@@ -752,13 +770,14 @@ td {
 
 /* the key that sits under each page title */
 .role-key {
-  max-width: 1000px;
+  max-width: 1080px;
   margin: 0 auto 6px;
   padding: 0 16px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 4px 18px;
+  align-items: baseline;
+  gap: 4px 16px;
   font-size: 12.5px;
   line-height: 1.5;
   color: #9aa6bd;
@@ -772,13 +791,22 @@ td {
   font-weight: 600;
 }
 
+.role-key .rk-head {
+  color: #6f7b92;
+  font-size: 11px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  flex-basis: 100%;
+  text-align: center;
+}
+
+.role-key .rk-head-in {
+  margin-top: 4px;
+}
+
 .role-key .rk-support { color: var(--role-support); }
 .role-key .rk-regen { color: var(--role-regen); }
 .role-key .rk-absorb { color: var(--role-absorb); }
 .role-key .rk-weather { color: var(--role-weather); }
+.role-key .rk-terrain { color: var(--role-terrain); }
 .role-key .rk-hero { color: var(--role-hero); }
-
-.role-key .rk-note {
-  color: #6f7b92;
-  font-style: italic;
-}

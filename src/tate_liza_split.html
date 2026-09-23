@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="https://play.pokemonshowdown.com/style/font-awesome.css" />
 <link rel="stylesheet" href="../theme/panels.css" />
 <link rel="stylesheet" href="../theme/main.css" />
-<link rel="stylesheet" href="../theme/trainer_sheet.css?v6" />
+<link rel="stylesheet" href="../theme/trainer_sheet.css?v8" />
 <link rel="stylesheet" href="https://play.pokemonshowdown.com/style/utilichart.css?b359" />
 <link rel="stylesheet" href="../theme/pokedex.css" />
 </head><body>
@@ -25,7 +25,7 @@
 </ul></div>
 <div class="pfx-panel">
 <h1>Tate&amp;Liza Split</h1>
-<div class="role-key"><span><b class="rk-support">Support</b> &mdash; one damaging move at most: 20%</span><span><b class="rk-regen">Regen</b> &mdash; Regenerator, heals a third: 40%</span><span><b class="rk-absorb">Absorb</b> &mdash; immunity ability you just fed: 75%</span><span><b class="rk-weather">Weather</b> &mdash; its weather or terrain ran out: 20%</span><span><b class="rk-hero">Hero</b> &mdash; Palafin, slower and about to be OHKO&rsquo;d: always</span><span class="rk-note">chance the AI switches it out mid-turn</span></div>
+<div class="role-key"><span class="rk-head">Switches out</span><span><b class="rk-support">Support</b> one damaging move at most &mdash; 20%</span><span><b class="rk-regen">Regen</b> Regenerator, heals a third &mdash; 40%</span><span><b class="rk-weather">Weather</b> its weather ran out &mdash; 20%</span><span><b class="rk-terrain">Terrain setter</b> highlighted ability, once it runs out &mdash; 20%</span><span><b class="rk-hero">Hero</b> Palafin, slower and about to be OHKO&rsquo;d &mdash; always</span><span class="rk-head rk-head-in">Switches in</span><span><b class="rk-absorb">Absorb</b> when your move type feeds its ability &mdash; 75%</span></div>
 
 <div class="container">
 <h1 class="location">Route 120</h1>
@@ -183,10 +183,10 @@
 <caption class="caption-content">Cooltrainer Cristin</caption>
 <tbody>
 <tr><td><img src="https://play.pokemonshowdown.com/sprites/gen5/swampert.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/tapulele.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/rabsca.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/ironcrown.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/quaquaval.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/simisear.png" alt=""></td></tr>
-<tr><th>Swampert</th><th class="role-weather">Tapu Lele<span class="role-chip role-chip-weather">Weather</span></th><th>Rabsca</th><th>Iron Crown</th><th>Quaquaval</th><th>Simisear</th></tr>
+<tr><th>Swampert</th><th>Tapu Lele</th><th>Rabsca</th><th>Iron Crown</th><th>Quaquaval</th><th>Simisear</th></tr>
 <tr><td>79</td><td>80</td><td>78</td><td>80</td><td>80</td><td>78</td></tr>
 <tr><td>Rindo Berry</td><td>Terrain Extender</td><td>Leppa Berry</td><td>Booster Energy</td><td>Salac Berry</td><td>Starf Berry</td></tr>
-<tr><td>Torrent</td><td>Psychic Surge</td><td>Synchronize</td><td>Quark Drive</td><td>Torrent</td><td>Gluttony</td></tr>
+<tr><td>Torrent</td><td class="ability-terrain">Psychic Surge</td><td>Synchronize</td><td>Quark Drive</td><td>Torrent</td><td>Gluttony</td></tr>
 <tr><td>Adamant</td><td>Timid</td><td>Modest</td><td>Timid</td><td>Jolly</td><td>Timid</td></tr>
 <tr><td>Stealth Rock</td><td>Future Sight</td><td>Expanding Force</td><td>Expanding Force</td><td>Liquidation</td><td>Fire Blast</td></tr>
 <tr><td>Liquidation</td><td>Psychic</td><td>Psychic</td><td>Steel Beam</td><td>Reversal</td><td>Terrain Pulse</td></tr>
@@ -488,10 +488,10 @@
 <caption class="caption-content">Team Aqua Leader Archie 1</caption>
 <tbody>
 <tr><td><img src="https://play.pokemonshowdown.com/sprites/gen5/miraidon.png" alt=""></td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><th class="role-weather">Miraidon<span class="role-chip role-chip-weather">Weather</span></th><th></th><th></th><th></th><th></th><th></th></tr>
+<tr><th>Miraidon</th><th></th><th></th><th></th><th></th><th></th></tr>
 <tr><td>82</td><td></td><td></td><td></td><td></td><td></td></tr>
 <tr><td>Lansat Berry</td><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>Hadron Engine</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td class="ability-terrain">Hadron Engine</td><td></td><td></td><td></td><td></td><td></td></tr>
 <tr><td>Timid</td><td></td><td></td><td></td><td></td><td></td></tr>
 <tr><td>Draco Meteor</td><td></td><td></td><td></td><td></td><td></td></tr>
 <tr><td>Electro Drift</td><td></td><td></td><td></td><td></td><td></td></tr>
@@ -752,10 +752,10 @@
 <caption class="caption-content">Hideout Team Aqua Grunt #4</caption>
 <tbody>
 <tr><td><img src="https://play.pokemonshowdown.com/sprites/gen5/pincurchin.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/hawlucha.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/blastoise.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/palossand.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/thundurus-therian.png" alt=""></td><td></td></tr>
-<tr><th class="role-weather">Pincurchin<span class="role-chip role-chip-weather">Weather</span></th><th>Hawlucha</th><th>Blastoise</th><th>Palossand</th><th class="role-absorb">Thundurus-Therian<span class="role-chip role-chip-absorb">Absorb</span></th><th></th></tr>
+<tr><th>Pincurchin</th><th>Hawlucha</th><th>Blastoise</th><th>Palossand</th><th class="role-absorb">Thundurus-Therian<span class="role-chip role-chip-absorb">Absorb</span></th><th></th></tr>
 <tr><td>83</td><td>85</td><td>84</td><td>84</td><td>85</td><td></td></tr>
 <tr><td>Terrain Extender</td><td>Electric Seed</td><td>White Herb</td><td>Bright Powder</td><td>Clear Amulet</td><td></td></tr>
-<tr><td>Electric Surge</td><td>Unburden</td><td>Torrent</td><td>Water Compaction</td><td>Volt Absorb</td><td></td></tr>
+<tr><td class="ability-terrain">Electric Surge</td><td>Unburden</td><td>Torrent</td><td>Water Compaction</td><td>Volt Absorb</td><td></td></tr>
 <tr><td>Quiet</td><td>Jolly</td><td>Timid</td><td>Sassy</td><td>Timid</td><td></td></tr>
 <tr><td>Rising Voltage</td><td>Cross Chop</td><td>Muddy Water</td><td>Earth Power</td><td>Wildbolt Storm</td><td></td></tr>
 <tr><td>Hydro Pump</td><td>Acrobatics</td><td>Terrain Pulse</td><td>Shadow Ball</td><td>Aeroblast</td><td></td></tr>
@@ -896,10 +896,10 @@
 <caption class="caption-content">Psychic Preston &amp; Psychic Maura</caption>
 <tbody>
 <tr><td><img src="https://play.pokemonshowdown.com/sprites/gen5/indeedee-f.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/orbeetle.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/metagross-mega.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/sceptile.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/munkidori.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/slowbro-galar.png" alt=""></td></tr>
-<tr><th class="role-weather">Indeedee-F<span class="role-chip role-chip-weather">Weather</span></th><th>Orbeetle</th><th>Metagross-Mega</th><th>Sceptile</th><th>Munkidori</th><th>Slowbro-Galar</th></tr>
+<tr><th>Indeedee-F</th><th>Orbeetle</th><th>Metagross-Mega</th><th>Sceptile</th><th>Munkidori</th><th>Slowbro-Galar</th></tr>
 <tr><td>85</td><td>85</td><td>85</td><td>85</td><td>85</td><td>85</td></tr>
 <tr><td>Adrenaline Orb</td><td>Occa Berry</td><td>Metagrossite</td><td>Eject Pack</td><td>Focus Sash</td><td>Psychic Seed</td></tr>
-<tr><td>Psychic Surge</td><td>Telepathy</td><td>Tough Claws</td><td>Overgrow</td><td>Toxic Chain</td><td>Quick Draw</td></tr>
+<tr><td class="ability-terrain">Psychic Surge</td><td>Telepathy</td><td>Tough Claws</td><td>Overgrow</td><td>Toxic Chain</td><td>Quick Draw</td></tr>
 <tr><td>Bold</td><td>Bold</td><td>Jolly</td><td>Timid</td><td>Timid</td><td>Quiet</td></tr>
 <tr><td>Follow Me</td><td>Expanding Force</td><td>Miracle Eye</td><td>Leaf Storm</td><td>Expanding Force</td><td>Expanding Force</td></tr>
 <tr><td>Expanding Force</td><td>Bug Buzz</td><td>Meteor Mash</td><td>Shed Tail</td><td>Sludge Wave</td><td>Zen Headbutt</td></tr>

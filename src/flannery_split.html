@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="https://play.pokemonshowdown.com/style/font-awesome.css" />
 <link rel="stylesheet" href="../theme/panels.css" />
 <link rel="stylesheet" href="../theme/main.css" />
-<link rel="stylesheet" href="../theme/trainer_sheet.css?v6" />
+<link rel="stylesheet" href="../theme/trainer_sheet.css?v8" />
 <link rel="stylesheet" href="https://play.pokemonshowdown.com/style/utilichart.css?b359" />
 <link rel="stylesheet" href="../theme/pokedex.css" />
 </head><body>
@@ -25,7 +25,7 @@
 </ul></div>
 <div class="pfx-panel">
 <h1>Flannery Split</h1>
-<div class="role-key"><span><b class="rk-support">Support</b> &mdash; one damaging move at most: 20%</span><span><b class="rk-regen">Regen</b> &mdash; Regenerator, heals a third: 40%</span><span><b class="rk-absorb">Absorb</b> &mdash; immunity ability you just fed: 75%</span><span><b class="rk-weather">Weather</b> &mdash; its weather or terrain ran out: 20%</span><span><b class="rk-hero">Hero</b> &mdash; Palafin, slower and about to be OHKO&rsquo;d: always</span><span class="rk-note">chance the AI switches it out mid-turn</span></div>
+<div class="role-key"><span class="rk-head">Switches out</span><span><b class="rk-support">Support</b> one damaging move at most &mdash; 20%</span><span><b class="rk-regen">Regen</b> Regenerator, heals a third &mdash; 40%</span><span><b class="rk-weather">Weather</b> its weather ran out &mdash; 20%</span><span><b class="rk-terrain">Terrain setter</b> highlighted ability, once it runs out &mdash; 20%</span><span><b class="rk-hero">Hero</b> Palafin, slower and about to be OHKO&rsquo;d &mdash; always</span><span class="rk-head rk-head-in">Switches in</span><span><b class="rk-absorb">Absorb</b> when your move type feeds its ability &mdash; 75%</span></div>
 
 <div class="container">
 <h1 class="location">Route 111</h1>
@@ -508,10 +508,10 @@
 <caption class="caption-content">Psychic Marlene</caption>
 <tbody>
 <tr><td><img src="https://play.pokemonshowdown.com/sprites/gen5/meowstic.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/mrrime.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/starmie.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/alakazam.png" alt=""></td><td></td><td></td></tr>
-<tr><th class="role-support role-weather">Meowstic-Mega<span class="role-chip role-chip-support">Support</span><span class="role-chip role-chip-weather">Weather</span></th><th>Mr. Rime</th><th>Starmie</th><th>Alakazam</th><th></th><th></th></tr>
+<tr><th class="role-support">Meowstic-Mega<span class="role-chip role-chip-support">Support</span></th><th>Mr. Rime</th><th>Starmie</th><th>Alakazam</th><th></th><th></th></tr>
 <tr><td>69</td><td>69</td><td>70</td><td>71</td><td></td><td></td></tr>
 <tr><td>Meowsticite</td><td>Focus Sash</td><td>Tanga Berry</td><td>Flame Orb</td><td></td><td></td></tr>
-<tr><td>Psychic Surge</td><td>Tangled Feet</td><td>Analytic</td><td>Magic Guard</td><td></td><td></td></tr>
+<tr><td class="ability-terrain">Psychic Surge</td><td>Tangled Feet</td><td>Analytic</td><td>Magic Guard</td><td></td><td></td></tr>
 <tr><td>Timid</td><td>Modest</td><td>Timid</td><td>Timid</td><td></td><td></td></tr>
 <tr><td>Reflect</td><td>Ice Beam</td><td>Scald</td><td>Expanding Force</td><td></td><td></td></tr>
 <tr><td>Light Screen</td><td>Nasty Plot</td><td>Psyshock</td><td>Energy Ball</td><td></td><td></td></tr>
@@ -780,10 +780,10 @@
 <caption class="caption-content">Expert Keegan</caption>
 <tbody>
 <tr><td><img src="https://play.pokemonshowdown.com/sprites/gen5/weezing-galar.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/fluttermane.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/delphox.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/turtonator.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/drifblim.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/volcanion.png" alt=""></td></tr>
-<tr><th class="role-weather">Weezing-Galar<span class="role-chip role-chip-weather">Weather</span></th><th>Flutter Mane</th><th>Delphox</th><th>Turtonator</th><th>Drifblim</th><th class="role-absorb">Volcanion<span class="role-chip role-chip-absorb">Absorb</span></th></tr>
+<tr><th>Weezing-Galar</th><th>Flutter Mane</th><th>Delphox</th><th>Turtonator</th><th>Drifblim</th><th class="role-absorb">Volcanion<span class="role-chip role-chip-absorb">Absorb</span></th></tr>
 <tr><td>71</td><td>72</td><td>72</td><td>72</td><td>72</td><td>72</td></tr>
 <tr><td>Terrain Extender</td><td>Choice Specs</td><td>Charcoal</td><td>Misty Seed</td><td>Flame Orb</td><td>Heavy-Duty Boots</td></tr>
-<tr><td>Misty Surge</td><td>Protosynthesis</td><td>Blaze</td><td>Shell Armor</td><td>Flare Boost</td><td>Water Absorb</td></tr>
+<tr><td class="ability-terrain">Misty Surge</td><td>Protosynthesis</td><td>Blaze</td><td>Shell Armor</td><td>Flare Boost</td><td>Water Absorb</td></tr>
 <tr><td>Careful</td><td>Timid</td><td>Bold</td><td>Timid</td><td>Timid</td><td>Modest</td></tr>
 <tr><td>Taunt</td><td>Misty Explosion</td><td>Mystical Fire</td><td>Shell Smash</td><td>Misty Explosion</td><td>Steam Eruption</td></tr>
 <tr><td>Gunk Shot</td><td></td><td>Telekinesis</td><td>Flamethrower</td><td>Protect</td><td>Heat Wave</td></tr>

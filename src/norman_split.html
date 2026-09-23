@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="https://play.pokemonshowdown.com/style/font-awesome.css" />
 <link rel="stylesheet" href="../theme/panels.css" />
 <link rel="stylesheet" href="../theme/main.css" />
-<link rel="stylesheet" href="../theme/trainer_sheet.css?v6" />
+<link rel="stylesheet" href="../theme/trainer_sheet.css?v8" />
 <link rel="stylesheet" href="https://play.pokemonshowdown.com/style/utilichart.css?b359" />
 <link rel="stylesheet" href="../theme/pokedex.css" />
 </head><body>
@@ -25,7 +25,7 @@
 </ul></div>
 <div class="pfx-panel">
 <h1>Norman Split</h1>
-<div class="role-key"><span><b class="rk-support">Support</b> &mdash; one damaging move at most: 20%</span><span><b class="rk-regen">Regen</b> &mdash; Regenerator, heals a third: 40%</span><span><b class="rk-absorb">Absorb</b> &mdash; immunity ability you just fed: 75%</span><span><b class="rk-weather">Weather</b> &mdash; its weather or terrain ran out: 20%</span><span><b class="rk-hero">Hero</b> &mdash; Palafin, slower and about to be OHKO&rsquo;d: always</span><span class="rk-note">chance the AI switches it out mid-turn</span></div>
+<div class="role-key"><span class="rk-head">Switches out</span><span><b class="rk-support">Support</b> one damaging move at most &mdash; 20%</span><span><b class="rk-regen">Regen</b> Regenerator, heals a third &mdash; 40%</span><span><b class="rk-weather">Weather</b> its weather ran out &mdash; 20%</span><span><b class="rk-terrain">Terrain setter</b> highlighted ability, once it runs out &mdash; 20%</span><span><b class="rk-hero">Hero</b> Palafin, slower and about to be OHKO&rsquo;d &mdash; always</span><span class="rk-head rk-head-in">Switches in</span><span><b class="rk-absorb">Absorb</b> when your move type feeds its ability &mdash; 75%</span></div>
 
 <div class="container">
 <h1 class="location">Land Cave</h1>
@@ -639,10 +639,10 @@
 <caption class="caption-content">Cooltrainer Dan</caption>
 <tbody>
 <tr><td><img src="https://play.pokemonshowdown.com/sprites/gen5/rillaboom.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/miltank.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/meloetta.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/arboliva.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/toucannon.png" alt=""></td><td></td></tr>
-<tr><th class="role-weather">Rillaboom<span class="role-chip role-chip-weather">Weather</span></th><th class="role-absorb">Miltank<span class="role-chip role-chip-absorb">Absorb</span></th><th>Meloetta</th><th>Arboliva</th><th>Toucannon</th><th></th></tr>
+<tr><th>Rillaboom</th><th class="role-absorb">Miltank<span class="role-chip role-chip-absorb">Absorb</span></th><th>Meloetta</th><th>Arboliva</th><th>Toucannon</th><th></th></tr>
 <tr><td>65</td><td>64</td><td>65</td><td>64</td><td>66</td><td></td></tr>
 <tr><td>Terrain Extender</td><td>Chople Berry</td><td>Clear Amulet</td><td>Big Root</td><td>Grass Gem</td><td></td></tr>
-<tr><td>Grassy Surge</td><td>Sap Sipper</td><td>Serene Grace</td><td>Triage</td><td>Skill Link</td><td></td></tr>
+<tr><td class="ability-terrain">Grassy Surge</td><td>Sap Sipper</td><td>Serene Grace</td><td>Triage</td><td>Skill Link</td><td></td></tr>
 <tr><td>Adamant</td><td>Adamant</td><td>Jolly</td><td>Modest</td><td>Adamant</td><td></td></tr>
 <tr><td>Wood Hammer</td><td>Curse</td><td>Close Combat</td><td>Terrain Pulse</td><td>Bullet Seed</td><td></td></tr>
 <tr><td>Grassy Glide</td><td>Grassy Glide</td><td>Trop Kick</td><td>Giga Drain</td><td>Fury Attack</td><td></td></tr>
@@ -655,10 +655,10 @@
 <caption class="caption-content">Cooltrainer Kya</caption>
 <tbody>
 <tr><td><img src="https://play.pokemonshowdown.com/sprites/gen5/indeedee.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/bisharp.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/meloetta.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/delphox.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/heliolisk.png" alt=""></td><td></td></tr>
-<tr><th class="role-weather">Indeedee<span class="role-chip role-chip-weather">Weather</span></th><th>Bisharp</th><th>Meloetta</th><th>Delphox</th><th class="role-absorb">Heliolisk<span class="role-chip role-chip-absorb">Absorb</span></th><th></th></tr>
+<tr><th>Indeedee</th><th>Bisharp</th><th>Meloetta</th><th>Delphox</th><th class="role-absorb">Heliolisk<span class="role-chip role-chip-absorb">Absorb</span></th><th></th></tr>
 <tr><td>65</td><td>65</td><td>64</td><td>64</td><td>66</td><td></td></tr>
 <tr><td>Terrain Extender</td><td>Eviolite</td><td>Metronome</td><td>Colbur Berry</td><td>Psychic Gem</td><td></td></tr>
-<tr><td>Psychic Surge</td><td>Defiant</td><td>Serene Grace</td><td>Blaze</td><td>Dry Skin</td><td></td></tr>
+<tr><td class="ability-terrain">Psychic Surge</td><td>Defiant</td><td>Serene Grace</td><td>Blaze</td><td>Dry Skin</td><td></td></tr>
 <tr><td>Modest</td><td>Adamant</td><td>Timid</td><td>Timid</td><td>Timid</td><td></td></tr>
 <tr><td>Expanding Force</td><td>Iron Head</td><td>Psychic</td><td>Expanding Force</td><td>Terrain Pulse</td><td></td></tr>
 <tr><td>Mystical Fire</td><td>Knock Off</td><td>Echoed Voice</td><td>Mystical Fire</td><td>Parabolic Charge</td><td></td></tr>

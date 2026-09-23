@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="https://play.pokemonshowdown.com/style/font-awesome.css" />
 <link rel="stylesheet" href="../theme/panels.css" />
 <link rel="stylesheet" href="../theme/main.css" />
-<link rel="stylesheet" href="../theme/trainer_sheet.css?v6" />
+<link rel="stylesheet" href="../theme/trainer_sheet.css?v8" />
 <link rel="stylesheet" href="https://play.pokemonshowdown.com/style/utilichart.css?b359" />
 <link rel="stylesheet" href="../theme/pokedex.css" />
 </head><body>
@@ -25,7 +25,7 @@
 </ul></div>
 <div class="pfx-panel">
 <h1>Wattson Split</h1>
-<div class="role-key"><span><b class="rk-support">Support</b> &mdash; one damaging move at most: 20%</span><span><b class="rk-regen">Regen</b> &mdash; Regenerator, heals a third: 40%</span><span><b class="rk-absorb">Absorb</b> &mdash; immunity ability you just fed: 75%</span><span><b class="rk-weather">Weather</b> &mdash; its weather or terrain ran out: 20%</span><span><b class="rk-hero">Hero</b> &mdash; Palafin, slower and about to be OHKO&rsquo;d: always</span><span class="rk-note">chance the AI switches it out mid-turn</span></div>
+<div class="role-key"><span class="rk-head">Switches out</span><span><b class="rk-support">Support</b> one damaging move at most &mdash; 20%</span><span><b class="rk-regen">Regen</b> Regenerator, heals a third &mdash; 40%</span><span><b class="rk-weather">Weather</b> its weather ran out &mdash; 20%</span><span><b class="rk-terrain">Terrain setter</b> highlighted ability, once it runs out &mdash; 20%</span><span><b class="rk-hero">Hero</b> Palafin, slower and about to be OHKO&rsquo;d &mdash; always</span><span class="rk-head rk-head-in">Switches in</span><span><b class="rk-absorb">Absorb</b> when your move type feeds its ability &mdash; 75%</span></div>
 
 <div class="container">
 <h1 class="location">Route 109</h1>
@@ -51,10 +51,10 @@
 <caption class="caption-content">Tuber Ricky</caption>
 <tbody>
 <tr><td><img src="https://play.pokemonshowdown.com/sprites/gen5/pincurchin.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/simisage.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/raichu-alola.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/clawitzer.png" alt=""></td><td></td><td></td></tr>
-<tr><th class="role-weather">Pincurchin<span class="role-chip role-chip-weather">Weather</span></th><th>Simisage</th><th>Raichu-Alola</th><th>Clawitzer</th><th></th><th></th></tr>
+<tr><th>Pincurchin</th><th>Simisage</th><th>Raichu-Alola</th><th>Clawitzer</th><th></th><th></th></tr>
 <tr><td>47</td><td>47</td><td>47</td><td>47</td><td></td><td></td></tr>
 <tr><td>Mental Herb</td><td>Eject Pack</td><td>Water Gem</td><td>Electric Seed</td><td></td><td></td></tr>
-<tr><td>Electric Surge</td><td>Overgrow</td><td>Surge Surfer</td><td>Mega Launcher</td><td></td><td></td></tr>
+<tr><td class="ability-terrain">Electric Surge</td><td>Overgrow</td><td>Surge Surfer</td><td>Mega Launcher</td><td></td><td></td></tr>
 <tr><td>Sassy</td><td>Timid</td><td>Modest</td><td>Calm</td><td></td><td></td></tr>
 <tr><td>Spikes</td><td>Nature Power</td><td>Fake Tears</td><td>Water Pulse</td><td></td><td></td></tr>
 <tr><td>Toxic Spikes</td><td>Leaf Storm</td><td>Rising Voltage</td><td>Terrain Pulse</td><td></td><td></td></tr>
@@ -459,10 +459,10 @@
 <caption class="caption-content">Leader Wattson</caption>
 <tbody>
 <tr><td><img src="https://play.pokemonshowdown.com/sprites/gen5/tapukoko.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/sceptile-mega.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/emolga.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/arctozolt.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/ironthorns.png" alt=""></td><td><img src="https://play.pokemonshowdown.com/sprites/gen5/manectric.png" alt=""></td></tr>
-<tr><th class="role-weather">Tapu Koko<span class="role-chip role-chip-weather">Weather</span></th><th class="role-absorb">Sceptile-Mega<span class="role-chip role-chip-absorb">Absorb</span></th><th class="role-absorb">Emolga<span class="role-chip role-chip-absorb">Absorb</span></th><th class="role-absorb">Arctozolt<span class="role-chip role-chip-absorb">Absorb</span></th><th>Iron Thorns</th><th class="role-absorb">Manectric<span class="role-chip role-chip-absorb">Absorb</span></th></tr>
+<tr><th>Tapu Koko</th><th class="role-absorb">Sceptile-Mega<span class="role-chip role-chip-absorb">Absorb</span></th><th class="role-absorb">Emolga<span class="role-chip role-chip-absorb">Absorb</span></th><th class="role-absorb">Arctozolt<span class="role-chip role-chip-absorb">Absorb</span></th><th>Iron Thorns</th><th class="role-absorb">Manectric<span class="role-chip role-chip-absorb">Absorb</span></th></tr>
 <tr><td>59</td><td>58</td><td>59</td><td>58</td><td>58</td><td>60</td></tr>
 <tr><td>Terrain Extender</td><td>Sceptilite</td><td>Electric Seed</td><td>Loaded Dice</td><td>Assault Vest</td><td>Focus Sash</td></tr>
-<tr><td>Electric Surge</td><td>Lightning Rod</td><td>Motor Drive</td><td>Volt Absorb</td><td>Quark Drive</td><td>Lightning Rod</td></tr>
+<tr><td class="ability-terrain">Electric Surge</td><td>Lightning Rod</td><td>Motor Drive</td><td>Volt Absorb</td><td>Quark Drive</td><td>Lightning Rod</td></tr>
 <tr><td>Timid</td><td>Mild</td><td>Hasty</td><td>Adamant</td><td>Adamant</td><td>Timid</td></tr>
 <tr><td>Discharge</td><td>Energy Ball</td><td>Discharge</td><td>Bolt Beak</td><td>Wild Charge</td><td>Discharge</td></tr>
 <tr><td>U-Turn</td><td>Thunder Punch</td><td>Follow Me</td><td>Icicle Spear</td><td>Rock Slide</td><td>Flamethrower</td></tr>
