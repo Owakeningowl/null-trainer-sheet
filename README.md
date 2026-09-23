@@ -21,6 +21,12 @@ that Pokémon moves:
 | **Hero** | Palafin, slower and about to be OHKO'd | always out |
 | **Absorb** | your move type feeds its immunity ability | 75% **in** |
 
+Support sits in two systems. Beyond the 20% chance its active Pokémon
+walks, a benched Support gets **+2 to its post-KO switch-in score, 10% of
+the time** (unless it is already at −1), which makes the AI likelier to
+send it in. Mid-turn switches pick their replacement from that same score,
+so the bonus applies there too.
+
 Terrain setters carry no chip. The Ability cell is highlighted instead,
 since "Psychic Surge" already says which terrain.
 
