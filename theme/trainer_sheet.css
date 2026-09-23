@@ -904,3 +904,38 @@ td {
 .ref-notes b {
   color: #b3bdd0;
 }
+
+.ref-compare {
+  max-width: 860px;
+  margin: 0 auto 26px;
+  padding: 16px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.ref-compare h3 {
+  margin: 0 0 8px;
+  text-align: center;
+  font-size: 15px;
+  color: #e6ecf8;
+}
+
+.ref-compare p {
+  margin: 0 0 12px;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: #9aa6bd;
+}
+
+.ref-compare p:last-child {
+  margin: 12px 0 0;
+}
+
+.ref-table-compare td.ref-move {
+  width: 58%;
+}
+
+.ref-table-compare b {
+  color: #e6ecf8;
+}

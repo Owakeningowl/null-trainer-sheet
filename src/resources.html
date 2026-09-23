@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="https://play.pokemonshowdown.com/style/font-awesome.css" />
 <link rel="stylesheet" href="../theme/panels.css" />
 <link rel="stylesheet" href="../theme/main.css" />
-<link rel="stylesheet" href="../theme/trainer_sheet.css?v11" />
+<link rel="stylesheet" href="../theme/trainer_sheet.css?v12" />
 <link rel="stylesheet" href="https://play.pokemonshowdown.com/style/utilichart.css?b359" />
 <link rel="stylesheet" href="../theme/pokedex.css" />
 </head><body>
@@ -41,16 +41,44 @@
 <div class="ref-panel" id="setup">
 <h2>What stops setup</h2>
 <p class="ref-intro">Every move starts at 100 and the AI scores from there.
-A &minus;20 usually takes a setup move out of contention; a &minus;5 only
-discourages it. Three things on your side get checked: <b>Unaware</b>, the
+Status moves open at +6, so a setup move sits around 106 before its viability
+bonuses, against attacks somewhere in the 100&ndash;114 band. That is the
+scale to read these numbers on: a <b>&minus;5 is a tiebreaker</b> that
+usually does not flip the decision, a <b>&minus;20 is a veto</b> that almost
+always does. Three things on your side get checked: <b>Unaware</b>, the
 <b>Haze family</b> (Haze, Clear Smog, Freezy Frost, Topsy-Turvy) and
-<b>phazing</b> (Roar, Whirlwind, Dragon Tail, Circle Throw).<br>
-The Haze family is the better blanket: &minus;20 on everything below except
-Charge, Baton Pass and the accuracy moves, and it never stops working on the
-AI&rsquo;s last Pok&eacute;mon. Phazing matches it on evasion, the Speed
-moves and the all-in moves, but falls to &minus;5 against ordinary stat
-setup &mdash; and every one of its &minus;20s except Acupressure lapses once
-the AI is down to its last Pok&eacute;mon.</p>
+<b>phazing</b> (Roar, Whirlwind, Dragon Tail, Circle Throw).</p>
+<div class="ref-compare">
+<h3>Haze vs Roar &mdash; where they differ</h3>
+<p>They match on Minimize and Double Team, Agility / Rock Polish /
+Autotomize, the Shell Smash family, Acupressure, Rapid Spin and the Flame
+Charge family. Everywhere else:</p>
+<table class="ref-table ref-table-compare">
+<thead><tr><th></th><th>Haze family</th><th>Roar / phazing</th></tr></thead>
+<tbody>
+<tr><td class="ref-move">Swords Dance, Nasty Plot, Dragon Dance, Calm Mind,
+Bulk Up, Quiver Dance, Hone Claws, Coil, Growth, Work Up, Tidy Up, Victory
+Dance, No Retreat, Curse, Tail Glow, Shift Gear, Howl, Meditate,
+Sharpen</td><td><b>&minus;20</b></td><td>&minus;5</td></tr>
+<tr><td class="ref-move">Iron Defense, Harden, Barrier, Acid Armor, Cotton
+Guard, Defense Curl, Amnesia, Cosmic Power</td><td><b>&minus;20</b></td>
+<td>&minus;5</td></tr>
+<tr><td class="ref-move">Power-Up Punch-style Attack-raising
+hits</td><td><b>&minus;20</b></td><td>nothing</td></tr>
+<tr><td class="ref-move">Stockpile, Stuff Cheeks</td><td><b>&minus;20</b></td>
+<td>&minus;5</td></tr>
+<tr><td class="ref-move">Charge</td><td>nothing</td><td><b>&minus;20</b></td></tr>
+<tr><td class="ref-move">Baton Pass</td><td>nothing</td>
+<td><b>&minus;20</b> if the AI has no raised stat</td></tr>
+</tbody>
+</table>
+<p>That first row is ~19 moves and most of what teams actually set up with,
+which is why the Haze family is the better blanket. On top of that, every
+&minus;20 Roar does earn &mdash; and its &minus;5 as well &mdash; lapses
+once the AI is on its last Pok&eacute;mon; only Acupressure survives. The
+Haze family never lapses. Roar&rsquo;s only exclusives are Charge and Baton
+Pass.</p>
+</div>
 <table class="ref-table">
 <thead><tr><th>Setup move</th><th>Unaware</th><th>Haze family</th><th>Phazing</th></tr></thead>
 <tbody>
