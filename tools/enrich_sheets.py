@@ -513,8 +513,13 @@ def setup_panel():
 A &minus;20 usually takes a setup move out of contention; a &minus;5 only
 discourages it. Three things on your side get checked: <b>Unaware</b>, the
 <b>Haze family</b> (Haze, Clear Smog, Freezy Frost, Topsy-Turvy) and
-<b>phazing</b> (Roar, Whirlwind, Dragon Tail, Circle Throw). They are not
-interchangeable &mdash; Haze stops stat setup, Roar mostly does not.</p>
+<b>phazing</b> (Roar, Whirlwind, Dragon Tail, Circle Throw).<br>
+The Haze family is the better blanket: &minus;20 on everything below except
+Charge, Baton Pass and the accuracy moves, and it never stops working on the
+AI&rsquo;s last Pok&eacute;mon. Phazing matches it on evasion, the Speed
+moves and the all-in moves, but falls to &minus;5 against ordinary stat
+setup &mdash; and every one of its &minus;20s except Acupressure lapses once
+the AI is down to its last Pok&eacute;mon.</p>
 <table class="ref-table">
 <thead><tr><th>Setup move</th><th>Unaware</th><th>Haze family</th><th>Phazing</th></tr></thead>
 <tbody>
