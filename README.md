@@ -53,6 +53,11 @@ terrain, gauntlet bounds, predamaged Pokémon, consecutive battles,
 format choices — show a red marker beside the trainer's name; hover it
 to read the note.
 
+The home page also carries a **What stops setup** reference: what Unaware,
+the Haze family and phazing moves do to each setup move in the AI's move
+scoring, and the caveats around it (a −20 is a heavy penalty, not a hard
+block; the counter only counts on the Pokémon being targeted).
+
 ## Rebuilding
 
 `tools/enrich_sheets.py` reads `tools/null_sheet.xlsx` (an export of the

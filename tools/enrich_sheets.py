@@ -441,6 +441,106 @@ def add_role_key(page):
     return page[:m.end()] + '\n' + ROLE_KEY + page[m.end():]
 
 
+# ---------------------------------------------------------- setup reference
+
+# What the AI's move scoring does to a setup move when you hold the counter.
+# -20 usually takes the move out of contention; -5 only discourages it.
+# Columns: Unaware / Haze family / phazing.
+SETUP_ROWS = [
+    ('Swords Dance, Howl, Meditate, Sharpen, Nasty Plot, Tail Glow, Dragon '
+     'Dance, Shift Gear, Hone Claws, Coil, Bulk Up, Calm Mind, Quiver Dance, '
+     'Growth, Work Up, Tidy Up, Victory Dance, No Retreat, Curse (non-Ghost)',
+     '&minus;20', '&minus;20', '&minus;5 in the helper, needs a backup'),
+    ('Iron Defense, Harden, Barrier, Acid Armor, Cotton Guard, Defense Curl, '
+     'Amnesia, Cosmic Power',
+     '&minus;20', '&minus;20', '&minus;5 in the helper, needs a backup'),
+    ('Power-Up Punch and other guaranteed stat-raising hits &mdash; '
+     '<em>only when it is not the highest-damaging move</em>',
+     '&minus;20', '&minus;20', '&mdash;'),
+    ('Stockpile, Stuff Cheeks',
+     '&minus;20 in the helper', '&minus;20 in the helper', '&minus;5'),
+    ('Agility, Rock Polish, Autotomize',
+     '&mdash;', '&minus;20', '&minus;20, needs a backup'),
+    ('Flame Charge, Aqua Step, Esper Wing, Trailblaze, Scale Shot',
+     '&mdash;', 'loses its +6 / +7', 'loses its bonus, needs a backup'),
+    ('Double Team, Minimize',
+     '&minus;20', '&minus;20', '&minus;20, needs a backup'),
+    ('Shell Smash, Belly Drum, Fillet Away, Clangorous Soul, Geomancy',
+     '&minus;20', '&minus;20', '&minus;20, needs a backup'),
+    ('Acupressure',
+     '&minus;20', '&minus;20', '&minus;20, even on its last Pok&eacute;mon'),
+    ('Charge', '&mdash;', '&mdash;', '&minus;20, needs a backup'),
+    ('Rapid Spin <em>(no hazards on the AI&rsquo;s side)</em>',
+     '&mdash;', '&minus;20', '&minus;20, needs a backup'),
+    ('Baton Pass', '&mdash;', '&mdash;',
+     '&minus;20 only if the AI has no raised stat'),
+    ('Accuracy-raising moves, Curse (Ghost)', '&mdash;', '&mdash;', '&mdash;'),
+]
+
+SETUP_NOTES = [
+    'A &minus;20 is a heavy penalty, not a hard block. Every move starts at '
+    '100, so &minus;20 leaves it at 80 and any ordinary attack outscores it. '
+    'A move is only dropped once its score reaches 0. If the AI has nothing '
+    'that scores above 80 &mdash; everything immune, or penalised harder '
+    '&mdash; it will still set up.',
+    'These are moveset checks on the Pok&eacute;mon the AI is <b>targeting</b>. '
+    'It only needs to know the move: your Speed, PP, Taunt, or whether the '
+    'move would even work do not matter. But the counter has to be on the '
+    'Pok&eacute;mon in front of it &mdash; holding Haze on the bench does '
+    'nothing, and in Doubles the partner&rsquo;s Haze or Roar does not count.',
+    '<b>Needs a backup</b> means the check only counts while the AI still has '
+    'another Pok&eacute;mon able to switch in. Roar and Dragon Tail stop '
+    'counting on its last Pok&eacute;mon &mdash; except against Acupressure.',
+    'If you threaten a one-hit KO but the AI has Focus Sash, Disguise or a '
+    'Substitute up, the Nasty Plot family skips the Haze and Unaware check '
+    'entirely.',
+    'The &minus;5 tier discourages rather than blocks: you have Foul Play or a '
+    'confusing move and the move raises Attack; you have Burning Jealousy or '
+    'Alluring Voice, the AI is faster and the move raises Attack; or you have '
+    'a phazing move and the AI is not on its last Pok&eacute;mon.',
+]
+
+
+def setup_panel():
+    rows = '\n'.join(
+        f'<tr><td class="ref-move">{move}</td><td>{unaware}</td>'
+        f'<td>{haze}</td><td>{phaze}</td></tr>'
+        for move, unaware, haze, phaze in SETUP_ROWS)
+    notes = '\n'.join(f'<li>{n}</li>' for n in SETUP_NOTES)
+    return f'''<div class="ref-panel" id="setup">
+<h2>What stops setup</h2>
+<p class="ref-intro">Every move starts at 100 and the AI scores from there.
+A &minus;20 usually takes a setup move out of contention; a &minus;5 only
+discourages it. Three things on your side get checked: <b>Unaware</b>, the
+<b>Haze family</b> (Haze, Clear Smog, Freezy Frost, Topsy-Turvy) and
+<b>phazing</b> (Roar, Whirlwind, Dragon Tail, Circle Throw). They are not
+interchangeable &mdash; Haze stops stat setup, Roar mostly does not.</p>
+<table class="ref-table">
+<thead><tr><th>Setup move</th><th>Unaware</th><th>Haze family</th><th>Phazing</th></tr></thead>
+<tbody>
+{rows}
+</tbody>
+</table>
+<ul class="ref-notes">
+{notes}
+</ul>
+</div>'''
+
+
+def add_setup_panel(path):
+    """Drop the setup reference onto the home page. Idempotent."""
+    page = open(path, encoding='utf-8').read()
+    page = re.sub(r'<div class="ref-panel" id="setup">.*?</div>\s*(?=<script|</body)',
+                  '', page, flags=re.S)
+    marker = '<script src="../theme/split_item_sprites.js'
+    i = page.find(marker)
+    if i < 0:
+        return False
+    open(path, 'w', encoding='utf-8').write(
+        page[:i] + setup_panel() + '\n' + page[i:])
+    return True
+
+
 def process(sheet, data, roles=None, verbose=True):
     path = os.path.join(SRC, PAGES[sheet])
     page = open(path, encoding='utf-8').read()
@@ -567,6 +667,8 @@ def main():
         ta += a
         chips.update(c)
     print(f'\ntotal: {tn} cell notes attached, {ta} trainers restored')
+    if add_setup_panel(os.path.join(SRC, 'resources.html')):
+        print('setup reference panel written to resources.html')
     print('role chips: ' + ', '.join(
         f'{dict(ROLE_LABELS)[k]} {chips[k]}' for k, _ in ROLE_LABELS))
 

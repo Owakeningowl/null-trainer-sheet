@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="https://play.pokemonshowdown.com/style/font-awesome.css" />
 <link rel="stylesheet" href="../theme/panels.css" />
 <link rel="stylesheet" href="../theme/main.css" />
-<link rel="stylesheet" href="../theme/trainer_sheet.css?v10" />
+<link rel="stylesheet" href="../theme/trainer_sheet.css?v11" />
 <link rel="stylesheet" href="https://play.pokemonshowdown.com/style/utilichart.css?b359" />
 <link rel="stylesheet" href="../theme/pokedex.css" />
 </head><body>
@@ -37,6 +37,40 @@
 <li><a class="button" href="steven_split.html">Steven</a></li>
 <li><a class="button" href="victory_road_split.html">Victory Road</a></li>
 <li><a class="button" href="pok_mon_league.html">Pokémon League</a></li></ul>
+</div>
+<div class="ref-panel" id="setup">
+<h2>What stops setup</h2>
+<p class="ref-intro">Every move starts at 100 and the AI scores from there.
+A &minus;20 usually takes a setup move out of contention; a &minus;5 only
+discourages it. Three things on your side get checked: <b>Unaware</b>, the
+<b>Haze family</b> (Haze, Clear Smog, Freezy Frost, Topsy-Turvy) and
+<b>phazing</b> (Roar, Whirlwind, Dragon Tail, Circle Throw). They are not
+interchangeable &mdash; Haze stops stat setup, Roar mostly does not.</p>
+<table class="ref-table">
+<thead><tr><th>Setup move</th><th>Unaware</th><th>Haze family</th><th>Phazing</th></tr></thead>
+<tbody>
+<tr><td class="ref-move">Swords Dance, Howl, Meditate, Sharpen, Nasty Plot, Tail Glow, Dragon Dance, Shift Gear, Hone Claws, Coil, Bulk Up, Calm Mind, Quiver Dance, Growth, Work Up, Tidy Up, Victory Dance, No Retreat, Curse (non-Ghost)</td><td>&minus;20</td><td>&minus;20</td><td>&minus;5 in the helper, needs a backup</td></tr>
+<tr><td class="ref-move">Iron Defense, Harden, Barrier, Acid Armor, Cotton Guard, Defense Curl, Amnesia, Cosmic Power</td><td>&minus;20</td><td>&minus;20</td><td>&minus;5 in the helper, needs a backup</td></tr>
+<tr><td class="ref-move">Power-Up Punch and other guaranteed stat-raising hits &mdash; <em>only when it is not the highest-damaging move</em></td><td>&minus;20</td><td>&minus;20</td><td>&mdash;</td></tr>
+<tr><td class="ref-move">Stockpile, Stuff Cheeks</td><td>&minus;20 in the helper</td><td>&minus;20 in the helper</td><td>&minus;5</td></tr>
+<tr><td class="ref-move">Agility, Rock Polish, Autotomize</td><td>&mdash;</td><td>&minus;20</td><td>&minus;20, needs a backup</td></tr>
+<tr><td class="ref-move">Flame Charge, Aqua Step, Esper Wing, Trailblaze, Scale Shot</td><td>&mdash;</td><td>loses its +6 / +7</td><td>loses its bonus, needs a backup</td></tr>
+<tr><td class="ref-move">Double Team, Minimize</td><td>&minus;20</td><td>&minus;20</td><td>&minus;20, needs a backup</td></tr>
+<tr><td class="ref-move">Shell Smash, Belly Drum, Fillet Away, Clangorous Soul, Geomancy</td><td>&minus;20</td><td>&minus;20</td><td>&minus;20, needs a backup</td></tr>
+<tr><td class="ref-move">Acupressure</td><td>&minus;20</td><td>&minus;20</td><td>&minus;20, even on its last Pok&eacute;mon</td></tr>
+<tr><td class="ref-move">Charge</td><td>&mdash;</td><td>&mdash;</td><td>&minus;20, needs a backup</td></tr>
+<tr><td class="ref-move">Rapid Spin <em>(no hazards on the AI&rsquo;s side)</em></td><td>&mdash;</td><td>&minus;20</td><td>&minus;20, needs a backup</td></tr>
+<tr><td class="ref-move">Baton Pass</td><td>&mdash;</td><td>&mdash;</td><td>&minus;20 only if the AI has no raised stat</td></tr>
+<tr><td class="ref-move">Accuracy-raising moves, Curse (Ghost)</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+</tbody>
+</table>
+<ul class="ref-notes">
+<li>A &minus;20 is a heavy penalty, not a hard block. Every move starts at 100, so &minus;20 leaves it at 80 and any ordinary attack outscores it. A move is only dropped once its score reaches 0. If the AI has nothing that scores above 80 &mdash; everything immune, or penalised harder &mdash; it will still set up.</li>
+<li>These are moveset checks on the Pok&eacute;mon the AI is <b>targeting</b>. It only needs to know the move: your Speed, PP, Taunt, or whether the move would even work do not matter. But the counter has to be on the Pok&eacute;mon in front of it &mdash; holding Haze on the bench does nothing, and in Doubles the partner&rsquo;s Haze or Roar does not count.</li>
+<li><b>Needs a backup</b> means the check only counts while the AI still has another Pok&eacute;mon able to switch in. Roar and Dragon Tail stop counting on its last Pok&eacute;mon &mdash; except against Acupressure.</li>
+<li>If you threaten a one-hit KO but the AI has Focus Sash, Disguise or a Substitute up, the Nasty Plot family skips the Haze and Unaware check entirely.</li>
+<li>The &minus;5 tier discourages rather than blocks: you have Foul Play or a confusing move and the move raises Attack; you have Burning Jealousy or Alluring Voice, the AI is faster and the move raises Attack; or you have a phazing move and the AI is not on its last Pok&eacute;mon.</li>
+</ul>
 </div>
 <script src="../theme/split_item_sprites.js?v2"></script>
 </body></html>
