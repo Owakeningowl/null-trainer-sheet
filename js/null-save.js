@@ -190,8 +190,11 @@
 	window.NullSave.load = load;
 
 	function problem(e) {
+		if (e && e.message !== 'empty' && e.message !== 'format' && window.console) console.error('mGBA save sync:', e);
 		say(e && e.message === 'empty' ? 'That save has no Pokémon yet. Catch one and save in the game.'
-			: 'That doesn’t look like a Pokémon Null save. Pick the .sav next to your Null ROM.', true);
+			: e && e.message === 'format' ? 'That doesn’t look like a Pokémon Null save. Pick the .sav next to your Null ROM.'
+			: 'Couldn’t read the save' + (e && (e.name || e.message) ? ' (' + (e.name !== 'Error' ? e.name + ': ' : '') + e.message + ')' : '') +
+				'. Try Load save file instead.', true);
 	}
 
 	/* ---------- linked save (Chrome / Edge) ---------- */
@@ -220,11 +223,12 @@
 				try { load(new Uint8Array(buf), new Date(file.lastModified).toLocaleTimeString([], {hour: 'numeric', minute: '2-digit'})); }
 				catch (e) { problem(e); }
 			});
-		}).catch(function () {
+		}).catch(function (e) {
+			if (window.console) console.error('mGBA save sync:', e);
 			clearInterval(timer);
 			timer = null;
 			syncButton.hidden = false;
-			say('Lost access to the save. Press Sync now to allow it again.', true);
+			say('Lost access to the save' + (e && e.name ? ' (' + e.name + ')' : '') + '. Press Sync now to allow it again, or use Load save file.', true);
 		});
 	}
 
@@ -238,8 +242,8 @@
 	function allow() {
 		return handle.requestPermission({mode: 'read'}).then(function (state) {
 			if (state === 'granted') start();
-			else say('The browser didn’t allow reading the save.', true);
-		});
+			else say('The browser didn’t allow reading the save. Use Load save file instead.', true);
+		}).catch(function (e) { problem(e); });
 	}
 
 	function buildBar() {
@@ -263,9 +267,8 @@
 		try { placeTeam(JSON.parse(localStorage.getItem(TEAM_KEY) || '[]')); } catch (e) {}
 
 		if (canLink) {
-			pickLabel.hidden = true;
 			linkButton.addEventListener('click', function () {
-				window.showOpenFilePicker({types: [{description: 'Save file', accept: {'application/octet-stream': ['.sav']}}]})
+				window.showOpenFilePicker({startIn: 'downloads', types: [{description: 'Save file', accept: {'application/octet-stream': ['.sav']}}]})
 					.then(function (picked) {
 						handle = picked[0];
 						lastModified = 0;
