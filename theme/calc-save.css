@@ -1,0 +1,42 @@
+/* "Link mGBA save" bar above Team / Box (js/null-save.js), in the Astral colours */
+#ns-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  margin: 4px 0 8px;
+}
+
+#ns-bar button,
+#ns-bar .ns-pick {
+  background: #3a4462;
+  color: #eef1f6;
+  border: 1px solid #5a6486;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+#ns-bar button:hover,
+#ns-bar .ns-pick:hover {
+  background: #485480;
+}
+
+#ns-bar button[hidden],
+#ns-bar .ns-pick[hidden],
+#ns-status[hidden] {
+  display: none;
+}
+
+#ns-status {
+  flex-basis: 100%;
+  font-size: 12px;
+  color: #8fc9a4;
+}
+
+#ns-status.ns-bad {
+  color: #f0908a;
+}

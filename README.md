@@ -77,6 +77,34 @@ themed and defaulted to dark; their assets still come from
 The dex keeps its own theme control but its navigation bar is hidden, since
 this page already has one. Both remember a theme you pick afterwards.
 
+### mGBA save sync
+
+The calculator's Team / Box panel has **Link mGBA save**. Pick your Null
+`.sav` once (Chrome / Edge) and the page keeps re-reading it: every time you
+save in the game, your party lands in Team and your PC in Box within a couple
+of seconds, with level, nature, ability, IVs, item and moves. No Lua script
+is needed. Other browsers get **Load save file** for a one-off read. The
+save is read in the page and never uploaded. Synced sets are labelled
+`Save Team …` / `Save Box …`; each sync replaces the last one and leaves sets
+you imported yourself alone.
+
+`js/null-save.js` reads Null's own layout (104-byte party / 84-byte boxed
+Pokémon, 12-byte nickname, checksum at +30, nature override and ability slot
+in spare bits, as Null's mGBA exporter reads them). `js/null-save-ids.js`
+maps IDs to the calculator's names; rebuild it with
+`python3 tools/save/build_ids.py NULL_1.2.6.gba NullLuaV1.2.4.lua CALC_NAMES.json`.
+
+`src/calc.html` is rebuilt from the live calculator with
+`python3 tools/build_calc.py`, so its trainer sets are always Null's current
+ones; the Astral look lives in `theme/calc-astral.css`.
+
+## 1.2.5 / 1.2.6 trainer changes
+
+`tools/patch_trainers.py` brings the fights changed in Null's 1.2.5 patch
+notes in line with the calculator's current sets (level / item / ability /
+nature / move cells only), and the switch-AI chips are recomputed for those
+pages.
+
 ## Rebuilding
 
 `tools/enrich_sheets.py` reads `tools/null_sheet.xlsx` (an export of the
