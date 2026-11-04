@@ -253,7 +253,7 @@
 		bar.id = 'ns-bar';
 		bar.innerHTML = '<button type="button" id="ns-link">Link mGBA save</button>' +
 			'<button type="button" id="ns-sync" hidden>Sync now</button>' +
-			'<label id="ns-pick" class="ns-pick">Load save file<input type="file" id="ns-file" accept=".sav" hidden></label>' +
+			'<label id="ns-pick" class="ns-pick">Load save file<input type="file" id="ns-file" hidden></label>' +
 			'<span id="ns-status" hidden></span>';
 		team.parentNode.parentNode.insertBefore(bar, team.parentNode);
 		linkButton = document.getElementById('ns-link');
@@ -268,7 +268,7 @@
 
 		if (canLink) {
 			linkButton.addEventListener('click', function () {
-				window.showOpenFilePicker({startIn: 'downloads', types: [{description: 'Save file', accept: {'application/octet-stream': ['.sav']}}]})
+				window.showOpenFilePicker({startIn: 'downloads'})    // no type filter: macOS doesn't know .sav and would hide it
 					.then(function (picked) {
 						handle = picked[0];
 						lastModified = 0;
